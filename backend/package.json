@@ -3,8 +3,15 @@
     "module": "main.ts",
     "type": "module",
     "private": true,
-    "devDependencies": {},
+    "devDependencies": {
+        "@biomejs/biome": "2.0.5"
+    },
     "peerDependencies": {
         "typescript": "^5"
+    },
+
+    "scripts": {
+        "lint": "bunx --bun biome lint",
+        "format": "bunx --bun biome format"
     }
 }

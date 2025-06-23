@@ -15,3 +15,13 @@ bun install
 ```bash
 bun run main.ts
 ```
+
+### lint
+```bash
+bun run lint
+```
+
+### format
+```bash
+bun run format
+```
