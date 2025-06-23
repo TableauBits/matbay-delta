@@ -9,9 +9,10 @@
     "peerDependencies": {
         "typescript": "^5"
     },
-
     "scripts": {
+        "start": "bun run main.ts",
         "lint": "bunx --bun biome lint",
-        "format": "bunx --bun biome format"
+        "format": "bunx --bun biome format",
+        "ci": "bunx --bun biome ci"
     }
 }
