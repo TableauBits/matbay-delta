@@ -13,5 +13,5 @@ bun install
 ### run in dev mode
 
 ```bash
-bun run index.ts
+bun run main.ts
 ```
