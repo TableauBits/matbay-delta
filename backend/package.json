@@ -1,0 +1,10 @@
+{
+    "name": "delta-backend",
+    "module": "main.ts",
+    "type": "module",
+    "private": true,
+    "devDependencies": {},
+    "peerDependencies": {
+        "typescript": "^5"
+    }
+}
