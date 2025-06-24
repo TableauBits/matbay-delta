@@ -13,19 +13,13 @@ jobs:
         uses: actions/checkout@v4
       - name: Set up Bun
         uses: oven-sh/setup-bun@v2
-      - name: Install dependencies of the backend
+      - name: Validate backend code
         run: |
           cd backend
           bun install
-      - name: Install dependencies of the frontend
-        run: |
-          cd frontend
-          bun install
-      - name: Run backend linter
-        run: |
-          cd backend
           bun lint
-      - name: Run frontend linter
+      - name: Validate frontend code
         run: |
           cd frontend
+          bun install
           bun lint
