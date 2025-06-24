@@ -17,7 +17,11 @@ bun install
 bun start
 ```
 
-### Linting and formatting code
+### Linting code
+
+```
+bun lint
+```
 
 ## Additional Resources
 
