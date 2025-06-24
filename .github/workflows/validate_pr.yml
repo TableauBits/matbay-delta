@@ -1,0 +1,31 @@
+name: Validate PR
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Set up Bun
+        uses: oven-sh/setup-bun@v2
+      - name: Install dependencies of the backend
+        run: |
+          cd backend
+          bun install
+      - name: Install dependencies of the frontend
+        run: |
+          cd frontend
+          bun install
+      - name: Run backend linter
+        run: |
+          cd backend
+          bun lint
+      - name: Run frontend linter
+        run: |
+          cd frontend
+          bun lint
