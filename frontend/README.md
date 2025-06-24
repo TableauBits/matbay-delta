@@ -1,7 +1,7 @@
 # delta-frontend
 
 ## Summary
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 20.0.3.
+This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version `20.0.3` and uses [bun](https://bun.sh/) as package manager.
 
 ## Usage
 
@@ -18,7 +18,7 @@ bun start
 ```
 
 ### Linting code
-
+Linting handled by [Eslint](https://eslint.org).
 ```
 bun lint
 ```
