@@ -3,19 +3,19 @@
 MATBay delta's backend uses [bun](https://bun.sh/) as its runtime to simplify typescript support and increase speed. This has been tested with bun version `1.2.3`.
 
 ## Usage
-### install dependencies
+### Install dependencies
 
 ```bash
 bun install
 ```
 
-### run in dev mode
+### Run in dev mode
 
 ```bash
 bun start
 ```
 
-### linting and formatting code
+### Linting and formatting code
 Code linting and formatting are handled by [biome](https://biomejs.dev/).
 ```bash
 bun lint
