@@ -1,0 +1,18 @@
+{
+    "name": "Matbay Delta",
+    "build": {
+        // Path is relative to the devcontainer.json file.
+        "dockerfile": "Dockerfile"
+    },
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "aaron-bond.better-comments",
+                "angular.ng-template",
+                "cyrilletuzi.angular-schematics",
+                "ms-vsliveshare.vsliveshare",
+                "oven.bun-vscode"
+            ]
+        }
+    }
+}
