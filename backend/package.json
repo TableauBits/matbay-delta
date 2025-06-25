@@ -8,6 +8,7 @@
     },
     "scripts": {
         "start": "bun run src/main.ts",
+        "watch": "bun run --watch src/main.ts",
         "lint": "bun x --bun biome lint",
         "format": "bun x --bun biome format",
         "ci": "bun x --bun biome ci"
