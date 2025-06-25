@@ -7,14 +7,14 @@ import cors from "cors";
 import express from "express";
 import { api_router, dev_router } from "./routing";
 
-const is_prod = process.env["ENVIRONMENT"] === "PRODUCTION";
+const is_debug = process.env["ENVIRONMENT"] === "DEBUG";
 const port = parseInt(process.env["PORT"] || "3000");
-const listen_ip = is_prod ? "0.0.0.0" : "127.0.0.1";
+const listen_ip = "0.0.0.0";
 
 const app = express().use(cors()).use(express.json());
 
 app.use("/api", api_router);
-if (!is_prod) {
+if (is_debug) {
     consola.warn('development mode enabled, testing endpoints are available on "/dev"');
     app.use("/dev", dev_router);
 }
