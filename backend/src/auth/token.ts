@@ -1,14 +1,15 @@
+import consola from "consola";
 import { type Request, type Response, Router } from "express";
 import { decode, type Jwt, type JwtHeader, verify } from "jsonwebtoken";
 import { JwksClient } from "jwks-rsa";
 import { async_to_result, catch_to_result, Err, Ok, type Result } from "../result";
 import { isNil } from "../utils";
 
-const token_dev_router = Router();
-
-token_dev_router.post("/validate", validate);
-
-export { token_dev_router };
+const jwks_uri = process.env["JWKS_URI"];
+if (isNil(jwks_uri)) {
+    throw Error("environment variable JKWS_URI not found but is mandatory, check `.env.template`");
+}
+consola.info(`JWK will be fetched from ${jwks_uri}`);
 
 var keyring = new JwksClient({
     jwksUri: "https://dev-x6avckr07ru88ilg.us.auth0.com/.well-known/jwks.json",
@@ -46,3 +47,9 @@ async function validate(req: Request, res: Response) {
     const result = await validate_inner(req);
     res.send(result);
 }
+
+const token_dev_router = Router();
+
+token_dev_router.post("/validate", validate);
+
+export { token_dev_router };
