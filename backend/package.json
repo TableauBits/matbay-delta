@@ -11,8 +11,8 @@
     },
     "scripts": {
         "start": "bun run src/main.ts",
-        "lint": "bunx --bun biome lint",
-        "format": "bunx --bun biome format",
-        "ci": "bunx --bun biome ci"
+        "lint": "bun x --bun biome lint",
+        "format": "bun x --bun biome format",
+        "ci": "bun x --bun biome ci"
     }
 }
