@@ -1,4 +1,3 @@
-/** biome-ignore-all lint/complexity/useLiteralKeys: we don't control the `env` object so using indexing makes sense here */
 import * as dotenv from "dotenv";
 
 dotenv.config();
