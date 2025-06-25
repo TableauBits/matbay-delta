@@ -1,7 +1,7 @@
-import { Router, type Request, type Response } from "express";
-import { decode, verify, type Jwt, type JwtHeader } from "jsonwebtoken";
+import { type Request, type Response, Router } from "express";
+import { decode, type Jwt, type JwtHeader, verify } from "jsonwebtoken";
 import { JwksClient } from "jwks-rsa";
-import { async_to_result, Err, Ok, catch_to_result, type Result } from "../result";
+import { async_to_result, catch_to_result, Err, Ok, type Result } from "../result";
 import { isNil } from "../utils";
 
 const token_dev_router = Router();

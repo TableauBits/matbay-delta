@@ -1,11 +1,12 @@
 /** biome-ignore-all lint/complexity/useLiteralKeys: we don't control the `env` object so using indexing makes sense here */
 import * as dotenv from "dotenv";
+
 dotenv.config();
 
-import express from "express";
-import cors from "cors";
-import { api_router, dev_router } from "./routing";
 import consola from "consola";
+import cors from "cors";
+import express from "express";
+import { api_router, dev_router } from "./routing";
 
 const is_prod = process.env["ENVIRONMENT"] === "PRODUCTION";
 const port = parseInt(process.env["PORT"] || "3000");
