@@ -1,7 +1,7 @@
-FROM node:24-alpine
+FROM alpine:latest
 
 # Global dependencies
-RUN apk add --no-cache bash git curl
+RUN apk add --no-cache bash git curl nodejs libstdc++
 
 # Install Bun
 RUN curl -fsSL https://bun.sh/install | bash
