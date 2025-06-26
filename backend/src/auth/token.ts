@@ -40,7 +40,8 @@ async function validate_inner(req: Request): Promise<Result<Jwt, Error>> {
         return result;
     }
 
-    return catch_to_result(() => verify(token, "", { complete: true }));
+    const public_key = result.unwrap();
+    return catch_to_result(() => verify(token, public_key, { complete: true }));
 }
 
 async function validate(req: Request, res: Response) {
