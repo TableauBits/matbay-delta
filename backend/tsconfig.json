@@ -27,6 +27,11 @@
         "forceConsistentCasingInFileNames": true,
         "noImplicitAny": true,
         "noImplicitThis": true,
-        "noImplicitReturns": true
+        "noImplicitReturns": true,
+        // For type-orm
+        "experimentalDecorators": true,
+        "emitDecoratorMetadata": true,
+        "strictPropertyInitialization": false,
+        "esModuleInterop": false
     }
 }

@@ -4,7 +4,8 @@
     "type": "module",
     "private": true,
     "devDependencies": {
-        "@biomejs/biome": "2.0.5"
+        "@biomejs/biome": "2.0.5",
+        "drizzle-kit": "^0.31.3"
     },
     "peerDependencies": {
         "typescript": "^5"
@@ -14,5 +15,8 @@
         "lint": "bun x --bun biome lint",
         "format": "bun x --bun biome format",
         "ci": "bun x --bun biome ci"
+    },
+    "dependencies": {
+        "drizzle-orm": "^0.44.2"
     }
 }
