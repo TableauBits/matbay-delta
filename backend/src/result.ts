@@ -71,7 +71,7 @@ class Result<T, E extends Error> {
         }
 
         if (this.isErr()) {
-            return { type: "Err", value: `${this.getErr()}` };
+            return { type: "Err", value: `${this.#err}` };
         }
 
         return { type: "Invalid", value: "[result object is in an invalid state]" };
@@ -85,8 +85,15 @@ class Result<T, E extends Error> {
 function Ok<T, E extends Error>(value: T): Result<T, E> {
     return new Result<T, E>(value, null);
 }
+function Err<T, E extends Error>(error: E): Result<T, E>;
+function Err<T>(error: string): Result<T, Error>;
 
-function Err<T, E extends Error>(error: E): Result<T, E> {
+function Err<T, E extends Error>(error: E | string): Result<T, E> | Result<T, Error> {
+    if (typeof error === "string") {
+        const error_value = new Error(error);
+        return new Result<T, Error>(null, error_value);
+    }
+
     return new Result<T, E>(null, error);
 }
 

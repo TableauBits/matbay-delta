@@ -3,13 +3,19 @@ import { type Request, type Response, Router } from "express";
 import { decode, type Jwt, type JwtHeader, verify } from "jsonwebtoken";
 import { JwksClient } from "jwks-rsa";
 import { async_to_result, catch_to_result, Err, Ok, type Result } from "../result";
-import { isNil } from "../utils";
+import { check_nil, isNil } from "../utils";
 
-const jwks_uri = process.env["JWKS_URI"];
-if (isNil(jwks_uri)) {
-    throw Error("environment variable JKWS_URI not found but is mandatory, check `.env.template`");
-}
+const jwks_uri = check_nil(
+    process.env["JWKS_URI"],
+    "environment variable JKWS_URI not found but is mandatory, check `.env.template`",
+).unwrap();
 consola.info(`JWK will be fetched from ${jwks_uri}`);
+
+const intended_audience = check_nil(
+    process.env["JWT_AUD"],
+    "environment variable JWT_AUD not found but is mandatory, check `.env.template`",
+).unwrap();
+consola.info(`JWK audience will be checked against ${intended_audience}`);
 
 var keyring = new JwksClient({
     jwksUri: "https://dev-x6avckr07ru88ilg.us.auth0.com/.well-known/jwks.json",
@@ -27,12 +33,19 @@ async function getKey(header: JwtHeader): Promise<Result<string, Error>> {
 async function validate_inner(req: Request): Promise<Result<Jwt, Error>> {
     const token: string | undefined = req.body?.token;
     if (isNil(token)) {
-        return Err(new Error("no token provided"));
+        return Err("no token provided");
     }
 
     const decoded = decode(token, { complete: true });
     if (isNil(decoded)) {
-        return Err(new Error("could not extract header from token"));
+        return Err("could not extract header from token");
+    }
+
+    if (typeof decoded.payload === "string") {
+        return Err("unknown payload format");
+    }
+    if (decoded.payload.aud !== intended_audience) {
+        return Err("audience does not match the expected value");
     }
 
     const result = await getKey(decoded.header);
