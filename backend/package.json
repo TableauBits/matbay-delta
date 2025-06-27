@@ -11,6 +11,8 @@
         "watch": "bun run --watch src/main.ts",
         "lint": "bun x --bun biome lint",
         "format": "bun x --bun biome format",
+        "check": "bun x --bun biome check",
+        "fix": "bun x --bun biome check --fix",
         "ci": "bun x --bun biome ci"
     },
     "dependencies": {
