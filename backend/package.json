@@ -3,16 +3,32 @@
     "module": "main.ts",
     "type": "module",
     "private": true,
-    "devDependencies": {
-        "@biomejs/biome": "2.0.5"
-    },
     "peerDependencies": {
         "typescript": "^5"
     },
     "scripts": {
         "start": "bun run src/main.ts",
+        "watch": "bun run --watch src/main.ts",
         "lint": "bun x --bun biome lint",
         "format": "bun x --bun biome format",
+        "check": "bun x --bun biome check",
+        "fix": "bun x --bun biome check --fix",
         "ci": "bun x --bun biome ci"
+    },
+    "dependencies": {
+        "consola": "^3.4.2",
+        "cors": "^2.8.5",
+        "dotenv": "^16.5.0",
+        "express": "^5.1.0",
+        "i": "^0.3.7",
+        "jsonwebtoken": "^9.0.2",
+        "jwks-rsa": "^3.2.0"
+    },
+    "devDependencies": {
+        "@biomejs/biome": "2.0.5",
+        "@types/cors": "^2.8.19",
+        "@types/dotenv": "^8.2.3",
+        "@types/express": "^5.0.3",
+        "@types/jsonwebtoken": "^9.0.10"
     }
 }
