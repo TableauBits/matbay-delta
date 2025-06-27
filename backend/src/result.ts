@@ -16,11 +16,11 @@ class Result<T, E extends Error> {
     }
 
     unwrap(): T {
-        if (this.is_ok()) {
+        if (this.isOk()) {
             return this.#ok as T;
         }
 
-        if (this.is_err()) {
+        if (this.isErr()) {
             throw this.#err as E;
         }
 
@@ -28,11 +28,11 @@ class Result<T, E extends Error> {
     }
 
     expect(msg: string): T {
-        if (this.is_ok()) {
+        if (this.isOk()) {
             return this.#ok as T;
         }
 
-        if (this.is_err()) {
+        if (this.isErr()) {
             const err = this.#err as E;
             err.message = `${msg}: \n${err.message}`;
             throw err.message;
@@ -41,7 +41,7 @@ class Result<T, E extends Error> {
         throw new Error(msg);
     }
 
-    is_ok(): this is Result<T, never> {
+    isOk(): this is Result<T, never> {
         return this.#ok !== null;
     }
 
@@ -49,20 +49,20 @@ class Result<T, E extends Error> {
         return this.#ok as T;
     }
 
-    is_err(): this is Result<never, E> {
+    isErr(): this is Result<never, E> {
         return this.#err !== null;
     }
 
-    get_err(): this extends Result<never, E> ? E : E | null {
+    getErr(): this extends Result<never, E> ? E : E | null {
         return this.#err as E;
     }
 
     toString(): string {
-        if (this.is_ok()) {
+        if (this.isOk()) {
             return `Ok: ${this.#ok}`;
         }
 
-        if (this.is_err()) {
+        if (this.isErr()) {
             return `Err: ${this.#err}`;
         }
 
@@ -70,11 +70,11 @@ class Result<T, E extends Error> {
     }
 
     toJSON(): unknown {
-        if (this.is_ok()) {
+        if (this.isOk()) {
             return { type: "Ok", value: this.#ok };
         }
 
-        if (this.is_err()) {
+        if (this.isErr()) {
             return { type: "Err", value: `${this.#err}` };
         }
 
@@ -94,14 +94,14 @@ function Err<T>(error: string): Result<T, Error>;
 
 function Err<T, E extends Error>(error: E | string): Result<T, E> | Result<T, Error> {
     if (typeof error === "string") {
-        const error_value = new Error(error);
-        return new Result<T, Error>(null, error_value);
+        const errorValue = new Error(error);
+        return new Result<T, Error>(null, errorValue);
     }
 
     return new Result<T, E>(null, error);
 }
 
-function catch_to_result<T, E extends Error>(fn: () => T): Result<T, E> {
+function catchToResult<T, E extends Error>(fn: () => T): Result<T, E> {
     try {
         return Ok(fn());
     } catch (error: unknown) {
@@ -109,7 +109,7 @@ function catch_to_result<T, E extends Error>(fn: () => T): Result<T, E> {
     }
 }
 
-async function async_to_result<T, E extends Error>(promise: Promise<T>): Promise<Result<T, E>> {
+async function asyncToResult<T, E extends Error>(promise: Promise<T>): Promise<Result<T, E>> {
     try {
         return Ok(await promise);
     } catch (error: unknown) {
@@ -117,4 +117,4 @@ async function async_to_result<T, E extends Error>(promise: Promise<T>): Promise
     }
 }
 
-export { Result, Ok, Err, catch_to_result, async_to_result };
+export { Result, Ok, Err, catchToResult, asyncToResult };

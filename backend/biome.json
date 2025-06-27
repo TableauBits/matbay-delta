@@ -20,6 +20,14 @@
             "recommended": true,
             "complexity": {
                 "useLiteralKeys": "off"
+            },
+            "style": {
+                "useNamingConvention": {
+                    "level": "error",
+                    "options": {
+                        "strictCase": false
+                    }
+                }
             }
         }
     },

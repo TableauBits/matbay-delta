@@ -1,16 +1,16 @@
 import { type Request, type Response, Router } from "express";
-import { check_nil } from "../utils";
-import { token_dev_router, validate_token } from "./token";
+import { checkNil } from "../utils";
+import { tokenDevRouter, validateToken } from "./token";
 
-async function check_auth(req: Request, res: Response) {
-    const id_token = check_nil(req.header("delta-auth"), "no token found in headers");
-    if (id_token.is_err()) {
+async function checkAuth(req: Request, res: Response) {
+    const idToken = checkNil(req.header("delta-auth"), "no token found in headers");
+    if (idToken.isErr()) {
         res.sendStatus(400);
         return;
     }
 
-    const validation = await validate_token(id_token.unwrap());
-    if (validation.is_err()) {
+    const validation = await validateToken(idToken.unwrap());
+    if (validation.isErr()) {
         res.sendStatus(401);
         return;
     }
@@ -18,10 +18,10 @@ async function check_auth(req: Request, res: Response) {
     res.sendStatus(200);
 }
 
-const auth_api_router = Router();
-const auth_dev_router = Router();
+const authApiRouter = Router();
+const authDevRouter = Router();
 
-auth_dev_router.use("/token", token_dev_router);
-auth_dev_router.use("/check", check_auth);
+authDevRouter.use("/token", tokenDevRouter);
+authDevRouter.use("/check", checkAuth);
 
-export { auth_api_router, auth_dev_router };
+export { authApiRouter, authDevRouter };

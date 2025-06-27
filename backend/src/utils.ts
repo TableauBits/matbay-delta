@@ -4,7 +4,7 @@ function isNil(value: unknown): value is null | undefined {
     return value == null;
 }
 
-function check_nil<T>(value: T | null | undefined, error: string): Result<T, Error> {
+function checkNil<T>(value: T | null | undefined, error: string): Result<T, Error> {
     if (isNil(value)) {
         return Err(error);
     }
@@ -12,4 +12,4 @@ function check_nil<T>(value: T | null | undefined, error: string): Result<T, Err
     return Ok(value);
 }
 
-export { isNil, check_nil };
+export { isNil, checkNil };

@@ -2,27 +2,27 @@ import consola from "consola";
 import { type Request, type Response, Router } from "express";
 import { decode, type Jwt, type JwtHeader, verify } from "jsonwebtoken";
 import { JwksClient } from "jwks-rsa";
-import { async_to_result, catch_to_result, Err, Ok, type Result } from "../result";
-import { check_nil, isNil } from "../utils";
+import { asyncToResult, catchToResult, Err, Ok, type Result } from "../result";
+import { checkNil, isNil } from "../utils";
 
-const jwks_uri = check_nil(
+const jwksUri = checkNil(
     process.env["JWKS_URI"],
     "environment variable JKWS_URI not found but is mandatory, check `.env.template`",
 ).unwrap();
-consola.info(`JWK will be fetched from ${jwks_uri}`);
+consola.info(`JWK will be fetched from ${jwksUri}`);
 
-const intended_audience = check_nil(
+const intendedAudience = checkNil(
     process.env["JWT_AUD"],
     "environment variable JWT_AUD not found but is mandatory, check `.env.template`",
 ).unwrap();
-consola.info(`JWK audience will be checked against ${intended_audience}`);
+consola.info(`JWK audience will be checked against ${intendedAudience}`);
 
 var keyring = new JwksClient({
     jwksUri: "https://dev-x6avckr07ru88ilg.us.auth0.com/.well-known/jwks.json",
 });
 async function getKey(header: JwtHeader): Promise<Result<string, Error>> {
-    const result = await async_to_result(keyring.getSigningKey(header.kid));
-    if (result.is_err()) {
+    const result = await asyncToResult(keyring.getSigningKey(header.kid));
+    if (result.isErr()) {
         return result;
     }
 
@@ -30,7 +30,7 @@ async function getKey(header: JwtHeader): Promise<Result<string, Error>> {
     return Ok(signingKey);
 }
 
-async function validate_token(token: string): Promise<Result<Jwt, Error>> {
+async function validateToken(token: string): Promise<Result<Jwt, Error>> {
     const decoded = decode(token, { complete: true });
     if (isNil(decoded)) {
         return Err("could not extract header from token");
@@ -39,32 +39,32 @@ async function validate_token(token: string): Promise<Result<Jwt, Error>> {
     if (typeof decoded.payload === "string") {
         return Err("unknown payload format");
     }
-    if (decoded.payload.aud !== intended_audience) {
+    if (decoded.payload.aud !== intendedAudience) {
         return Err("audience does not match the expected value");
     }
 
     const result = await getKey(decoded.header);
-    if (result.is_err()) {
+    if (result.isErr()) {
         return result;
     }
 
-    const public_key = result.unwrap();
-    return catch_to_result(() => verify(token, public_key, { complete: true }));
+    const publicKey = result.unwrap();
+    return catchToResult(() => verify(token, publicKey, { complete: true }));
 }
 
 async function validate(req: Request, res: Response) {
-    const token = check_nil(req.body?.token, "no token provided");
-    if (token.is_err()) {
+    const token = checkNil(req.body?.token, "no token provided");
+    if (token.isErr()) {
         res.send(token);
         return;
     }
 
-    const result = await validate_token(token.value());
+    const result = await validateToken(token.value());
     res.send(result);
 }
 
-const token_dev_router = Router();
+const tokenDevRouter = Router();
 
-token_dev_router.post("/validate", validate);
+tokenDevRouter.post("/validate", validate);
 
-export { token_dev_router, validate_token };
+export { tokenDevRouter, validateToken };
