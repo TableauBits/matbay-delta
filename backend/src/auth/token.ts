@@ -18,7 +18,7 @@ const intendedAudience = checkNil(
 consola.info(`JWK audience will be checked against ${intendedAudience}`);
 
 var keyring = new JwksClient({
-    jwksUri: "https://dev-x6avckr07ru88ilg.us.auth0.com/.well-known/jwks.json",
+    jwksUri: jwksUri,
 });
 async function getKey(header: JwtHeader): Promise<Result<string, Error>> {
     const result = await asyncToResult(keyring.getSigningKey(header.kid));
