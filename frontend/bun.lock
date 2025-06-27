@@ -10,6 +10,7 @@
         "@angular/forms": "^20.0.0",
         "@angular/platform-browser": "^20.0.0",
         "@angular/router": "^20.0.0",
+        "@auth0/auth0-angular": "^2.2.3",
         "rxjs": "~7.8.0",
         "tslib": "^2.3.0",
         "zone.js": "~0.15.0",
@@ -74,6 +75,10 @@
     "@angular/platform-browser": ["@angular/platform-browser@20.0.4", "", { "dependencies": { "tslib": "^2.3.0" }, "peerDependencies": { "@angular/animations": "20.0.4", "@angular/common": "20.0.4", "@angular/core": "20.0.4" }, "optionalPeers": ["@angular/animations"] }, "sha512-hMJYvtZlNPh4Tt6JrnK+vmBmHWok04EkuJwyPcPhlle1u6/LihuCj4suELLqCanX9EzyNgvyKnws0i6JE/qh8Q=="],
 
     "@angular/router": ["@angular/router@20.0.4", "", { "dependencies": { "tslib": "^2.3.0" }, "peerDependencies": { "@angular/common": "20.0.4", "@angular/core": "20.0.4", "@angular/platform-browser": "20.0.4", "rxjs": "^6.5.3 || ^7.4.0" } }, "sha512-t02ukwKh+YDZutR09ZYJVLaC+OPyDxu6ll7A2MFK0BNLPpD9oQc0lDwJZSrqfAhlXU0arWUjmwkNvFdh21/Z5Q=="],
+
+    "@auth0/auth0-angular": ["@auth0/auth0-angular@2.2.3", "", { "dependencies": { "@auth0/auth0-spa-js": "^2.0.1", "tslib": "^2.0.0" }, "peerDependencies": { "@angular/common": ">=13", "@angular/core": ">=13", "@angular/router": ">=13" } }, "sha512-4VI8VOPQe33Q5LSCjKHFGFB8+81HBw/6px3inOe8GRj/seim3F+QhMiz7vw7kcJkRu8ONiykAg6WDS/kVJ7rLg=="],
+
+    "@auth0/auth0-spa-js": ["@auth0/auth0-spa-js@2.2.0", "", {}, "sha512-YaHHCxiSQxDb+Ju9gXOqcqgXWq8EkUSpZC4g24D3MoEBUaADKwOosrAnmjDZcslBZpnSFFdrl4dLYedAer3xlQ=="],
 
     "@babel/code-frame": ["@babel/code-frame@7.27.1", "", { "dependencies": { "@babel/helper-validator-identifier": "^7.27.1", "js-tokens": "^4.0.0", "picocolors": "^1.1.1" } }, "sha512-cjQ7ZlQ0Mv3b47hABuTevyTuYN4i+loJKGeV9flcCgIK37cCXRh+L1bd3iBHlynerhQ7BhCkn2BPbQUL+rGqFg=="],
 
