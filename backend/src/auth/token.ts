@@ -22,7 +22,7 @@ var keyring = new JwksClient({
 });
 async function getKey(header: JwtHeader): Promise<Result<string, Error>> {
     const result = await async_to_result(keyring.getSigningKey(header.kid));
-    if (result.isErr()) {
+    if (result.is_err()) {
         return result;
     }
 
@@ -30,12 +30,7 @@ async function getKey(header: JwtHeader): Promise<Result<string, Error>> {
     return Ok(signingKey);
 }
 
-async function validate_inner(req: Request): Promise<Result<Jwt, Error>> {
-    const token: string | undefined = req.body?.token;
-    if (isNil(token)) {
-        return Err("no token provided");
-    }
-
+async function validate_token(token: string): Promise<Result<Jwt, Error>> {
     const decoded = decode(token, { complete: true });
     if (isNil(decoded)) {
         return Err("could not extract header from token");
@@ -49,7 +44,7 @@ async function validate_inner(req: Request): Promise<Result<Jwt, Error>> {
     }
 
     const result = await getKey(decoded.header);
-    if (result.isErr()) {
+    if (result.is_err()) {
         return result;
     }
 
@@ -58,7 +53,13 @@ async function validate_inner(req: Request): Promise<Result<Jwt, Error>> {
 }
 
 async function validate(req: Request, res: Response) {
-    const result = await validate_inner(req);
+    const token = check_nil(req.body?.token, "no token provided");
+    if (token.is_err()) {
+        res.send(token);
+        return;
+    }
+
+    const result = await validate_token(token.value());
     res.send(result);
 }
 

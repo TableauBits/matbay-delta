@@ -16,11 +16,11 @@ class Result<T, E extends Error> {
     }
 
     unwrap(): T {
-        if (this.isOk()) {
+        if (this.is_ok()) {
             return this.#ok as T;
         }
 
-        if (this.isErr()) {
+        if (this.is_err()) {
             throw this.#err as E;
         }
 
@@ -28,11 +28,11 @@ class Result<T, E extends Error> {
     }
 
     expect(msg: string): T {
-        if (this.isOk()) {
+        if (this.is_ok()) {
             return this.#ok as T;
         }
 
-        if (this.isErr()) {
+        if (this.is_err()) {
             const err = this.#err as E;
             err.message = `${msg}: \n${err.message}`;
             throw err.message;
@@ -41,24 +41,28 @@ class Result<T, E extends Error> {
         throw new Error(msg);
     }
 
-    isOk(): this is Result<T, never> {
+    is_ok(): this is Result<T, never> {
         return this.#ok !== null;
     }
 
-    isErr(): this is Result<never, E> {
+    value(): this extends Result<T, never> ? T : T | null {
+        return this.#ok as T;
+    }
+
+    is_err(): this is Result<never, E> {
         return this.#err !== null;
     }
 
-    getErr(): this extends Result<never, E> ? E : E | null {
+    get_err(): this extends Result<never, E> ? E : E | null {
         return this.#err as E;
     }
 
     toString(): string {
-        if (this.isOk()) {
+        if (this.is_ok()) {
             return `Ok: ${this.#ok}`;
         }
 
-        if (this.isErr()) {
+        if (this.is_err()) {
             return `Err: ${this.#err}`;
         }
 
@@ -66,11 +70,11 @@ class Result<T, E extends Error> {
     }
 
     toJSON(): unknown {
-        if (this.isOk()) {
+        if (this.is_ok()) {
             return { type: "Ok", value: this.#ok };
         }
 
-        if (this.isErr()) {
+        if (this.is_err()) {
             return { type: "Err", value: `${this.#err}` };
         }
 
