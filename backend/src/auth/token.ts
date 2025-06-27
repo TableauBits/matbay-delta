@@ -67,4 +67,4 @@ const token_dev_router = Router();
 
 token_dev_router.post("/validate", validate);
 
-export { token_dev_router };
+export { token_dev_router, validate_token };
