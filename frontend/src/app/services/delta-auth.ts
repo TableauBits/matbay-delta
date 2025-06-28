@@ -1,5 +1,6 @@
-import { DOCUMENT, inject, Injectable } from '@angular/core';
 import { AuthService, IdToken } from '@auth0/auth0-angular';
+import { DOCUMENT, Injectable, inject } from '@angular/core';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -8,9 +9,8 @@ export class DeltaAuth {
   username = "";
   private IdToken: IdToken | undefined;
 
-  // Constructor injects
-  private auth: AuthService = inject(AuthService);
-  private document: Document = inject(DOCUMENT);
+  private auth = inject(AuthService);
+  private document = inject(DOCUMENT);
 
   constructor() {
     this.auth.idTokenClaims$.subscribe((claims) => {
