@@ -23,6 +23,8 @@ export class DeltaAuth {
     this.auth.user$.subscribe((user) => {
       if (user?.name) this.username = user.name;
     });
+
+    console.log(environment.name, "environment loaded");
   }
 
   onConnect(): void {
