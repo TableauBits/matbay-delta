@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { DeltaAuth } from './services/delta-auth';
 
 @Component({
@@ -10,6 +10,5 @@ import { DeltaAuth } from './services/delta-auth';
 })
 export class App {
   protected title = 'MATBay Δ';
-
-  constructor(public deltaAuth: DeltaAuth) {}
+  deltaAuth: DeltaAuth = inject(DeltaAuth);
 }
