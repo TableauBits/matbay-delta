@@ -31,7 +31,7 @@ export class DeltaAuth {
 
   onConnect(): void {
     if (this.IdToken) {
-      this.http.get("http://localhost:3000/dev/auth/check", {
+      this.http.get(`${environment.server.url}/dev/auth/check`, {
         headers: {
           "delta-auth": this.IdToken.__raw
         }
