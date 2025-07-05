@@ -1,4 +1,5 @@
 import { type NextFunction, type Request, type Response, Router } from "express";
+import { Ok } from "../result";
 import { checkNil } from "../utils";
 import { tokenDevRouter, validateToken } from "./token";
 
@@ -21,7 +22,8 @@ async function ensureAuthMiddleware(req: Request, res: Response, next: NextFunct
 }
 
 async function checkAuth(_req: Request, res: Response) {
-    res.sendStatus(200);
+    res.statusCode = 200;
+    res.send(Ok("Authentication valid"));
 }
 
 const authApiRouter = Router();
