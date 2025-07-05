@@ -15,9 +15,7 @@
             "extensions": [
                 "aaron-bond.better-comments",
                 "angular.ng-template",
-                "cyrilletuzi.angular-schematics",
-                "ms-vsliveshare.vsliveshare",
-                "oven.bun-vscode"
+                "ms-vsliveshare.vsliveshare"
             ]
         }
     }

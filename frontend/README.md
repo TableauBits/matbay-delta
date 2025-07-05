@@ -17,6 +17,8 @@ bun install
 bun start
 ```
 
+To run the app as in a production stage, you can add `--configuration production`.
+
 ### Linting code
 Linting handled by [Eslint](https://eslint.org).
 ```
