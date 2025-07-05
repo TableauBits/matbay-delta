@@ -1,6 +1,7 @@
 import { AuthService, IdToken } from '@auth0/auth0-angular';
 import { DOCUMENT, Injectable, inject } from '@angular/core';
 import { environment } from '../../environments/environment';
+import { HttpClient } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root'
@@ -11,6 +12,7 @@ export class DeltaAuth {
 
   private auth = inject(AuthService);
   private document = inject(DOCUMENT);
+  private http = inject(HttpClient)
 
   constructor() {
     this.auth.idTokenClaims$.subscribe((claims) => {
@@ -28,9 +30,20 @@ export class DeltaAuth {
   }
 
   onConnect(): void {
-    // TODO : try the token with sending a request to the backend
     if (this.IdToken) {
-      console.log("Connected with ID Token:", this.IdToken);
+      this.http.get("http://localhost:3000/dev/auth/check", {
+        headers: {
+          "delta-auth": this.IdToken.__raw
+        }
+      })
+      .subscribe({
+        next: (response) => {
+          console.log("Authentication check response:", response);
+        },
+        error: (error) => {
+          console.error("Authentication check error:", error);
+        }
+      });
     } else {
       console.log("No ID Token available.");
     }
