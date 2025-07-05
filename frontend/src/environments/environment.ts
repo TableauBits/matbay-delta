@@ -4,7 +4,7 @@ export const environment = {
     domain: "YOUR_AUTH0_DOMAIN",
     client: "YOUR_AUTH0_CLIENT_ID",
   },
-    server: {
+  server: {
     url: "YOUR_SERVER_URL",
   }
 }

@@ -1,7 +1,7 @@
 import { AuthService, IdToken } from '@auth0/auth0-angular';
 import { DOCUMENT, Injectable, inject } from '@angular/core';
-import { environment } from '../../environments/environment';
 import { HttpClient } from '@angular/common/http';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
