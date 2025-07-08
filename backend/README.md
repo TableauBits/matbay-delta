@@ -4,13 +4,16 @@ MATBay delta's backend uses [bun](https://bun.sh/) as its runtime to simplify ty
 
 ## Usage
 ### Install dependencies
-
 ```bash
 bun install
 ```
 
-### Run in dev mode
+### Configure environment variables
+This backend needs some configuration to know how to interact with the frontend and to change its own behaviour.
+To this end, copy the template file `.env.template` and rename it `.env`.
+From there, read through the comments in the file to tweak each variable's value appropriately.
 
+### Run in dev mode
 ```bash
 bun start
 ```
