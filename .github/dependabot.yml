@@ -5,4 +5,8 @@ updates:
       - "/frontend"
       - "/backend"
     schedule:
-      interval: "weekly"
+      interval: "monthly"
+    groups:
+      angular:
+        patterns:
+          - "@angular*" 
