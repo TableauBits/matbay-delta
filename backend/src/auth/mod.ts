@@ -1,35 +1,32 @@
-import { type NextFunction, type Request, type Response, Router } from "express";
-import { Ok } from "../result";
+import Elysia, { type Context } from "elysia";
 import { checkNil } from "../utils";
 import { tokenDevRouter, validateToken } from "./token";
 
-async function ensureAuthMiddleware(req: Request, res: Response, next: NextFunction) {
-    const result = checkNil(req.header("delta-auth"), "no token found in headers");
+async function ensureAuth(ctx: Context) {
+    const { status, headers } = ctx;
+    const result = checkNil(headers["delta-auth"], "no token found in headers");
     if (result.isErr()) {
-        res.statusCode = 401;
-        res.send(result);
-        return;
+        return status(401, result.getErr());
     }
 
     const validation = await validateToken(result.unwrap());
     if (validation.isErr()) {
-        res.statusCode = 401;
-        res.send(validation);
-        return;
+        return status(401, validation.getErr());
     }
 
-    next();
+    return;
 }
 
-async function checkAuth(_req: Request, res: Response) {
-    res.statusCode = 200;
-    res.send(Ok("Authentication valid"));
+async function checkAuth() {
+    return {};
 }
 
-const authApiRouter = Router();
-const authDevRouter = Router();
+const authApiRouter = new Elysia({ prefix: "/auth" });
+const authDevRouter = new Elysia({ prefix: "/auth" });
 
-authDevRouter.use("/token", tokenDevRouter);
-authDevRouter.use("/check", ensureAuthMiddleware, checkAuth);
+authDevRouter.use(tokenDevRouter);
+authDevRouter.get("/check", checkAuth, {
+    beforeHandle: ensureAuth,
+});
 
 export { authApiRouter, authDevRouter };

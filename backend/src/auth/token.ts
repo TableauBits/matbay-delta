@@ -1,5 +1,5 @@
 import consola from "consola";
-import { type Request, type Response, Router } from "express";
+import Elysia, { t } from "elysia";
 import { decode, type Jwt, type JwtHeader, verify } from "jsonwebtoken";
 import { JwksClient } from "jwks-rsa";
 import { asyncToResult, catchToResult, Err, Ok, type Result } from "../result";
@@ -52,19 +52,10 @@ async function validateToken(token: string): Promise<Result<Jwt, Error>> {
     return catchToResult(() => verify(token, publicKey, { complete: true }));
 }
 
-async function validate(req: Request, res: Response) {
-    const token = checkNil(req.body?.token, "no token provided");
-    if (token.isErr()) {
-        res.send(token);
-        return;
-    }
+const tokenDevRouter = new Elysia({ prefix: "/token" });
 
-    const result = await validateToken(token.value());
-    res.send(result);
-}
-
-const tokenDevRouter = Router();
-
-tokenDevRouter.post("/validate", validate);
+tokenDevRouter.post("/validate", async ({ body: { token } }) => await validateToken(token), {
+    body: t.Object({ token: t.String() }),
+});
 
 export { tokenDevRouter, validateToken };

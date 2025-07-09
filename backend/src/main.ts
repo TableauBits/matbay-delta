@@ -2,21 +2,23 @@ import * as dotenv from "dotenv";
 
 dotenv.config();
 
+import cors from "@elysiajs/cors";
+import swagger from "@elysiajs/swagger";
 import consola from "consola";
-import cors from "cors";
-import express from "express";
+import Elysia from "elysia";
+
 import { apiRouter, devRouter } from "./routing";
 
 const isDebug = process.env["ENVIRONMENT"] === "DEBUG";
 const port = parseInt(process.env["PORT"] || "3000");
-const listenIp = "0.0.0.0";
 
-const app = express().use(cors()).use(express.json());
+const app = new Elysia();
+app.use(swagger()).use(cors());
 
-app.use("/api", apiRouter);
+app.use(apiRouter);
 if (isDebug) {
     consola.warn('development mode enabled, testing endpoints are available on "/dev"');
-    app.use("/dev", devRouter);
+    app.use(devRouter);
 }
 
-app.listen(port, listenIp, () => consola.info(`server listening on ${listenIp}:${port}`));
+app.listen(port, () => consola.info(`server listening on port ${port}`));

@@ -1,10 +1,10 @@
-import { Router } from "express";
+import Elysia from "elysia";
 import { authApiRouter, authDevRouter } from "./auth/mod";
 
-const apiRouter = Router();
-const devRouter = Router();
+const apiRouter = new Elysia({ prefix: "/api" });
+const devRouter = new Elysia({ prefix: "/dev" });
 
-apiRouter.use("/auth", authApiRouter);
-devRouter.use("/auth", authDevRouter);
+apiRouter.use(authApiRouter);
+devRouter.use(authDevRouter);
 
 export { apiRouter, devRouter };
