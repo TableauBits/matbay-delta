@@ -54,7 +54,7 @@ async function validateToken(token: string): Promise<Result<Jwt, Error>> {
 
 const tokenDevRouter = new Elysia({ prefix: "/token" });
 
-tokenDevRouter.post("/validate", async ({ body: { token } }) => await validateToken(token), {
+tokenDevRouter.post("/validate", async ({ body: { token } }) => (await validateToken(token)).toJSON(), {
     body: t.Object({ token: t.String() }),
 });
 
