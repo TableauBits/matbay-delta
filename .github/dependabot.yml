@@ -1,0 +1,8 @@
+version: 2
+updates:
+  - package-ecosystem: "bun"
+    directories:
+      - "/frontend"
+      - "/backend"
+    schedule:
+      interval: "weekly"
