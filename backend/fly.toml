@@ -20,3 +20,7 @@ primary_region = 'yyz'
   memory = '512mb'
   cpu_kind = 'shared'
   cpus = 1
+
+[mounts]
+  source="sqlite_db"
+  destination="/mnt/sqlite_db"
