@@ -1,1 +1,4 @@
 .vscode
+
+# local db files
+*.db

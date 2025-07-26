@@ -20,12 +20,6 @@ if (isDebug) {
 }
 
 // drizzle test
-import { checkNil } from "./utils";
-const dbURL = checkNil(
-    process.env["DATABASE_URL"],
-    "environment variable DATABASE_URL not found but is mandatory, check `.env.template`",
-).unwrap();
-
 import { drizzle } from 'drizzle-orm/bun-sqlite';
 import { migrate } from 'drizzle-orm/bun-sqlite/migrator';
 
@@ -33,9 +27,11 @@ import { eq } from 'drizzle-orm';
 import { usersTable } from './db/schema';
 import { Database } from 'bun:sqlite';
 
+import { dbURL } from "./db/mod";
+
 const sqlite = new Database(dbURL);
 const db = drizzle({ client: sqlite, logger: true});
-await migrate(db, { migrationsFolder: "./drizzle" });
+migrate(db, { migrationsFolder: "./drizzle" });
 
 async function main() {
   const user: typeof usersTable.$inferInsert = {
