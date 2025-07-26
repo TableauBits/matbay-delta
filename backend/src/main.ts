@@ -19,4 +19,46 @@ if (isDebug) {
     app.use("/dev", devRouter);
 }
 
+// drizzle test
+import { checkNil } from "./utils";
+const dbURL = checkNil(
+    process.env["DATABASE_URL"],
+    "environment variable DATABASE_URL not found but is mandatory, check `.env.template`",
+).unwrap();
+
+import { drizzle } from 'drizzle-orm/bun-sqlite';
+import { migrate } from 'drizzle-orm/bun-sqlite/migrator';
+
+import { eq } from 'drizzle-orm';
+import { usersTable } from './db/schema';
+import { Database } from 'bun:sqlite';
+
+const sqlite = new Database(dbURL);
+const db = drizzle({ client: sqlite, logger: true});
+await migrate(db, { migrationsFolder: "./drizzle" });
+
+async function main() {
+  const user: typeof usersTable.$inferInsert = {
+    discordHandle: 'John',
+    // age: 30,
+    // email: 'john@example.com',
+  };
+  await db.insert(usersTable).values(user);
+  consola.log('New user created!')
+  const users = await db.select().from(usersTable);
+  consola.log('Getting all users from the database: ', users)
+  await db
+    .update(usersTable)
+    .set({
+      discordHandle: "ahokcool",
+    })
+    .where(eq(usersTable.discordHandle, user.discordHandle));
+  consola.log('User info updated!')
+  await db.delete(usersTable).where(eq(usersTable.discordHandle, "ahokcool"));
+  consola.log('User deleted!')
+}
+main();
+
+// end drizzle test
+
 app.listen(port, listenIp, () => consola.info(`server listening on ${listenIp}:${port}`));
