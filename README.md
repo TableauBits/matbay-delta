@@ -6,7 +6,7 @@ Developement just started and is still in the prototyping phase.
 
 ## Project structure
 
-* `backend`, contains the code for the backend. 
-* `frontend`, contains the code for the frontend.
+* `backend`, contains the code for the Express backend. 
+* `frontend`, contains the code for the Angular frontend.
 
 Check the `README.md` in each directory for more information.
