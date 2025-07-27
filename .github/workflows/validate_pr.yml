@@ -23,4 +23,4 @@ jobs:
           cd frontend
           bun install
           bun lint
-          bun run build
+          bun run build --configuration template
