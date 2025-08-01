@@ -39,13 +39,13 @@ Currently, this backend is configured to use `SQLite` through the [Drizzle ORM](
 bun x drizzle-kit generate
 ```
 
-These migrations are applied automatically when the server starts, and drizzle keeps track of which migration has already been applied to only apply the necessay ones while conserving the database contents. **For this reason, you should consider the contents of the `drizzle` folder holy and never edit it manually**. It should also **always be commited in the VCS**. In case you want to "undo" a migration, use
+These migrations are applied automatically when the server starts, and drizzle keeps track of which migration has already been applied to only apply the necessay ones while conserving the database contents. **For this reason, you should consider the contents of the `drizzle` folder holy and never edit it manually, only interact with it through the CLI**. It should also **always be commited in the VCS**. In case you want to "undo" a migration, use
 ```bash
 bun x drizzle-kit down
 
 ```
 
-but note that this will not "delete" the previous migration and instead add a new migration that will revert the previous one. Commitmigrations carefully only after thorough testing, as a faulty migration (i.e. removing a primary key column) will require manual intervention to fix.
+but note that this will not "delete" the previous migration and instead add a new migration that will revert the previous one. Commit migrations carefully only after thorough testing, as a faulty migration (i.e. removing a primary key column) will require manual intervention to fix.
 
 For testing migrations locally, you can use
 ```bash
