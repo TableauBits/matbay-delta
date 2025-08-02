@@ -7,7 +7,7 @@ import { checkNil, isNil } from "../utils";
 
 const jwksUri = checkNil(
     process.env["JWKS_URI"],
-    "environment variable JKWS_URI not found but is mandatory, check `.env.template`",
+    "environment variable JWKS_URI not found but is mandatory, check `.env.template`",
 ).unwrap();
 consola.info(`JWK will be fetched from ${jwksUri}`);
 

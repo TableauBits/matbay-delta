@@ -19,6 +19,7 @@
         "consola": "^3.4.2",
         "cors": "^2.8.5",
         "dotenv": "^17.2.0",
+        "drizzle-orm": "^0.44.3",
         "express": "^5.1.0",
         "i": "^0.3.7",
         "jsonwebtoken": "^9.0.2",
@@ -29,6 +30,7 @@
         "@types/cors": "^2.8.19",
         "@types/dotenv": "^8.2.3",
         "@types/express": "^5.0.3",
-        "@types/jsonwebtoken": "^9.0.10"
+        "@types/jsonwebtoken": "^9.0.10",
+        "drizzle-kit": "^0.31.4"
     }
 }
