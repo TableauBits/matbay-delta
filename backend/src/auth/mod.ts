@@ -1,20 +1,24 @@
 import { type NextFunction, type Request, type Response, Router } from "express";
-import { Ok } from "../result";
-import { checkNil } from "../utils";
+import { Ok, Option } from "oxide.ts";
+
+import { HttpError, HttpStatus, sendResult } from "../utils";
 import { tokenDevRouter, validateToken } from "./token";
 
 async function ensureAuthMiddleware(req: Request, res: Response, next: NextFunction) {
-    const result = checkNil(req.header("delta-auth"), "no token found in headers");
+    const result = Option(req.header("delta-auth")).okOr(
+        new HttpError(HttpStatus.Unauthorized, "no token found in headers"),
+    );
     if (result.isErr()) {
-        res.statusCode = 401;
-        res.send(result);
+        sendResult(result, res);
         return;
     }
 
     const validation = await validateToken(result.unwrap());
     if (validation.isErr()) {
-        res.statusCode = 401;
-        res.send(validation);
+        const error = validation.mapErr(
+            (err) => new HttpError(HttpStatus.Unauthorized, `failed to authenticate: ${err.message}`),
+        );
+        sendResult(error, res);
         return;
     }
 
@@ -22,8 +26,7 @@ async function ensureAuthMiddleware(req: Request, res: Response, next: NextFunct
 }
 
 async function checkAuth(_req: Request, res: Response) {
-    res.statusCode = 200;
-    res.send(Ok("Authentication valid"));
+    sendResult(Ok("Authentication valid"), res);
 }
 
 const authApiRouter = Router();
