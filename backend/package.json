@@ -19,7 +19,7 @@
         "consola": "^3.4.2",
         "cors": "^2.8.5",
         "dotenv": "^17.2.1",
-        "drizzle-orm": "^0.44.3",
+        "drizzle-orm": "^0.44.4",
         "express": "^5.1.0",
         "i": "^0.3.7",
         "jsonwebtoken": "^9.0.2",
