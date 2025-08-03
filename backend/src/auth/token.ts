@@ -1,6 +1,6 @@
 import consola from "consola";
 import { type Request, type Response, Router } from "express";
-import { decode, type Jwt, type JwtHeader, verify } from "jsonwebtoken";
+import { decode, type JwtHeader, type JwtPayload, verify } from "jsonwebtoken";
 import { JwksClient } from "jwks-rsa";
 import { Err, Ok, Option, Result } from "oxide.ts";
 import { HttpError, HttpStatus, sendResult } from "../utils";
@@ -28,7 +28,7 @@ async function getKey(header: JwtHeader): Promise<Result<string, Error>> {
     return Ok(signingKey);
 }
 
-async function validateToken(token: string): Promise<Result<Jwt, Error>> {
+async function validateToken(token: string): Promise<Result<JwtPayload, Error>> {
     const decodeResult = Option(decode(token, { complete: true }));
     if (decodeResult.isNone()) {
         return Err(Error("could not extract header from token"));
@@ -48,9 +48,9 @@ async function validateToken(token: string): Promise<Result<Jwt, Error>> {
     }
 
     const publicKey = result.unwrap();
-    return Result.safe(() => verify(token, publicKey, { complete: true })).mapErr((err) =>
-        Error(`failed to verify token: ${err.message}`),
-    );
+    return Result.safe(() => verify(token, publicKey, { complete: true }))
+        .map((jwt) => jwt.payload as JwtPayload)
+        .mapErr((err) => Error(`failed to verify token: ${err.message}`));
 }
 
 async function validate(req: Request, res: Response) {
@@ -61,7 +61,7 @@ async function validate(req: Request, res: Response) {
     }
 
     const result = (await validateToken(token.unwrap())).mapErr(
-        (err) => new HttpError(HttpStatus.UnprocessableContent, `failed to validate token: ${err.message}`),
+        (err) => new HttpError(HttpStatus.UnprocessableContent, `${err.message}`),
     );
     sendResult(result, res);
 }

@@ -7,6 +7,8 @@ export enum HttpStatus {
     BadRequest = 400,
     Unauthorized = 401,
     UnprocessableContent = 422,
+
+    InternalError = 500,
 }
 
 export class HttpError extends Error {
