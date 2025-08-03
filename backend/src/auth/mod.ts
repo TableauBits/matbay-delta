@@ -40,9 +40,9 @@ async function ensureAuthMiddleware(req: Request, res: Response, next: NextFunct
         const newUser: User = {
             id: "",
             authID,
-            username: authID,
+            username: validation.unwrap()["nickname"] ?? authID,
             description: "",
-            imageURL: "",
+            imageURL: validation.unwrap()["picture"] ?? "",
             joinDate: new Date().toISOString(),
         };
         await createUser(newUser);
