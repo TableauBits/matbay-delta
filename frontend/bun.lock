@@ -25,7 +25,7 @@
         "@types/jasmine": "~5.1.0",
         "angular-eslint": "20.1.1",
         "eslint": "^9.29.0",
-        "jasmine-core": "~5.7.0",
+        "jasmine-core": "~5.9.0",
         "karma": "~6.4.0",
         "karma-chrome-launcher": "~3.2.0",
         "karma-coverage": "~2.2.0",
@@ -851,7 +851,7 @@
 
     "jackspeak": ["jackspeak@3.4.3", "", { "dependencies": { "@isaacs/cliui": "^8.0.2" }, "optionalDependencies": { "@pkgjs/parseargs": "^0.11.0" } }, "sha512-OGlZQpz2yfahA/Rd1Y8Cd9SIEsqvXkLVoSw/cgwhnhFMDbsQFeZYoJJ7bIZBS9BcamUW96asq/npPWugM+RQBw=="],
 
-    "jasmine-core": ["jasmine-core@5.7.1", "", {}, "sha512-QnurrtpKsPoixxG2R3d1xP0St/2kcX5oTZyDyQJMY+Vzi/HUlu1kGm+2V8Tz+9lV991leB1l0xcsyz40s9xOOw=="],
+    "jasmine-core": ["jasmine-core@5.9.0", "", {}, "sha512-OMUvF1iI6+gSRYOhMrH4QYothVLN9C3EJ6wm4g7zLJlnaTl8zbaPOr0bTw70l7QxkoM7sVFOWo83u9B2Fe2Zng=="],
 
     "jest-worker": ["jest-worker@27.5.1", "", { "dependencies": { "@types/node": "*", "merge-stream": "^2.0.0", "supports-color": "^8.0.0" } }, "sha512-7vuh85V5cdDofPyxn58nrPjBktZo0u9x1g8WtjQol+jZDaE+fhN+cIvTj11GndBnMnyfrUOG1sZQxCdjKh+DKg=="],
 
