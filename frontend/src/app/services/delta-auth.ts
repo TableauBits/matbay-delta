@@ -34,16 +34,17 @@ export class DeltaAuth {
       this.http.get(`${environment.server.url}/dev/auth/check`, {
         headers: {
           "delta-auth": this.IdToken.__raw
-        }
-      })
-      .subscribe({
-        next: (response) => {
-          console.log("Authentication check response:", response);
         },
-        error: (error) => {
-          console.error("Authentication check error:", error);
-        }
-      });
+        responseType: "text"
+      })
+        .subscribe({
+          next: (response) => {
+            console.log("Authentication check response:", response);
+          },
+          error: (error) => {
+            console.error("Authentication check error:", error);
+          }
+        });
     } else {
       console.log("No ID Token available.");
     }
