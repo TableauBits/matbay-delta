@@ -12,8 +12,6 @@ const sqlite = new Database(dbURL);
 const db = drizzle({ client: sqlite, logger: true });
 migrate(db, { migrationsFolder: "./drizzle" });
 
-export { db };
-
 async function dump(_: Request, res: Response) {
     res.sendFile(dbURL);
 }
@@ -23,4 +21,4 @@ const dbDevRouter = Router();
 
 dbApiRouter.get("/dump", dump);
 
-export { dbApiRouter, dbDevRouter };
+export { db, dbApiRouter, dbDevRouter };
