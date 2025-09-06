@@ -114,4 +114,4 @@ authDevRouter.use("/token", tokenDevRouter);
 authDevRouter.use("/check", ensureAuthMiddleware, checkAuth);
 authDevRouter.use("/register", registerAccount);
 
-export { authApiRouter, authDevRouter };
+export { authApiRouter, authDevRouter, ensureAuthMiddleware };
