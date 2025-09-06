@@ -1,15 +1,16 @@
 import { AuthService, IdToken } from '@auth0/auth0-angular';
 import { DOCUMENT, Injectable, inject } from '@angular/core';
-import { ErrorCode } from "../../../../common/error";
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environments/environment';
+import { BehaviorSubject, firstValueFrom, ReplaySubject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class DeltaAuth {
-  username = "";
-  private IdToken: IdToken | undefined;
+  idToken$: ReplaySubject<IdToken> = new ReplaySubject<IdToken>(1);
+  uid$: ReplaySubject<string> = new ReplaySubject<string>(1);
+  isAuthenticated$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
   private auth = inject(AuthService);
   private document = inject(DOCUMENT);
@@ -17,64 +18,48 @@ export class DeltaAuth {
 
   constructor() {
     this.auth.idTokenClaims$.subscribe((claims) => {
-      if (claims) {
-        this.IdToken = claims;
-        this.onConnect();
-      }
+      if (claims) this.onConnect(claims);
     })
-
-    this.auth.user$.subscribe((user) => {
-      if (user?.name) this.username = user.name;
-    });
-
-    console.log(environment.name, "environment loaded");
   }
 
-  onConnect(): void {
-    if (this.IdToken) {
-      this.http.get(`${environment.server.url}/dev/auth/check`, {
-        headers: {
-          "delta-auth": this.IdToken.__raw
+  onConnect(claims: IdToken): void {
+    this.http.get(`${environment.server.url}/api/auth/login`, {
+      headers: {
+        "delta-auth": claims.__raw
+      },
+      responseType: "text"
+    })
+      .subscribe({
+        next: (response) => {
+          this.succesfullLoginResponse(claims, response)
         },
-        responseType: "text"
-      })
-        .subscribe({
-          next: (response) => {
-            console.log("Authentication check response:", response);
-          },
-          error: (error) => {
-            console.error("Authentication check error:", error);
+        error: (error) => console.error(error)
+      });
+  }
 
-            if (error.error === ErrorCode.UNKNOWN_DELTA_ACCOUNT) {
-              // Register the user in case of the first login
-              if (this.IdToken)
-                this.http.get(`${environment.server.url}/dev/auth/register`, {
-                  headers: {
-                    "delta-auth": this.IdToken.__raw
-                  },
-                  responseType: "text"
-                }).subscribe({
-                  next: (response) => console.log(response)
-                  ,
-                  error: (error) => console.log(error)
-                })
-            }
-          }
-        });
-    } else {
-      console.log("No ID Token available.");
-    }
+  succesfullLoginResponse(claims: IdToken, response: string) {
+    this.idToken$.next(claims);
+    this.uid$.next(response);
+    this.isAuthenticated$.next(true);
   }
 
   isAuthenticated() {
     return this.auth.isAuthenticated$;
   }
 
-  login() {
+  login(): void {
     this.auth.loginWithRedirect();
   }
 
-  logout() {
+  logout(): void {
     this.auth.logout({ logoutParams: { returnTo: this.document.location.origin } });
+  }
+
+  getIdToken(): Promise<IdToken> {
+    return firstValueFrom(this.idToken$.asObservable());
+  }
+
+  getUid(): Promise<string> {
+    return firstValueFrom(this.uid$.asObservable());
   }
 }

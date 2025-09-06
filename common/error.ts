@@ -1,3 +1,0 @@
-export enum ErrorCode {
-    UNKNOWN_DELTA_ACCOUNT = "UNKNOWN_DELTA_ACCOUNT"
-}

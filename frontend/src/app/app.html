@@ -1,9 +1,10 @@
 <h1> Welcome to {{ title }} </h1>
 
 @if(deltaAuth.isAuthenticated() | async) {
-  Hello {{deltaAuth.username}}, You have been authenticated by Auth0. <br>
-  <button (click)="deltaAuth.logout()"> Log out </button>
+Hello {{users.currentUser?.username}}, you have been authenticated by Auth0 and the Δ server. <br>
+<img [src]="users.currentUser?.imageURL">
+<button (click)="deltaAuth.logout()"> Log out </button>
 } @else {
-  Please log in with your TableauBits account to access the app. <br>
-  <button (click)="deltaAuth.login()">Log in</button>
+Please log in with your TableauBits account to access the app. <br>
+<button (click)="deltaAuth.login()"> Log in </button>
 }
