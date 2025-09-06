@@ -1,15 +1,36 @@
-import { Err, Ok, type Result } from "./result";
+import type { Response } from "express";
+import { match, type Result } from "oxide.ts";
 
-function isNil(value: unknown): value is null | undefined {
-    return value == null;
+export enum HttpStatus {
+    Ok = 200,
+
+    BadRequest = 400,
+    Unauthorized = 401,
+    UnprocessableContent = 422,
+
+    InternalError = 500,
 }
 
-function checkNil<T>(value: T | null | undefined, error: string): Result<T, Error> {
-    if (isNil(value)) {
-        return Err(error);
+export class HttpError extends Error {
+    constructor(
+        public statusCode: number,
+        message: string,
+    ) {
+        super(message);
     }
-
-    return Ok(value);
 }
 
-export { isNil, checkNil };
+export function sendResult<T, E extends HttpError>(result: Result<T, E>, res: Response) {
+    /** biome-ignore-start lint/style/useNamingConvention: Ok and Err here are coming from oxide.ts */
+    match(result, {
+        Ok: (val) => {
+            res.status(200);
+            res.send(val);
+        },
+        Err: (err) => {
+            res.status(err.statusCode);
+            res.send(err.message);
+        },
+    });
+    /** biome-ignore-end lint/style/useNamingConvention: Ok and Err here are coming from oxide.ts */
+}

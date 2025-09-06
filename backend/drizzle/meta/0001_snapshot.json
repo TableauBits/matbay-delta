@@ -1,28 +1,64 @@
 {
   "version": "6",
   "dialect": "sqlite",
-  "id": "74349d76-197f-4f5d-b78d-3e58870deea5",
-  "prevId": "4706536e-fb0c-481e-9c46-7a394f1a7166",
+  "id": "f23e9d3e-979d-486e-a36f-c4bb3dd990d6",
+  "prevId": "06ccff0f-e602-4011-9172-e73ee899ba4d",
   "tables": {
-    "users_table": {
-      "name": "users_table",
+    "users": {
+      "name": "users",
       "columns": {
         "id": {
           "name": "id",
-          "type": "integer",
+          "type": "text",
           "primaryKey": true,
           "notNull": true,
-          "autoincrement": true
+          "autoincrement": false
         },
-        "name": {
-          "name": "name",
+        "authID": {
+          "name": "authID",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "username": {
+          "name": "username",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "imageURL": {
+          "name": "imageURL",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "joinDate": {
+          "name": "joinDate",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "description": {
+          "name": "description",
           "type": "text",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         }
       },
-      "indexes": {},
+      "indexes": {
+        "authID_idx": {
+          "name": "authID_idx",
+          "columns": [
+            "authID"
+          ],
+          "isUnique": true
+        }
+      },
       "foreignKeys": {},
       "compositePrimaryKeys": {},
       "uniqueConstraints": {},

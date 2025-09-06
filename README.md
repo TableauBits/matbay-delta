@@ -6,7 +6,8 @@ Developement just started and is still in the prototyping phase.
 
 ## Project structure
 
-* `backend`, contains the code for the Express backend. 
+* `backend`, contains the code for the Express backend.
+* `common`, contains the shared code between the frontend and the backend.
 * `frontend`, contains the code for the Angular frontend.
 
 Check the `README.md` in each directory for more information.
