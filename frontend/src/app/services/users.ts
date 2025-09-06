@@ -1,8 +1,8 @@
-import { inject, Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
+import { DeltaAuth } from './delta-auth';
 import { HttpRequests } from './http-requests';
 
 import { User } from '../../../../common/user'
-import { DeltaAuth } from './delta-auth';
 
 @Injectable({
   providedIn: 'root'
@@ -10,7 +10,7 @@ import { DeltaAuth } from './delta-auth';
 export class Users {
   private httpRequests = inject(HttpRequests);
   private deltaAuth = inject(DeltaAuth);
-  private users: Map<string, User> = new Map();
+  private users = new Map<string, User>();
   currentUser: User | undefined;
 
   constructor() {

@@ -2,7 +2,7 @@
 
 @if(deltaAuth.isAuthenticated() | async) {
 Hello {{users.currentUser?.username}}, you have been authenticated by Auth0 and the Δ server. <br>
-<img [src]="users.currentUser?.imageURL">
+<img [src]="users.currentUser?.imageURL" alt="photo de profil de {{users.currentUser?.username}}">
 <button (click)="deltaAuth.logout()"> Log out </button>
 } @else {
 Please log in with your TableauBits account to access the app. <br>
