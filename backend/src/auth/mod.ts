@@ -5,6 +5,8 @@ import { createUser, getUserFromAuth, type User } from "../user/mod";
 import { HttpError, HttpStatus, sendResult } from "../utils";
 import { tokenDevRouter, validateToken } from "./token";
 
+import { ErrorCode } from "../../../common/error"
+
 async function ensureAuthMiddleware(req: Request, res: Response, next: NextFunction) {
     const headerFetch = Option(req.header("delta-auth")).okOr(
         new HttpError(HttpStatus.Unauthorized, "no token found in headers"),
@@ -41,7 +43,8 @@ async function ensureAuthMiddleware(req: Request, res: Response, next: NextFunct
             Err(
                 new HttpError(
                     HttpStatus.Unauthorized,
-                    "auth token seems valid but account is unknown, finish registration using the appropriate endpoint",
+                    ErrorCode.UNKNOWN_DELTA_ACCOUNT
+                    // "failed to authenticate: the decoded jwt does not provided the necessary 'aud' claim",
                 ),
             ),
             res,
@@ -102,7 +105,7 @@ async function registerAccount(req: Request, res: Response) {
     };
 
     await createUser(newUser);
-    sendResult(Ok("registration complete"), res);
+    sendResult(Ok(`registration of ${newUser.username} completed`), res);
 }
 
 const authApiRouter = Router();

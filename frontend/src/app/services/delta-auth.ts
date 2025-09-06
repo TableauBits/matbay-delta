@@ -3,6 +3,8 @@ import { DOCUMENT, Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environments/environment';
 
+import { ErrorCode } from "../../../../common/error"
+
 @Injectable({
   providedIn: 'root'
 })
@@ -43,6 +45,21 @@ export class DeltaAuth {
           },
           error: (error) => {
             console.error("Authentication check error:", error);
+
+            if (error.error === ErrorCode.UNKNOWN_DELTA_ACCOUNT) {
+              // Register the user in case of the first login
+              if (this.IdToken)
+                this.http.get(`${environment.server.url}/dev/auth/register`, {
+                  headers: {
+                    "delta-auth": this.IdToken.__raw
+                  },
+                  responseType: "text"
+                }).subscribe({
+                  next: (response) => console.log(response)
+                  ,
+                  error: (error) => console.log(error)
+                })
+            }
           }
         });
     } else {
