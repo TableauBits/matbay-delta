@@ -44,7 +44,6 @@ async function ensureAuthMiddleware(req: Request, res: Response, next: NextFunct
                 new HttpError(
                     HttpStatus.Unauthorized,
                     ErrorCode.UNKNOWN_DELTA_ACCOUNT
-                    // "failed to authenticate: the decoded jwt does not provided the necessary 'aud' claim",
                 ),
             ),
             res,

@@ -1,9 +1,8 @@
 import { AuthService, IdToken } from '@auth0/auth0-angular';
 import { DOCUMENT, Injectable, inject } from '@angular/core';
+import { ErrorCode } from "../../../../common/error";
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environments/environment';
-
-import { ErrorCode } from "../../../../common/error"
 
 @Injectable({
   providedIn: 'root'
