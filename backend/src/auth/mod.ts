@@ -41,7 +41,7 @@ async function ensureAuthMiddleware(req: Request, res: Response, next: NextFunct
             Err(
                 new HttpError(
                     HttpStatus.Unauthorized,
-                    "account is valid but not registered, call the login endpoint first"
+                    "account is valid but not registered, call the login endpoint first",
                 ),
             ),
             res,

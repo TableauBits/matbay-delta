@@ -1,12 +1,11 @@
 import { eq } from "drizzle-orm";
+import { type Request, type Response, Router } from "express";
 import { None, Option, Some } from "oxide.ts";
 import { v4 as uuidv4 } from "uuid";
-
-import { db } from "../db/mod";
-import { usersTable } from "./schema";
-import { Router, type Request, type Response } from "express";
 import { ensureAuthMiddleware } from "../auth/mod";
+import { db } from "../db/mod";
 import { HttpError, HttpStatus, sendResult } from "../utils";
+import { usersTable } from "./schema";
 
 export type User = typeof usersTable.$inferInsert;
 
@@ -41,7 +40,9 @@ async function get(req: Request, res: Response) {
         return;
     }
 
-    const user = (await getUser(uid.unwrap())).okOr(new HttpError(HttpStatus.NotFound, "no user found with the specified uid"))
+    const user = (await getUser(uid.unwrap())).okOr(
+        new HttpError(HttpStatus.NotFound, "no user found with the specified uid"),
+    );
     sendResult(user, res);
 }
 
