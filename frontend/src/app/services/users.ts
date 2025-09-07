@@ -15,18 +15,23 @@ export class Users {
 
   constructor() {
     this.deltaAuth.getUid().then((uid) => {
-      return this.getUser(uid)
+      return this.getUser(uid);
     }).then((user) => {
-      if (user) this.currentUser = JSON.parse(user);
+      if (user) this.currentUser = user;
     });
   }
 
-  async getUser(uid: string): Promise<string | void> {
+  async getUser(uid: string): Promise<User | void> {
     // Check if we already have the requested user
-    const user = this.users.get(uid);
-    if (user) return user.id;
+    if (this.users.has(uid)) return this.users.get(uid);
 
     // Else get data from the server
-    return await this.httpRequests.authenticatedRequest(`user/get/${uid}`).catch((err) => console.log("tkt", err));
+    const response = await this.httpRequests.authenticatedRequest(`user/get/${uid}`).catch((err) => console.log(`Error when trying to get infos for user ${uid}`, err));
+    if (!response) return;
+
+    // Update cache and return user
+    const user = JSON.parse(response) as User;
+    this.users.set(uid, user);
+    return user;
   }
 }
