@@ -3,6 +3,7 @@ import { DeltaAuth } from './delta-auth';
 import { HttpRequests } from './http-requests';
 
 import { User } from '../../../../common/user'
+import { firstValueFrom, Observable, ReplaySubject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -10,28 +11,29 @@ import { User } from '../../../../common/user'
 export class Users {
   private httpRequests = inject(HttpRequests);
   private deltaAuth = inject(DeltaAuth);
-  private users = new Map<string, User>();
-  currentUser: User | undefined;
+  private users = new Map<string, ReplaySubject<User>>();
 
-  constructor() {
-    this.deltaAuth.getUid().then((uid) => {
-      return this.getUser(uid);
-    }).then((user) => {
-      if (user) this.currentUser = user;
-    });
-  }
+  getUser(uid: string | null): Observable<User> | undefined {
+    if (!uid) return undefined;
 
-  async getUser(uid: string): Promise<User | void> {
     // Check if we already have the requested user
-    if (this.users.has(uid)) return this.users.get(uid);
+    const user = this.users.get(uid)
+    if (user) return user.asObservable();
 
     // Else get data from the server
-    const response = await this.httpRequests.authenticatedRequest(`user/get/${uid}`).catch((err) => console.log(`Error when trying to get infos for user ${uid}`, err));
-    if (!response) return;
+    const newUser = new ReplaySubject<User>(1)
 
-    // Update cache and return user
+    this.httpRequests.authenticatedRequest(`user/get/${uid}`).then((response) => {
     const user = JSON.parse(response) as User;
-    this.users.set(uid, user);
-    return user;
+      newUser.next(user);
+      this.users.set(uid, newUser);
+    })
+
+    return newUser.asObservable();
+  }
+
+  async getCurrentUser(): Promise<Observable<User> | undefined> {
+    const uid = await this.deltaAuth.getUid();
+    return this.getUser(uid);
   }
 }

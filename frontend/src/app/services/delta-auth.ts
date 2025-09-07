@@ -1,5 +1,5 @@
 import { AuthService, IdToken } from '@auth0/auth0-angular';
-import { BehaviorSubject, ReplaySubject, firstValueFrom } from 'rxjs';
+import { BehaviorSubject, Observable, ReplaySubject, firstValueFrom } from 'rxjs';
 import { DOCUMENT, Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environments/environment';
@@ -8,13 +8,13 @@ import { environment } from '../../environments/environment';
   providedIn: 'root'
 })
 export class DeltaAuth {
-  idToken$: ReplaySubject<IdToken> = new ReplaySubject<IdToken>(1);
-  uid$: ReplaySubject<string> = new ReplaySubject<string>(1);
-  isAuthenticated$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+  private idToken$: ReplaySubject<IdToken> = new ReplaySubject<IdToken>(1);
+  private uid$: ReplaySubject<string> = new ReplaySubject<string>(1);
+  private isAuthenticated$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
   private auth = inject(AuthService);
   private document = inject(DOCUMENT);
-  private http = inject(HttpClient)
+  private http = inject(HttpClient);
 
   constructor() {
     this.auth.idTokenClaims$.subscribe((claims) => {
@@ -37,13 +37,13 @@ export class DeltaAuth {
       });
   }
 
-  succesfullLoginResponse(claims: IdToken, response: string) {
+  succesfullLoginResponse(claims: IdToken, response: string): void {
     this.idToken$.next(claims);
     this.uid$.next(response);
     this.isAuthenticated$.next(true);
   }
 
-  isAuthenticated() {
+  isAuthenticated(): Observable<boolean> {
     return this.auth.isAuthenticated$;
   }
 
