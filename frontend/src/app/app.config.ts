@@ -12,11 +12,11 @@ export const appConfig: ApplicationConfig = {
       clientId: environment.auth0.client || "",
       authorizationParams: {
         redirect_uri: window.location.origin,
-      }
+      },
     }),
     provideBrowserGlobalErrorListeners(),
     provideHttpClient(),
     provideZoneChangeDetection({ eventCoalescing: true }),
-    provideRouter(routes)
+    provideRouter(routes),
   ]
 };
