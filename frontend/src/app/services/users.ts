@@ -3,7 +3,7 @@ import { DeltaAuth } from './delta-auth';
 import { HttpRequests } from './http-requests';
 
 import { User, UserUpdateRequestBody } from '../../../../common/user'
-import { firstValueFrom, Observable, ReplaySubject } from 'rxjs';
+import { Observable, ReplaySubject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -22,11 +22,15 @@ export class Users {
 
     // Else get data from the server
     const newUser = new ReplaySubject<User>(1)
+    this.users.set(uid, newUser);
 
     this.httpRequests.authenticatedGetRequest(`user/get/${uid}`).then((response) => {
-    const user = JSON.parse(response) as User;
+      const user = JSON.parse(response) as User;
       newUser.next(user);
-      this.users.set(uid, newUser);
+    }).catch((error) => {
+      console.error("failed to get user", error);
+      newUser.error(error);
+      this.users.delete(uid);
     })
 
     return newUser.asObservable();
@@ -36,6 +40,7 @@ export class Users {
     const uid = await this.deltaAuth.getUid();
     return this.getUser(uid);
   }
+
   async updateCurrentUserInfo(userInfo: UserUpdateRequestBody): Promise<User | void> {
     const uid = await this.deltaAuth.getUid();
 
