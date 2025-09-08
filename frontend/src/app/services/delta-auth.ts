@@ -19,7 +19,7 @@ export class DeltaAuth {
   constructor() {
     this.auth.idTokenClaims$.subscribe((claims) => {
       if (claims) this.onConnect(claims);
-    })
+    });
   }
 
   onConnect(claims: IdToken): void {

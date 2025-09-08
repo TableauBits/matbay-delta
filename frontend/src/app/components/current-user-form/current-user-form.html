@@ -1,7 +1,17 @@
 <div>
-  <input type="text" [formControl]="username" placeholder="Username">
-  <input type="text" [formControl]="description" placeholder="Description">
-  <input type="text" [formControl]="imageURL" placeholder="Image URL">
-
-  <button (click)="updateCurrentUser()"> Update your infos </button>
+  <form [formGroup]="userForm" >
+    <label>
+      Username:
+      <input formControlName="username" placeholder="Username">
+    </label>
+    <label>
+      Description:
+      <input formControlName="description" placeholder="Description">
+    </label>
+    <label>
+      Image URL:
+      <input formControlName="imageURL" placeholder="Image URL">
+    </label>
+  </form>
+  <button (click)="onSubmit()">Update your infos</button>
 </div>

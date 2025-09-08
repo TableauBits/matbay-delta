@@ -1,10 +1,10 @@
 <h1> Welcome to {{ title }} </h1>
 
 @if(deltaAuth.isAuthenticated() | async) {
-Hello {{((currentUser | async) | async)?.username}}, you have been authenticated by Auth0 and the Δ server. <br>
-<img [src]="((currentUser | async) | async)?.imageURL"
-  alt="photo de profil de {{((currentUser | async) | async)?.imageURL}}">
-"{{((currentUser | async) | async)?.description}}"
+Hello {{currentUser?.username}}, you have been authenticated by Auth0 and the Δ server. <br>
+<img [src]="currentUser?.imageURL"
+  alt="photo de profil de {{currentUser?.imageURL}}">
+"{{currentUser?.description}}"
 <app-current-user-form></app-current-user-form>
 <button (click)="deltaAuth.logout()"> Log out </button>
 } @else {

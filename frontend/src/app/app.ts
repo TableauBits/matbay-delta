@@ -18,9 +18,16 @@ export class App {
   deltaAuth = inject(DeltaAuth);
   users = inject(Users);
 
-  currentUser: Promise<Observable<User> | undefined>;
+  currentUserObs: Promise<Observable<User> | undefined> = this.users.getCurrentUser();
+  currentUser: User | undefined;
 
   constructor() {
-    this.currentUser = this.users.getCurrentUser();
+    this.currentUserObs.then((userObs) => {
+      if (!userObs) return;
+
+      userObs.subscribe((user) => {
+        this.currentUser = user;
+      });
+    });
   }
 }

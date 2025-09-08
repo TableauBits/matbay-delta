@@ -2,7 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { DeltaAuth } from './delta-auth';
 import { HttpRequests } from './http-requests';
 
-import { User } from '../../../../common/user'
+import { User, UserUpdateRequestBody } from '../../../../common/user'
 import { firstValueFrom, Observable, ReplaySubject } from 'rxjs';
 
 @Injectable({
@@ -23,7 +23,7 @@ export class Users {
     // Else get data from the server
     const newUser = new ReplaySubject<User>(1)
 
-    this.httpRequests.authenticatedRequest(`user/get/${uid}`).then((response) => {
+    this.httpRequests.authenticatedGetRequest(`user/get/${uid}`).then((response) => {
     const user = JSON.parse(response) as User;
       newUser.next(user);
       this.users.set(uid, newUser);
@@ -35,5 +35,15 @@ export class Users {
   async getCurrentUser(): Promise<Observable<User> | undefined> {
     const uid = await this.deltaAuth.getUid();
     return this.getUser(uid);
+  }
+  async updateCurrentUserInfo(userInfo: UserUpdateRequestBody): Promise<User | void> {
+    const uid = await this.deltaAuth.getUid();
+
+    this.httpRequests.authenticatedPostRequest(`user/update/${uid}`, userInfo).then((response) => {
+      const updatedUser = JSON.parse(response) as User;
+      const userSubject = this.users.get(uid);
+
+      if (userSubject) userSubject.next(updatedUser);
+    });
   }
 }
