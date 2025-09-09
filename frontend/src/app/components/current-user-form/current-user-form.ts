@@ -30,7 +30,7 @@ export class CurrentUserForm implements OnDestroy {
     this.currentUserObs = this.users.getCurrentUser();
 
     this.userForm = new FormGroup({
-      username: new FormControl(''),
+      displayName: new FormControl(''),
       description: new FormControl(''),
       imageURL: new FormControl('')
     });
@@ -42,7 +42,7 @@ export class CurrentUserForm implements OnDestroy {
       const subscription = userObs.subscribe((user) => {
         // Update form values with user data
         this.userForm.setValue({
-          username: user.username,
+          displayName: user.displayName,
           description: user.description,
           imageURL: user.imageURL
         });

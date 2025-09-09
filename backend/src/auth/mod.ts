@@ -95,7 +95,8 @@ async function login(req: Request, res: Response) {
     const newUser: User = {
         id: "",
         authID,
-        username: validation.unwrap()["nickname"] ?? authID,
+        displayName: validation.unwrap()["nickname"] ?? "New User",
+        username: validation.unwrap()["name"] ?? authID,
         description: "",
         imageURL: validation.unwrap()["picture"] ?? "",
         joinDate: new Date().toISOString(),
