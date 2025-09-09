@@ -1,11 +1,10 @@
-import { Component, inject, OnDestroy } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { DeltaAuth } from './services/delta-auth';
-import { Users } from './services/users';
-import { CurrentUserForm } from './components/current-user-form/current-user-form';
-
-import { User } from '../../../common/user'
+import { Component, OnDestroy, inject } from '@angular/core';
 import { Observable, Subscription } from 'rxjs';
+import { CommonModule } from '@angular/common';
+import { CurrentUserForm } from './components/current-user-form/current-user-form';
+import { DeltaAuth } from './services/delta-auth';
+import { User } from '../../../common/user'
+import { Users } from './services/users';
 
 @Component({
   selector: 'app-root',

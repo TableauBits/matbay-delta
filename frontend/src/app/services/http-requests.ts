@@ -22,7 +22,7 @@ export class HttpRequests {
     }));
   }
 
-  async authenticatedPostRequest(endpoint: string, body: any): Promise<string> {
+  async authenticatedPostRequest(endpoint: string, body: unknown): Promise<string> {
     const token = await this.deltaAuth.getIdToken();
 
     return lastValueFrom(this.http.post(`${environment.server.url}/api/${endpoint}`, body, {
