@@ -9,8 +9,11 @@ import { Observable, ReplaySubject } from 'rxjs';
   providedIn: 'root'
 })
 export class Users {
-  private httpRequests = inject(HttpRequests);
+  // Service injections
   private deltaAuth = inject(DeltaAuth);
+  private httpRequests = inject(HttpRequests);
+
+  // Cache of user data to avoid redundant requests
   private users = new Map<string, ReplaySubject<User>>();
 
   getUser(uid: string | null): Observable<User> | undefined {
@@ -41,7 +44,7 @@ export class Users {
     return this.getUser(uid);
   }
 
-  async updateCurrentUserInfo(userInfo: UserUpdateRequestBody): Promise<User | void> {
+  async updateCurrentUserInfo(userInfo: UserUpdateRequestBody): Promise<void> {
     const uid = await this.deltaAuth.getUid();
 
     this.httpRequests.authenticatedPostRequest(`user/update/${uid}`, userInfo).then((response) => {
