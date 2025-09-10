@@ -2,7 +2,7 @@ import { eq } from "drizzle-orm";
 import { type Request, type Response, Router } from "express";
 import { Err, None, Option, Some } from "oxide.ts";
 import { v4 as uuidv4 } from "uuid";
-import { ensureAuthMiddleware, getAuthID } from "../auth/mod";
+import { ensureAuthMiddleware } from "../auth/mod";
 import { db } from "../db/mod";
 import { HttpError, HttpStatus, sendResult } from "../utils";
 import { usersTable } from "./schema";
