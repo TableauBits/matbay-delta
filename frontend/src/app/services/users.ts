@@ -51,6 +51,8 @@ export class Users {
       const userSubject = this.users.get(uid);
 
       if (userSubject) userSubject.next(updatedUser);
+    }).catch((error) => {
+      console.error("failed to update user info", error);
     });
   }
 }
