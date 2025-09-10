@@ -5,8 +5,6 @@ import { createUser, getUserFromAuth, type User } from "../user/mod";
 import { HttpError, HttpStatus, sendResult } from "../utils";
 import { tokenDevRouter, validateToken } from "./token";
 
-import { ErrorCode } from "../../../common/error"
-
 async function ensureAuthMiddleware(req: Request, res: Response, next: NextFunction) {
     const headerFetch = Option(req.header("delta-auth")).okOr(
         new HttpError(HttpStatus.Unauthorized, "no token found in headers"),
@@ -43,7 +41,7 @@ async function ensureAuthMiddleware(req: Request, res: Response, next: NextFunct
             Err(
                 new HttpError(
                     HttpStatus.Unauthorized,
-                    ErrorCode.UNKNOWN_DELTA_ACCOUNT
+                    "account is valid but not registered, call the login endpoint first",
                 ),
             ),
             res,
@@ -51,14 +49,17 @@ async function ensureAuthMiddleware(req: Request, res: Response, next: NextFunct
         return;
     }
 
+    // Save uid in the request for later use
+    req.uid = maybeUser.unwrap().id;
+
     next();
 }
 
 async function checkAuth(_req: Request, res: Response) {
-    sendResult(Ok("Authentication valid"), res);
+    sendResult(Ok("successfully logged in"), res);
 }
 
-async function registerAccount(req: Request, res: Response) {
+async function login(req: Request, res: Response) {
     const headerFetch = Option(req.header("delta-auth")).okOr(
         new HttpError(HttpStatus.Unauthorized, "no token found in headers"),
     );
@@ -90,21 +91,22 @@ async function registerAccount(req: Request, res: Response) {
     const authID = maybeAuthID.unwrap();
     const maybeUser = await getUserFromAuth(authID);
     if (maybeUser.isSome()) {
-        sendResult(Err(new HttpError(HttpStatus.UnprocessableContent, "account is already registered")), res);
+        sendResult(Ok(maybeUser.unwrap().id), res);
         return;
     }
 
     const newUser: User = {
         id: "",
         authID,
-        username: validation.unwrap()["nickname"] ?? authID,
+        displayName: validation.unwrap()["nickname"] ?? "New User",
+        username: validation.unwrap()["name"] ?? authID,
         description: "",
         imageURL: validation.unwrap()["picture"] ?? "",
         joinDate: new Date().toISOString(),
     };
 
     await createUser(newUser);
-    sendResult(Ok(`registration of ${newUser.username} completed`), res);
+    sendResult(Ok(newUser.id), res);
 }
 
 const authApiRouter = Router();
@@ -112,6 +114,7 @@ const authDevRouter = Router();
 
 authDevRouter.use("/token", tokenDevRouter);
 authDevRouter.use("/check", ensureAuthMiddleware, checkAuth);
-authDevRouter.use("/register", registerAccount);
 
-export { authApiRouter, authDevRouter };
+authApiRouter.use("/login", login);
+
+export { authApiRouter, authDevRouter, ensureAuthMiddleware };

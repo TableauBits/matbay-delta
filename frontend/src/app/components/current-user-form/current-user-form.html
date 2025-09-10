@@ -1,0 +1,17 @@
+<div>
+  <form [formGroup]="userForm" >
+    <label>
+      Display Name:
+      <input formControlName="displayName" placeholder="Display Name">
+    </label>
+    <label>
+      Description:
+      <input formControlName="description" placeholder="Description">
+    </label>
+    <label>
+      Image URL:
+      <input formControlName="imageURL" placeholder="Image URL">
+    </label>
+  </form>
+  <button (click)="onSubmit()">Update your infos</button>
+</div>

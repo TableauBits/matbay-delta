@@ -1,9 +1,13 @@
-<h1> Welcome to {{ title }} </h1>
+<h1> Welcome to MATBay Δ </h1>
 
 @if(deltaAuth.isAuthenticated() | async) {
-  Hello {{deltaAuth.username}}, You have been authenticated by Auth0. <br>
-  <button (click)="deltaAuth.logout()"> Log out </button>
+Hello {{currentUser?.displayName}} ({{currentUser?.username}}), you have been authenticated by Auth0 and the Δ
+server. <br>
+<img [src]="currentUser?.imageURL" width="250" height="250" alt="photo de profil de {{currentUser?.imageURL}}">
+"{{currentUser?.description}}"
+<app-current-user-form></app-current-user-form>
+<button (click)="deltaAuth.logout()"> Log out </button>
 } @else {
-  Please log in with your TableauBits account to access the app. <br>
-  <button (click)="deltaAuth.login()">Log in</button>
+Please log in with your TableauBits account to access the app. <br>
+<button (click)="deltaAuth.login()"> Log in </button>
 }

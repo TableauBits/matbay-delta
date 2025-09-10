@@ -15,6 +15,13 @@
       "when": 1754234784797,
       "tag": "0001_youthful_reptil",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1757459730775,
+      "tag": "0002_nifty_chronomancer",
+      "breakpoints": true
     }
   ]
 }
