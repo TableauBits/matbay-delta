@@ -54,31 +54,9 @@ async function update(req: Request, res: Response): Promise<void> {
         sendResult(uid, res);
         return;
     }
-
-    // Extract the uid from the AuthId in the token
-    const maybeAuthID = await getAuthID(req);
-    if (maybeAuthID.isErr()) {
-        sendResult(maybeAuthID, res);
-        return;
-    }
-    const authID = maybeAuthID.unwrap();
-    const maybeUser = await getUserFromAuth(authID);
-
-    if (maybeUser.isNone()) {
-        sendResult(
-            Err(
-                new HttpError(
-                    HttpStatus.Unauthorized,
-                    "account is valid but not registered, call the login endpoint first",
-                ),
-            ),
-            res,
-        );
-        return;
-    }
-    const user = maybeUser.unwrap();
-
-    if (user.id !== uid.unwrap()) {
+    
+    // Ensure the user is updating their own info
+    if (req.uid !== uid.unwrap()) {
         sendResult(
             Err(new HttpError(HttpStatus.Unauthorized, "cannot update another user's info")),
             res,

@@ -53,7 +53,7 @@ async function validateToken(token: string): Promise<Result<JwtPayload, Error>> 
         .mapErr((err) => Error(`failed to verify token: ${err.message}`));
 }
 
-async function validate(req: Request, res: Response) {
+async function validate(req: Request, res: Response): Promise<void> {
     const token = Option(req.body?.token).okOr(new HttpError(HttpStatus.BadRequest, "no token provided"));
     if (token.isErr()) {
         sendResult(token, res);
