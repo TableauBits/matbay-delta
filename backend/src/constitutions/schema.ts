@@ -1,50 +1,55 @@
 import { sqliteTable, text } from "drizzle-orm/sqlite-core";
-import { usersTable } from "../user/schema";
+import { users } from "../user/schema";
 import { relations } from "drizzle-orm/relations";
 
-const constitutionsTable = sqliteTable(
+// Tables
+/// Constitutions table
+const constitutions = sqliteTable(
     "constitutions",
     {
         id: text().primaryKey(),
         name: text().notNull(),
         description: text().notNull(),
-        owner: text().references(() => usersTable.id),
+        owner: text().references(() => users.id),
         creationDate: text().notNull().$defaultFn(() => new Date().toISOString()),
     },
 );
 
+/// User participation in constitutions table
 const userConstitutionParticipation = sqliteTable(
     "userConstitutionParticipation",
     {
         id: text().primaryKey(),
-        user: text().notNull().references(() => usersTable.id),
-        constitution: text().notNull().references(() => constitutionsTable.id),
+        user: text().notNull().references(() => users.id),
+        constitution: text().notNull().references(() => constitutions.id),
         joinDate: text().notNull()
     }
-)
+);
 
-const usersRelations = relations(usersTable, ({many}) => ({
+// Relations
+/// A user can participate in many constitutions
+const usersRelations = relations(users, ({ many }) => ({
     userConstitutionParticipation: many(userConstitutionParticipation)
-})) 
+}));
 
-const constitutionRelations = relations(constitutionsTable, ({many}) => ({
+/// A constitution can have many participating users
+const constitutionRelations = relations(constitutions, ({ many }) => ({
     userConstitutionParticipation: many(userConstitutionParticipation)
-})) 
+}));
 
-const userConstitutionParticipationRelation = relations(userConstitutionParticipation, ({one}) => ({
-    user: one(usersTable, {
+const userConstitutionParticipationRelation = relations(userConstitutionParticipation, ({ one }) => ({
+    user: one(users, {
         fields: [userConstitutionParticipation.user],
-        references: [usersTable.id]
+        references: [users.id]
     }),
-    constitution: one(constitutionsTable, {
+    constitution: one(constitutions, {
         fields: [userConstitutionParticipation.constitution],
-        references: [constitutionsTable.id]
+        references: [constitutions.id]
     })
-}))
-
+}));
 
 export {
-    constitutionsTable,
+    constitutions,
     userConstitutionParticipation,
     usersRelations,
     constitutionRelations,

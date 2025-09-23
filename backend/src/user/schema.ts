@@ -1,6 +1,6 @@
 import { sqliteTable, text, uniqueIndex } from "drizzle-orm/sqlite-core";
 
-export const usersTable = sqliteTable(
+export const users = sqliteTable(
     "users",
     {
         id: text().primaryKey(),
@@ -8,7 +8,7 @@ export const usersTable = sqliteTable(
         username: text().notNull(),
         displayName: text().notNull(),
         imageURL: text().notNull(),
-        joinDate: text().notNull().$defaultFn(()=>new Date().toISOString()),
+        joinDate: text().notNull().$defaultFn(() => new Date().toISOString()),
         description: text().notNull(),
     },
     (table) => [

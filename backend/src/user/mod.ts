@@ -5,19 +5,19 @@ import { v4 as uuidv4 } from "uuid";
 import { ensureAuthMiddleware } from "../auth/mod";
 import { db } from "../db/mod";
 import { HttpError, HttpStatus, sendResult } from "../utils";
-import { usersTable } from "./schema";
+import { users } from "./schema";
 import type { UserUpdateRequestBody } from "../../../common/user";
 
-export type User = typeof usersTable.$inferInsert;
+export type User = typeof users.$inferInsert;
 
 export async function createUser(userInfo: User): Promise<void> {
     userInfo.id = uuidv4();
 
-    await db.insert(usersTable).values(userInfo);
+    await db.insert(users).values(userInfo);
 }
 
 export async function getUserFromAuth(authID: string): Promise<Option<User>> {
-    const queryResult = await db.select().from(usersTable).where(eq(usersTable.authID, authID));
+    const queryResult = await db.select().from(users).where(eq(users.authID, authID));
     if (queryResult.length === 0) {
         return None;
     }
@@ -26,7 +26,7 @@ export async function getUserFromAuth(authID: string): Promise<Option<User>> {
 }
 
 export async function getUser(uid: string): Promise<Option<User>> {
-    const queryResult = await db.select().from(usersTable).where(eq(usersTable.id, uid));
+    const queryResult = await db.select().from(users).where(eq(users.id, uid));
     if (queryResult.length === 0) {
         return None;
     }
@@ -66,7 +66,7 @@ async function update(req: Request, res: Response): Promise<void> {
 
     // Extract the user info from the request body and update the database
     const userInfo = req.body as UserUpdateRequestBody;
-    const queryResult = await db.update(usersTable).set(userInfo).where(eq(usersTable.id, uid.unwrap())).returning()
+    const queryResult = await db.update(users).set(userInfo).where(eq(users.id, uid.unwrap())).returning()
     
     const result = Some(queryResult[0] as User).okOr(
         new HttpError(HttpStatus.InternalError, "failed to update user info")
