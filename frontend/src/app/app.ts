@@ -6,6 +6,7 @@ import { DeltaAuth } from './services/delta-auth';
 import { User } from '../../../common/user'
 import { Users } from './services/users';
 import { ConstitutionForm } from './components/constitution-form/constitution-form';
+import { Constitutions } from './services/constitutions';
 
 @Component({
   selector: 'app-root',
@@ -16,7 +17,8 @@ import { ConstitutionForm } from './components/constitution-form/constitution-fo
 export class App implements OnDestroy {
   // Service injections
   deltaAuth = inject(DeltaAuth);
-  private users = inject(Users);
+  users = inject(Users);
+  constitutions = inject(Constitutions);
 
   // Observable of the current user data
   private currentUserObs: Promise<Observable<User> | undefined>;

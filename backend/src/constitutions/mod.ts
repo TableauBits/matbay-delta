@@ -54,7 +54,14 @@ async function create(req: Request, res: Response): Promise<void> {
 }
 
 const constitutionApiRouter = Router();
+// const constitutionDevRouter = Router();
+
+async function getAll(_req: Request, res: Response): Promise<void> {
+  const allConstitutions = await db.select().from(constitutions);
+  sendResult(Ok(allConstitutions), res);
+}
 
 constitutionApiRouter.use("/create", ensureAuthMiddleware, create);
+constitutionApiRouter.use("/getAll", ensureAuthMiddleware, getAll);   // TODO : Use a dev router for testing
 
 export { constitutionApiRouter };
