@@ -5,10 +5,11 @@ import { CurrentUserForm } from './components/current-user-form/current-user-for
 import { DeltaAuth } from './services/delta-auth';
 import { User } from '../../../common/user'
 import { Users } from './services/users';
+import { ConstitutionForm } from './components/constitution-form/constitution-form';
 
 @Component({
   selector: 'app-root',
-  imports: [CommonModule, CurrentUserForm],
+  imports: [CommonModule, CurrentUserForm, ConstitutionForm],
   templateUrl: './app.html',
   styleUrl: './app.scss'
 })

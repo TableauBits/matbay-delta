@@ -1,4 +1,4 @@
-import { sqliteTable, text } from "drizzle-orm/sqlite-core";
+import { integer, sqliteTable, text } from "drizzle-orm/sqlite-core";
 import { users } from "../user/schema";
 import { relations } from "drizzle-orm/relations";
 
@@ -7,7 +7,7 @@ import { relations } from "drizzle-orm/relations";
 const constitutions = sqliteTable(
     "constitutions",
     {
-        id: text().primaryKey(),
+        id: integer('id').primaryKey(),  // TODO : Primary key ==> use a UUID string instead ?
         name: text().notNull(),
         description: text().notNull(),
         owner: text().references(() => users.id),
@@ -19,10 +19,10 @@ const constitutions = sqliteTable(
 const userConstitutionParticipation = sqliteTable(
     "userConstitutionParticipation",
     {
-        id: text().primaryKey(),
+        id: integer('id').primaryKey(),
         user: text().notNull().references(() => users.id),
-        constitution: text().notNull().references(() => constitutions.id),
-        joinDate: text().notNull()
+        constitution: integer().notNull().references(() => constitutions.id),
+        joinDate: text().notNull().$defaultFn(() => new Date().toISOString()),
     }
 );
 

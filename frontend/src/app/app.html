@@ -6,6 +6,7 @@ server. <br>
 <img [src]="currentUser?.imageURL" width="250" height="250" alt="photo de profil de {{currentUser?.imageURL}}">
 "{{currentUser?.description}}"
 <app-current-user-form></app-current-user-form>
+<app-constitution-form></app-constitution-form>
 <button (click)="deltaAuth.logout()"> Log out </button>
 } @else {
 Please log in with your TableauBits account to access the app. <br>
