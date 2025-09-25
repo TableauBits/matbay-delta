@@ -1,6 +1,6 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpRequests } from './http-requests';
-import { Constitution } from '../../../../common/constitution';
+import { Constitution, CreateConstitutionRequestBody } from '../../../../common/constitution';
 
 @Injectable({
   providedIn: 'root'
@@ -11,19 +11,39 @@ export class Constitutions {
   private constitutions = new Map();
 
   constructor() {
+    // Initialize the service by fetching all constitutions
     this.serviceGetAllConstitutions();
   }
 
   private async serviceGetAllConstitutions() {
     this.httpRequests.authenticatedGetRequest("constitution/getAll").then((response) => {
       const constitutions = JSON.parse(response) as Constitution[];
+
       constitutions.forEach((constitution) => {
+        // Sort users by join date
+        constitution.userConstitution.sort((a, b) => (a.joinDate < b.joinDate) ? -1 : 1);
         this.constitutions.set(constitution.id, constitution);
       });
     })
   }
 
-  getAllConstitutions(): Constitution[] {
+  getAll(): Constitution[] {
     return Array.from(this.constitutions.values());
+  }
+
+  join(id: number): void {
+    this.httpRequests.authenticatedGetRequest(`constitution/join/${id}`).then((response) => {
+      console.log("Joined constitution:", response);
+    }).catch((error) => {
+      console.error("Failed to join constitution", error);
+    });
+  }
+
+  leave(id: number): void {
+    this.httpRequests.authenticatedGetRequest(`constitution/leave/${id}`).then((response) => {
+      console.log("Leave constitution:", response);
+    }).catch((error) => {
+      console.error("Failed to leave constitution", error);
+    });
   }
 }

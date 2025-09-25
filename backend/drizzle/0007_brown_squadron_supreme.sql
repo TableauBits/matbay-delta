@@ -1,0 +1,1 @@
+CREATE UNIQUE INDEX `userConstitution_user_constitution_unique` ON `userConstitution` (`user`,`constitution`);

@@ -6,14 +6,25 @@ server. <br>
 <img [src]="currentUser?.imageURL" width="250" height="250" alt="photo de profil de {{currentUser?.imageURL}}">
 "{{currentUser?.description}}"
 <app-current-user-form></app-current-user-form>
+<hr>
 <app-constitution-form></app-constitution-form>
+<hr>
 <h2> Constitutions </h2>
-@for (constitution of constitutions.getAllConstitutions(); track $index) {
-  <div>
-    <h3>{{$index}} - {{constitution.name}} </h3>
-    <p> {{constitution.description}} </p>
-    <p> Owner: {{(users.getUser(constitution.owner) | async)?.displayName}} </p>
-  </div>
+@for (constitution of constitutions.getAll(); track $index) {
+<div>
+  <h3>{{$index}} - {{constitution.name}} (id : {{constitution.id}}) </h3>
+  <p> Description : {{constitution.description}} </p>
+  <p> Owner: {{(users.getUser(constitution.owner) | async)?.displayName}} </p>
+  @for (user of constitution.userConstitution; track $index) {
+    <p>
+      Participant {{$index}} 
+      <img [src]="(users.getUser(user.user) | async)?.imageURL" width="25" height="25" alt="photo de profil de {{(users.getUser(user.user) | async)?.imageURL}}">
+      : {{(users.getUser(user.user) | async)?.displayName}}
+    </p>
+  }
+  <button (click)="constitutions.join(constitution.id)"> Join constitution </button>
+  <button (click)="constitutions.leave(constitution.id)"> Leave constitution </button>
+</div>
 }
 <button (click)="deltaAuth.logout()"> Log out </button>
 } @else {

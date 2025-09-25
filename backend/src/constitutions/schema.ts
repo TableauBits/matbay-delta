@@ -1,4 +1,4 @@
-import { integer, sqliteTable, text } from "drizzle-orm/sqlite-core";
+import { integer, sqliteTable, text, unique } from "drizzle-orm/sqlite-core";
 import { users } from "../user/schema";
 import { relations } from "drizzle-orm/relations";
 
@@ -16,42 +16,45 @@ const constitutions = sqliteTable(
 );
 
 /// User participation in constitutions table
-const userConstitutionParticipation = sqliteTable(
-    "userConstitutionParticipation",
+const userConstitution = sqliteTable(
+    "userConstitution",
     {
         id: integer('id').primaryKey(),
         user: text().notNull().references(() => users.id),
         constitution: integer().notNull().references(() => constitutions.id),
         joinDate: text().notNull().$defaultFn(() => new Date().toISOString()),
-    }
+    }, (t) => [
+        unique().on(t.user, t.constitution)
+    ]
+    
 );
 
 // Relations
 /// A user can participate in many constitutions
 const usersRelations = relations(users, ({ many }) => ({
-    userConstitutionParticipation: many(userConstitutionParticipation)
+    userConstitution: many(userConstitution)
 }));
 
 /// A constitution can have many participating users
 const constitutionRelations = relations(constitutions, ({ many }) => ({
-    userConstitutionParticipation: many(userConstitutionParticipation)
+    userConstitution: many(userConstitution)
 }));
 
-const userConstitutionParticipationRelation = relations(userConstitutionParticipation, ({ one }) => ({
+const userConstitutionRelation = relations(userConstitution, ({ one }) => ({
     user: one(users, {
-        fields: [userConstitutionParticipation.user],
+        fields: [userConstitution.user],
         references: [users.id]
     }),
     constitution: one(constitutions, {
-        fields: [userConstitutionParticipation.constitution],
+        fields: [userConstitution.constitution],
         references: [constitutions.id]
     })
 }));
 
 export {
     constitutions,
-    userConstitutionParticipation,
+    userConstitution,
     usersRelations,
     constitutionRelations,
-    userConstitutionParticipationRelation
+    userConstitutionRelation
 };

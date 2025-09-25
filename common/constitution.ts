@@ -4,6 +4,11 @@ interface Constitution {
   name: string,
   description: string,
   owner: string,
+  creationDate: string,
+  userConstitution: {
+    user: string,
+    joinDate: string
+  }[]
 }
 
 // Requests

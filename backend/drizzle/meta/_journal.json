@@ -43,6 +43,20 @@
       "when": 1758669403031,
       "tag": "0005_colorful_molecule_man",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "6",
+      "when": 1758810996647,
+      "tag": "0006_plain_young_avengers",
+      "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "6",
+      "when": 1758812297566,
+      "tag": "0007_brown_squadron_supreme",
+      "breakpoints": true
     }
   ]
 }
