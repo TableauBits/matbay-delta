@@ -26,7 +26,6 @@ const userConstitution = sqliteTable(
     }, (t) => [
         unique().on(t.user, t.constitution)
     ]
-    
 );
 
 // Relations
@@ -40,6 +39,7 @@ const constitutionRelations = relations(constitutions, ({ many }) => ({
     userConstitution: many(userConstitution)
 }));
 
+/// A constitution participation links one user to one constitution
 const userConstitutionRelation = relations(userConstitution, ({ one }) => ({
     user: one(users, {
         fields: [userConstitution.user],

@@ -6,8 +6,9 @@ import { Constitution, CreateConstitutionRequestBody } from '../../../../common/
   providedIn: 'root'
 })
 export class Constitutions {
+  // Service injections
   private httpRequests = inject(HttpRequests);
-
+  
   private constitutions = new Map();
 
   constructor() {
@@ -15,7 +16,7 @@ export class Constitutions {
     this.serviceGetAllConstitutions();
   }
 
-  private async serviceGetAllConstitutions() {
+  private async serviceGetAllConstitutions(): Promise<void> {
     this.httpRequests.authenticatedGetRequest("constitution/getAll").then((response) => {
       const constitutions = JSON.parse(response) as Constitution[];
 
@@ -29,6 +30,14 @@ export class Constitutions {
 
   getAll(): Constitution[] {
     return Array.from(this.constitutions.values());
+  }
+
+  create(body: CreateConstitutionRequestBody): void {
+    this.httpRequests.authenticatedPostRequest('constitution/create', body).then((response) => {
+      console.log("Constitution created:", response);
+    }).catch((error) => {
+      console.error("Failed to create constitution", error);
+    });
   }
 
   join(id: number): void {

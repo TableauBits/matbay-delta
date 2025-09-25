@@ -1,6 +1,6 @@
 import { Component, inject } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { HttpRequests } from '../../services/http-requests';
+import { Constitutions } from '../../services/constitutions';
 
 @Component({
   selector: 'app-constitution-form',
@@ -9,10 +9,10 @@ import { HttpRequests } from '../../services/http-requests';
   styleUrl: './constitution-form.scss'
 })
 export class ConstitutionForm {
-  form: FormGroup;
-
   // Service injections
-  private httpRequests = inject(HttpRequests);
+  private constitutions = inject(Constitutions);
+
+  form: FormGroup;
 
   constructor() {
     this.form = new FormGroup({
@@ -21,13 +21,9 @@ export class ConstitutionForm {
     });
   }
 
-  onSubmit() {
+  onSubmit(): void {
     // Send data
-    this.httpRequests.authenticatedPostRequest('constitution/create', this.form.value).then((response) => {
-      console.log("Constitution created:", response);
-    }).catch((error) => {
-      console.error("Failed to create constitution", error);
-    });
+    this.constitutions.create(this.form.value);
 
     // Clean form
     this.form.reset();

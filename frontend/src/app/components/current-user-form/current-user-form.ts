@@ -16,20 +16,20 @@ export class CurrentUserForm implements OnDestroy {
   private users = inject(Users);
 
   // Form group for user info
-  userForm: FormGroup;
+  form: FormGroup;
 
   // Observable of the current user data
   private currentUserObs: Promise<Observable<User> | undefined>;
   private subscriptions: Subscription = new Subscription();
 
-  ngOnDestroy() {
+  ngOnDestroy(): void {
     this.subscriptions.unsubscribe();
   }
 
   constructor() {
     this.currentUserObs = this.users.getCurrentUser();
 
-    this.userForm = new FormGroup({
+    this.form = new FormGroup({
       displayName: new FormControl(''),
       description: new FormControl(''),
       imageURL: new FormControl('')
@@ -39,9 +39,9 @@ export class CurrentUserForm implements OnDestroy {
     this.currentUserObs.then((userObs) => {
       if (!userObs) return;
 
-      const subscription = userObs.subscribe((user) => {
-        // Update form values with user data
-        this.userForm.setValue({
+      // Subscribe to user observable to update form values
+      const subscription = userObs.subscribe(user => {
+        this.form.setValue({
           displayName: user.displayName,
           description: user.description,
           imageURL: user.imageURL
@@ -52,8 +52,8 @@ export class CurrentUserForm implements OnDestroy {
     });
   }
 
-  onSubmit() {
-    this.users.updateCurrentUserInfo(this.userForm.value);
+  onSubmit(): void {
+    this.users.updateCurrentUserInfo(this.form.value);
   }
 
 }

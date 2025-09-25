@@ -8,6 +8,7 @@ import { HttpError, HttpStatus, sendResult } from "../utils";
 import { Err, Ok, Option, Result } from "oxide.ts";
 import { and, eq } from "drizzle-orm";
 
+// Utils functions
 async function addUserToConstitution(uid: string, cstid: number): Promise<Result<string, Error>> {
   const operation = async () => await db.insert(userConstitution).values({
     user: uid,
@@ -17,6 +18,7 @@ async function addUserToConstitution(uid: string, cstid: number): Promise<Result
   return (await Result.safe(operation())).map(() => "user successfully joined constitution");
 }
 
+// Endpoint functions
 async function create(req: Request, res: Response): Promise<void> {
   // TODO : Add validation of the body
   // TODO : Add validation of the permissions of the user (is he allowed to create a constitution ?)
@@ -53,11 +55,12 @@ async function create(req: Request, res: Response): Promise<void> {
   // TODO : This should be done in a transaction ?
   // TODO : Return the created constitution instead of a simple message ?
   sendResult((await addUserToConstitution(uid.unwrap(), cstid.unwrap()))
-  .map(() => "constitution created")
+    .map(() => "constitution created")
     .mapErr((err) => new HttpError(HttpStatus.UnprocessableContent, `failed to join constitution ${err}`)), res);
 }
 
 async function getAll(_: Request, res: Response): Promise<void> {
+  // Get all constitutions with the list of participants
   const allConstitutions = await db.query.constitutions.findMany({
     with: {
       userConstitution: {
@@ -73,8 +76,6 @@ async function getAll(_: Request, res: Response): Promise<void> {
 }
 
 async function join(req: Request, res: Response): Promise<void> {
-  // TODO : Validate the constitution id
-
   const uid = Option(req.uid);
   if (uid.isNone()) {
     sendResult(
@@ -84,8 +85,7 @@ async function join(req: Request, res: Response): Promise<void> {
     return;
   }
 
-  const id = Option(req.params["id"])
-    .okOr(new HttpError(HttpStatus.BadRequest, "missing constitution id from request"));
+  const id = Option(req.params["id"]).okOr(new HttpError(HttpStatus.BadRequest, "missing constitution id from request"));
   if (id.isErr()) {
     sendResult(id, res);
     return;
@@ -94,6 +94,7 @@ async function join(req: Request, res: Response): Promise<void> {
   const cstid = Result.safe(() => parseInt(id.unwrap()));
   if (cstid.isErr()) {
     sendResult(Err(new HttpError(HttpStatus.BadRequest, `constitution id could not be parse: ${cstid.unwrapErr()}`)), res);
+    return;
   }
 
   const result = (await addUserToConstitution(uid.unwrap(), cstid.unwrap()))
@@ -102,10 +103,8 @@ async function join(req: Request, res: Response): Promise<void> {
 }
 
 async function leave(req: Request, res: Response): Promise<void> {
-  // TODO : Validate the constitution id
-  // TODO : Validate that the user is a participant
-
-  if (!req.uid) {
+  const uid = Option(req.uid);
+  if (uid.isNone()) {
     sendResult(
       Err(new HttpError(HttpStatus.InternalError, "missing uid in request, this should never happen")),
       res
@@ -113,17 +112,22 @@ async function leave(req: Request, res: Response): Promise<void> {
     return;
   }
 
-  const id = Option(req.params["id"])
-    .okOr(new HttpError(HttpStatus.BadRequest, "missing constitution id from request"));
+  const id = Option(req.params["id"]).okOr(new HttpError(HttpStatus.BadRequest, "missing constitution id from request"));
   if (id.isErr()) {
     sendResult(id, res);
     return;
   }
 
+  const cstid = Result.safe(() => parseInt(id.unwrap()));
+  if (cstid.isErr()) {
+    sendResult(Err(new HttpError(HttpStatus.BadRequest, `constitution id could not be parse: ${cstid.unwrapErr()}`)), res);
+    return;
+  }
+
   await db.delete(userConstitution).where(
     and(
-      eq(userConstitution.user, req.uid),
-      eq(userConstitution.constitution, parseInt(id.unwrap()))
+      eq(userConstitution.user, uid.unwrap()),
+      eq(userConstitution.constitution, cstid.unwrap())
     )
   );
 
@@ -131,10 +135,9 @@ async function leave(req: Request, res: Response): Promise<void> {
 }
 
 const constitutionApiRouter = Router();
-// const constitutionDevRouter = Router();
 
 constitutionApiRouter.use("/create", ensureAuthMiddleware, create);
-constitutionApiRouter.use("/getAll", ensureAuthMiddleware, getAll);   // TODO : Use a dev router for testing
+constitutionApiRouter.use("/getAll", ensureAuthMiddleware, getAll);
 constitutionApiRouter.use("/join/:id", ensureAuthMiddleware, join);
 constitutionApiRouter.use("/leave/:id", ensureAuthMiddleware, leave);
 
