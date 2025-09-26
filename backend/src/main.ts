@@ -5,13 +5,16 @@ dotenv.config();
 import consola from "consola";
 import cors from "cors";
 import express from "express";
-import { apiRouter, devRouter } from "./routing";
+import { apiRouter, devRouter } from "./http-routing";
+import { Server } from "socket.io";
+import http from "node:http";
+import { attachWSListeners } from "./ws-routing";
 
 const isDebug = process.env["ENVIRONMENT"] === "DEBUG";
 const port = parseInt(process.env["PORT"] || "3000");
 const listenIp = "0.0.0.0";
 
-const app = express().use(cors()).use(express.json());
+export const app = express().use(cors()).use(express.json());
 
 app.use("/api", apiRouter);
 if (isDebug) {
@@ -19,4 +22,11 @@ if (isDebug) {
     app.use("/dev", devRouter);
 }
 
-app.listen(port, listenIp, () => consola.info(`server listening on ${listenIp}:${port}`));
+const httpServer = http.createServer(app);
+const io = new Server(httpServer, {cors: {origin: '*'}});
+io.on("connect", (socket) => {
+    attachWSListeners(socket);
+    consola.info("new socket registered");
+})
+
+httpServer.listen(port, listenIp, () => consola.info(`server listening on ${listenIp}:${port}`));

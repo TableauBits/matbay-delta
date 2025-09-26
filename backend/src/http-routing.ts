@@ -1,8 +1,8 @@
 import { Router } from "express";
-import { authApiRouter, authDevRouter } from "./auth/mod";
-import { dbApiRouter, dbDevRouter } from "./db/mod";
-import { userApiRouter } from "./user/mod";
-import { constitutionApiRouter } from "./constitutions/mod";
+import { authApiRouter, authDevRouter } from "./auth/http";
+import { dbApiRouter, dbDevRouter } from "./db/http";
+import { userApiRouter } from "./user/http";
+import { constitutionApiRouter } from "./constitutions/http";
 
 const apiRouter = Router();
 const devRouter = Router();

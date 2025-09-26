@@ -1,7 +1,7 @@
 import { type Request, type Response, Router } from "express";
-import { ensureAuthMiddleware } from "../auth/mod";
+import { ensureAuthMiddleware } from "../auth/http";
 import { constitutions, userConstitution } from "./schema";
-import { db } from "../db/mod";
+import { db } from "../db/http";
 
 import type { CreateConstitutionRequestBody } from "../../../common/constitution";
 import { HttpError, HttpStatus, sendResult } from "../utils";
@@ -16,6 +16,17 @@ async function addUserToConstitution(uid: string, cstid: number): Promise<Result
   });
 
   return (await Result.safe(operation())).map(() => "user successfully joined constitution");
+}
+
+async function removeUserFromConstitution(uid: string, cstid: number): Promise<Result<string, Error>> {
+  const operation = async () => await db.delete(userConstitution).where(
+    and(
+      eq(userConstitution.user, uid),
+      eq(userConstitution.constitution, cstid)
+    )
+  );
+
+  return (await Result.safe(operation())).map(() => "user successfully left constitution");
 }
 
 // Endpoint functions
@@ -103,6 +114,8 @@ async function join(req: Request, res: Response): Promise<void> {
 }
 
 async function leave(req: Request, res: Response): Promise<void> {
+  // TODO : The owner of a constitution should not be able to leave it
+  // TODO : If the last user leaves the constitution, should it be deleted ?
   const uid = Option(req.uid);
   if (uid.isNone()) {
     sendResult(
@@ -124,14 +137,9 @@ async function leave(req: Request, res: Response): Promise<void> {
     return;
   }
 
-  await db.delete(userConstitution).where(
-    and(
-      eq(userConstitution.user, uid.unwrap()),
-      eq(userConstitution.constitution, cstid.unwrap())
-    )
-  );
-
-  sendResult(Ok("leave constitution"), res);
+  const result = (await removeUserFromConstitution(uid.unwrap(), cstid.unwrap()))
+    .mapErr((err) => new HttpError(HttpStatus.UnprocessableContent, `failed to leave constitution ${err}`));
+  sendResult(result, res);
 }
 
 const constitutionApiRouter = Router();

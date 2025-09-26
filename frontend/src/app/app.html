@@ -17,9 +17,9 @@ server. <br>
   <p> Owner: {{(users.getUser(constitution.owner) | async)?.displayName}} </p>
   @for (user of constitution.userConstitution; track $index) {
     <p>
-      Participant {{$index}} 
+      Participant {{$index}} :
       <img [src]="(users.getUser(user.user) | async)?.imageURL" width="25" height="25" alt="photo de profil de {{(users.getUser(user.user) | async)?.imageURL}}">
-      : {{(users.getUser(user.user) | async)?.displayName}}
+      {{(users.getUser(user.user) | async)?.displayName}}
     </p>
   }
   <button (click)="constitutions.join(constitution.id)"> Join constitution </button>

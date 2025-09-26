@@ -38,6 +38,11 @@ export class Users {
     return newUser.asObservable();
   }
 
+  // updateUser(user: User): void {
+  //   const userSubject = this.users.get(user.id);
+  //   if (userSubject) userSubject.next(user);
+  // }
+
   async getCurrentUser(): Promise<Observable<User> | undefined> {
     const uid = await this.deltaAuth.getUid();
     return this.getUser(uid);

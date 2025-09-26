@@ -1,7 +1,7 @@
 import { type NextFunction, type Request, type Response, Router } from "express";
 import { Err, Ok, Option } from "oxide.ts";
 
-import { createUser, getUserFromAuth, type User } from "../user/mod";
+import { createUser, getUserFromAuth, type User } from "../user/http";
 import { HttpError, HttpStatus, sendResult } from "../utils";
 import { tokenDevRouter, validateToken } from "./token";
 
