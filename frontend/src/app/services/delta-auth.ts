@@ -19,22 +19,16 @@ export class DeltaAuth implements OnDestroy {
   private http = inject(HttpClient);
   private ws = inject(WsRequests);
 
-  private eventListeners: Map<string, CallbackFunction>;
-
   constructor() {
     this.auth.idTokenClaims$.subscribe((claims) => {
       if (claims) this.onConnect(claims);
     });
 
-    this.eventListeners = new Map([
-      [WebsocketEvents.AUTH, this.onAuth],
-    ]);
+    this.ws.on(WebsocketEvents.AUTH, this.onAuth);
   }
 
   ngOnDestroy(): void {
-    this.eventListeners.forEach((callback, event) => {
-      this.ws.off(event, callback);
-    });
+    this.ws.off(WebsocketEvents.AUTH, this.onAuth);
   }
 
   onConnect(claims: IdToken): void {
@@ -52,12 +46,7 @@ export class DeltaAuth implements OnDestroy {
         error: (error) => console.error(error)
       });
 
-    // Manage websocket login
-    this.eventListeners.forEach((callback, event) => {
-      this.ws.on(event, callback);
-    });
-
-    this.ws.emit(WebsocketEvents.AUTH, {token: claims.__raw});
+    this.ws.emit(WebsocketEvents.AUTH, { token: claims.__raw });
   }
 
   onAuth(response: unknown): void {

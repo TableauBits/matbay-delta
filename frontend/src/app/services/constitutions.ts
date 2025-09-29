@@ -1,19 +1,35 @@
-import { inject, Injectable } from '@angular/core';
+import { inject, Injectable, OnDestroy } from '@angular/core';
 import { HttpRequests } from './http-requests';
-import { Constitution, CreateConstitutionRequestBody } from '../../../../common/constitution';
+import { Constitution, CreateConstitutionRequestBody, UserConstitution } from '../../../../common/constitution';
+import { WebsocketEvents, WSUserJoinMessage, WSUserLeaveMessage } from '../../../../common/websocket';
+import { WsRequests } from './ws-requests';
+
+function sortByJoinDate(a: UserConstitution, b: UserConstitution): number {
+  if (a.joinDate === b.joinDate) return 0;
+  return a.joinDate < b.joinDate ? -1 : 1;
+}
 
 @Injectable({
   providedIn: 'root'
 })
-export class Constitutions {
+export class Constitutions implements OnDestroy {
   // Service injections
   private httpRequests = inject(HttpRequests);
+  private wsRequests = inject(WsRequests);
   
-  private constitutions = new Map();
+  private constitutions = new Map<number, Constitution>();
+
+  ngOnDestroy(): void {
+    // TODO: Add .bind() to off the correct event ?
+    this.wsRequests.off(WebsocketEvents.CST_USER_JOIN, this.onUserJoin);
+    this.wsRequests.off(WebsocketEvents.CST_USER_LEAVE, this.onUserLeave);
+  }
 
   constructor() {
     // Initialize the service by fetching all constitutions
     this.serviceGetAllConstitutions();
+    this.wsRequests.on(WebsocketEvents.CST_USER_JOIN, this.onUserJoin.bind(this));
+    this.wsRequests.on(WebsocketEvents.CST_USER_LEAVE, this.onUserLeave.bind(this));
   }
 
   private async serviceGetAllConstitutions(): Promise<void> {
@@ -22,7 +38,7 @@ export class Constitutions {
 
       constitutions.forEach((constitution) => {
         // Sort users by join date
-        constitution.userConstitution.sort((a, b) => (a.joinDate < b.joinDate) ? -1 : 1);
+        constitution.userConstitution.sort((a, b) => sortByJoinDate(a, b));
         this.constitutions.set(constitution.id, constitution);
       });
     })
@@ -54,5 +70,20 @@ export class Constitutions {
     }).catch((error) => {
       console.error("Failed to leave constitution", error);
     });
+  }
+
+  // Websocket callback
+  onUserJoin(message: WSUserJoinMessage): void {
+    const constitution = this.constitutions.get(message.constitution);
+    if (!constitution) return;
+    constitution.userConstitution.push(message.userConstitution);
+    constitution.userConstitution.sort((a, b) => sortByJoinDate(a, b));
+  }
+
+  onUserLeave(message: WSUserLeaveMessage): void {
+    const constitution = this.constitutions.get(message.constitution);
+    if (!constitution) return;
+    constitution.userConstitution = constitution.userConstitution.filter(uc => uc.user !== message.user);
+    constitution.userConstitution.sort((a, b) => sortByJoinDate(a, b));
   }
 }

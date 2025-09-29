@@ -23,7 +23,7 @@ if (isDebug) {
 }
 
 const httpServer = http.createServer(app);
-const io = new Server(httpServer, {cors: {origin: '*'}});
+export const io = new Server(httpServer, {cors: {origin: '*'}});
 io.on("connect", (socket) => {
     attachWSListeners(socket);
     consola.info("new socket registered");

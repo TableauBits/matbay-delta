@@ -1,14 +1,16 @@
 // Types
+interface UserConstitution {
+  user: string;
+  joinDate: string;
+}
+
 interface Constitution {
   id: number,
   name: string,
   description: string,
   owner: string,
   creationDate: string,
-  userConstitution: {
-    user: string,
-    joinDate: string
-  }[]
+  userConstitution: UserConstitution[]
 }
 
 // Requests
@@ -17,4 +19,4 @@ interface CreateConstitutionRequestBody {
   description: string,
 }
 
-export type { CreateConstitutionRequestBody, Constitution };
+export type { CreateConstitutionRequestBody, Constitution, UserConstitution };

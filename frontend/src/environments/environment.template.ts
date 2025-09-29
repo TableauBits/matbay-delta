@@ -1,6 +1,7 @@
 // Create a copy of this file in the same directory and name it either :
 //    * `environment.ts` for production
-//    * `environment.development.ts` for debug.
+//    * `environment.development.ts` for development/debug.
+
 // All variables are mandatory for proper fonctionality.
 export const environment = {
   // The name of the configuration. Should be either "production" or "development".

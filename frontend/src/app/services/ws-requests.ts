@@ -1,24 +1,34 @@
-import { Injectable } from '@angular/core';
+import { Injectable, OnDestroy } from '@angular/core';
 import { io } from 'socket.io-client';
 import { environment } from '../../environments/environment';
+import { WebsocketEvents } from '../../../../common/websocket';
 
-export type CallbackFunction = (...args: unknown[]) => void;
+export type CallbackFunction = (...args: any[]) => void;
 
 @Injectable({
   providedIn: 'root'
 })
-export class WsRequests {
+export class WsRequests implements OnDestroy {
   private socket = io(environment.server.ws);
+  // private eventListeners = new Map<WebsocketEvents, CallbackFunction>();
 
-  on(event: string, callback: (...args: unknown[]) => void) {
+  ngOnDestroy(): void {
+    // this.eventListeners.forEach((callback, event) => {
+    //   this.off(event, callback);
+    // });
+  }
+
+  on(event: WebsocketEvents, callback: CallbackFunction) {
     this.socket.on(event, callback);
+    // this.eventListeners.set(event, callback);
   }
 
-  off(event: string, callback: (...args: unknown[]) => void) {
+  off(event: WebsocketEvents, callback: CallbackFunction) {
     this.socket.off(event, callback);
+    // this.eventListeners.delete(event);
   }
 
-  emit(event: string, data: unknown): void {
+  emit(event: WebsocketEvents, data: unknown): void {
     this.socket.emit(event, data);
   }
 }

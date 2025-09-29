@@ -7,26 +7,41 @@ import type { CreateConstitutionRequestBody } from "../../../common/constitution
 import { HttpError, HttpStatus, sendResult } from "../utils";
 import { Err, Ok, Option, Result } from "oxide.ts";
 import { and, eq } from "drizzle-orm";
+import { onUserJoinCallback, onUserLeaveCallback } from "./ws";
+import type { DB } from "../db-namepsace";
 
 // Utils functions
-async function addUserToConstitution(uid: string, cstid: number): Promise<Result<string, Error>> {
+async function addUserToConstitution(uid: string, cstid: number): Promise<Result<DB.UserConstitution, Error>> {
   const operation = async () => await db.insert(userConstitution).values({
     user: uid,
     constitution: cstid,
-  });
+  }).returning();
 
-  return (await Result.safe(operation())).map(() => "user successfully joined constitution");
+  const insertResult = (await Result.safe(operation())).map((vals) => vals[0] as DB.UserConstitution);
+  if (insertResult.isOk()) {
+    onUserJoinCallback(insertResult.unwrap())
+  }
+
+  return insertResult;
 }
 
-async function removeUserFromConstitution(uid: string, cstid: number): Promise<Result<string, Error>> {
+async function removeUserFromConstitution(uid: string, cstid: number): Promise<Result<DB.UserConstitution, Error>> {
   const operation = async () => await db.delete(userConstitution).where(
     and(
       eq(userConstitution.user, uid),
       eq(userConstitution.constitution, cstid)
     )
-  );
+  ).returning();
 
-  return (await Result.safe(operation())).map(() => "user successfully left constitution");
+  const removeResult = (await Result.safe(operation())).map((vals) => Option(vals[0]));
+  if (removeResult.isErr()) return removeResult;
+
+  const removeRow = removeResult.unwrap().okOr(new Error("nothing to remove"));
+  if (removeRow.isOk()) {
+    onUserLeaveCallback(removeRow.unwrap());
+  }
+
+  return removeRow;
 }
 
 // Endpoint functions
