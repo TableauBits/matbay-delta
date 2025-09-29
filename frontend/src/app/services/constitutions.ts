@@ -2,7 +2,7 @@ import { inject, Injectable, OnDestroy } from '@angular/core';
 import { HttpRequests } from './http-requests';
 import { Constitution, CreateConstitutionRequestBody, UserConstitution } from '../../../../common/constitution';
 import { WebsocketEvents, WSUserJoinMessage, WSUserLeaveMessage } from '../../../../common/websocket';
-import { WsRequests } from './ws-requests';
+import { CallbackFunction, WsRequests } from './ws-requests';
 
 function sortByJoinDate(a: UserConstitution, b: UserConstitution): number {
   if (a.joinDate === b.joinDate) return 0;
@@ -18,18 +18,22 @@ export class Constitutions implements OnDestroy {
   private wsRequests = inject(WsRequests);
   
   private constitutions = new Map<number, Constitution>();
+  private wsEvents = new Map<WebsocketEvents, CallbackFunction>
 
   ngOnDestroy(): void {
-    // TODO: Add .bind() to off the correct event ?
-    this.wsRequests.off(WebsocketEvents.CST_USER_JOIN, this.onUserJoin);
-    this.wsRequests.off(WebsocketEvents.CST_USER_LEAVE, this.onUserLeave);
+    this.wsEvents.forEach((value, key) => this.wsRequests.off(key, value));
   }
 
   constructor() {
     // Initialize the service by fetching all constitutions
     this.serviceGetAllConstitutions();
-    this.wsRequests.on(WebsocketEvents.CST_USER_JOIN, this.onUserJoin.bind(this));
-    this.wsRequests.on(WebsocketEvents.CST_USER_LEAVE, this.onUserLeave.bind(this));
+
+    // Initialize the list of events to react with websockets
+    this.wsEvents = new Map()
+      .set(WebsocketEvents.CST_USER_JOIN, this.onUserJoin.bind(this))
+      .set(WebsocketEvents.CST_USER_LEAVE, this.onUserLeave.bind(this))
+    
+    this.wsEvents.forEach((value, key) => this.wsRequests.on(key, value))
   }
 
   private async serviceGetAllConstitutions(): Promise<void> {
@@ -37,6 +41,8 @@ export class Constitutions implements OnDestroy {
       const constitutions = JSON.parse(response) as Constitution[];
 
       constitutions.forEach((constitution) => {
+        // TODO : Register to changes on the constitution with ws
+
         // Sort users by join date
         constitution.userConstitution.sort((a, b) => sortByJoinDate(a, b));
         this.constitutions.set(constitution.id, constitution);
