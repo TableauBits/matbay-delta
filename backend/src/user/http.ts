@@ -7,31 +7,31 @@ import { db } from "../db/http";
 import { HttpError, HttpStatus, sendResult } from "../utils";
 import { users } from "./schema";
 import type { UserUpdateRequestBody } from "../../../common/user";
+import type { DB } from "../db-namepsace";
 
-export type User = typeof users.$inferInsert;
 
-export async function createUser(userInfo: User): Promise<void> {
+export async function createUser(userInfo: DB.User): Promise<void> {
     userInfo.id = uuidv4();
 
     await db.insert(users).values(userInfo);
 }
 
-export async function getUserFromAuth(authID: string): Promise<Option<User>> {
+export async function getUserFromAuth(authID: string): Promise<Option<DB.User>> {
     const queryResult = await db.select().from(users).where(eq(users.authID, authID));
     if (queryResult.length === 0) {
         return None;
     }
 
-    return Some(queryResult[0] as User);
+    return Some(queryResult[0] as DB.User);
 }
 
-export async function getUser(uid: string): Promise<Option<User>> {
+export async function getUser(uid: string): Promise<Option<DB.User>> {
     const queryResult = await db.select().from(users).where(eq(users.id, uid));
     if (queryResult.length === 0) {
         return None;
     }
 
-    return Some(queryResult[0] as User);
+    return Some(queryResult[0] as DB.User);
 }
 
 async function get(req: Request, res: Response): Promise<void> {
@@ -68,7 +68,7 @@ async function update(req: Request, res: Response): Promise<void> {
     const userInfo = req.body as UserUpdateRequestBody;
     const queryResult = await db.update(users).set(userInfo).where(eq(users.id, uid.unwrap())).returning()
     
-    const result = Some(queryResult[0] as User).okOr(
+    const result = Some(queryResult[0] as DB.User).okOr(
         new HttpError(HttpStatus.InternalError, "failed to update user info")
     );
 
