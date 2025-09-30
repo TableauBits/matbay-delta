@@ -1,7 +1,8 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { io } from 'socket.io-client';
 import { environment } from '../../environments/environment';
-import { WebsocketEvents } from '../../../../common/websocket';
+import { WebsocketEvents, WSInMessage } from '../../../../common/websocket';
+import { DeltaAuth } from './delta-auth';
 
 export type CallbackFunction = (...args: any[]) => void;
 
@@ -9,6 +10,7 @@ export type CallbackFunction = (...args: any[]) => void;
   providedIn: 'root'
 })
 export class WsRequests {
+  private deltaAuth = inject(DeltaAuth);
   private socket = io(environment.server.ws);
 
   on(event: WebsocketEvents, callback: CallbackFunction) {
@@ -19,7 +21,8 @@ export class WsRequests {
     this.socket.off(event, callback);
   }
 
-  emit(event: WebsocketEvents, data: unknown): void {
-    this.socket.emit(event, data);
+  async emit<T extends WSInMessage>(event: WebsocketEvents, data: Omit<T, "deltaAuth">): Promise<void> {
+    const token = await this.deltaAuth.getIdToken()
+    this.socket.emit(event, { ...data, deltaAuth: token.__raw });
   }
 }

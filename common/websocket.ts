@@ -7,10 +7,10 @@ enum WebsocketEvents {
   CST_USER_JOIN = "cst-user-join",        // OUT
   CST_USER_LEAVE = "cst-user-leave",      // OUT
   CST_SUBSCRIBE = "cst-subscribe",        // IN
-  CST_UNSUBSCRIBE = "cst-unsubscribe"    // IN
+  CST_UNSUBSCRIBE = "cst-unsubscribe"     // IN
 }
 
-// IN MESSAGES (user ==> server)
+// IN MESSAGES (client ==> server)
 /// The default interface have the "deltaAuth" field to authenticate the user and validate the request
 interface WSInMessage {
   deltaAuth: string;
@@ -26,8 +26,7 @@ interface WSCstUnsubscribeMessage extends WSInMessage {
   constitution: number;
 }
 
-// OUT MESSAGES (server ==> users)
-
+// OUT MESSAGES (server ==> clients)
 /// Message when a user joins a constitution
 interface WSCstUserJoinMessage {
   constitution: number;         // ID of the constitution
@@ -42,5 +41,6 @@ interface WSCstUserLeaveMessage {
 
 export {
   WebsocketEvents,
+  type WSInMessage,
   type WSCstUserJoinMessage, type WSCstUserLeaveMessage, type WSCstSubscribeMessage, type WSCstUnsubscribeMessage
 };

@@ -21,12 +21,11 @@ export class Constitutions implements OnDestroy {
   private wsEvents = new Map<WebsocketEvents, CallbackFunction>
 
   ngOnDestroy(): void {
-    this.constitutions.forEach((value, key) => {
-      const message: WSCstUnsubscribeMessage = {
-        constitution: key,
-        deltaAuth: ""       // TODO
-      };
-      this.wsRequests.emit(WebsocketEvents.CST_UNSUBSCRIBE, message);
+    this.constitutions.forEach(async (_, key) => {
+      await this.wsRequests.emit<WSCstUnsubscribeMessage>(
+        WebsocketEvents.CST_UNSUBSCRIBE,
+        { constitution: key }
+      );
     })
     this.wsEvents.forEach((value, key) => {
       this.wsRequests.off(key, value)
@@ -42,20 +41,19 @@ export class Constitutions implements OnDestroy {
       .set(WebsocketEvents.CST_USER_JOIN, this.onUserJoin.bind(this))
       .set(WebsocketEvents.CST_USER_LEAVE, this.onUserLeave.bind(this))
 
-    this.wsEvents.forEach((value, key) => this.wsRequests.on(key, value))
+    this.wsEvents.forEach((value, key) => this.wsRequests.on(key, value));
   }
 
   private async serviceGetAllConstitutions(): Promise<void> {
     this.httpRequests.authenticatedGetRequest("constitution/getAll").then((response) => {
       const constitutions = JSON.parse(response) as Constitution[];
 
-      constitutions.forEach((constitution) => {
-        // TODO : Register to changes on the constitution with ws
-        const registerMessage: WSCstSubscribeMessage = {
-          constitution: constitution.id,
-          deltaAuth: "" // TODO
-        }
-        this.wsRequests.emit(WebsocketEvents.CST_SUBSCRIBE, registerMessage);
+      constitutions.forEach(async (constitution) => {
+        // Subscribe to the changes in the constitution
+        await this.wsRequests.emit<WSCstSubscribeMessage>(
+          WebsocketEvents.CST_SUBSCRIBE,
+          { constitution: constitution.id }
+        );
 
         // Sort users by join date
         constitution.userConstitution.sort((a, b) => sortByJoinDate(a, b));

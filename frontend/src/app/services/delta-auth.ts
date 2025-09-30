@@ -1,15 +1,13 @@
 import { AuthService, IdToken } from '@auth0/auth0-angular';
 import { BehaviorSubject, Observable, ReplaySubject, firstValueFrom } from 'rxjs';
-import { DOCUMENT, Injectable, OnDestroy, inject } from '@angular/core';
+import { DOCUMENT, Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environments/environment';
-import { CallbackFunction, WsRequests } from './ws-requests';
-import { WebsocketEvents } from '../../../../common/websocket';
 
 @Injectable({
   providedIn: 'root'
 })
-export class DeltaAuth implements OnDestroy {
+export class DeltaAuth {
   private idToken$: ReplaySubject<IdToken> = new ReplaySubject<IdToken>(1);
   private uid$: ReplaySubject<string> = new ReplaySubject<string>(1);
   private isAuthenticated$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
@@ -17,18 +15,11 @@ export class DeltaAuth implements OnDestroy {
   private auth = inject(AuthService);
   private document = inject(DOCUMENT);
   private http = inject(HttpClient);
-  private ws = inject(WsRequests);
 
   constructor() {
     this.auth.idTokenClaims$.subscribe((claims) => {
       if (claims) this.onConnect(claims);
     });
-
-    this.ws.on(WebsocketEvents.AUTH, this.onAuth);
-  }
-
-  ngOnDestroy(): void {
-    this.ws.off(WebsocketEvents.AUTH, this.onAuth);
   }
 
   onConnect(claims: IdToken): void {
@@ -45,8 +36,6 @@ export class DeltaAuth implements OnDestroy {
         },
         error: (error) => console.error(error)
       });
-
-    this.ws.emit(WebsocketEvents.AUTH, { token: claims.__raw });
   }
 
   onAuth(response: unknown): void {
