@@ -1,8 +1,8 @@
-import { inject, Injectable, OnDestroy } from '@angular/core';
-import { HttpRequests } from './http-requests';
-import { Constitution, CreateConstitutionRequestBody, UserConstitution } from '../../../../common/constitution';
-import { WebsocketEvents, WSCstSubscribeMessage, WSCstUnsubscribeMessage, WSCstUserJoinMessage, WSCstUserLeaveMessage } from '../../../../common/websocket';
 import { CallbackFunction, WsRequests } from './ws-requests';
+import { Constitution, CreateConstitutionRequestBody, UserConstitution } from '../../../../common/constitution';
+import { Injectable, OnDestroy, inject } from '@angular/core';
+import { WSCstSubscribeMessage, WSCstUnsubscribeMessage, WSCstUserJoinMessage, WSCstUserLeaveMessage, WebsocketEvents } from '../../../../common/websocket';
+import { HttpRequests } from './http-requests';
 
 function sortByJoinDate(a: UserConstitution, b: UserConstitution): number {
   if (a.joinDate === b.joinDate) return 0;
@@ -18,7 +18,7 @@ export class Constitutions implements OnDestroy {
   private wsRequests = inject(WsRequests);
 
   private constitutions = new Map<number, Constitution>();
-  private wsEvents = new Map<WebsocketEvents, CallbackFunction>
+  private wsEvents = new Map<WebsocketEvents, CallbackFunction>;
 
   ngOnDestroy(): void {
     this.constitutions.forEach(async (_, key) => {

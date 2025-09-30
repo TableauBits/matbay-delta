@@ -1,12 +1,12 @@
 import { Component, OnDestroy, inject } from '@angular/core';
 import { Observable, Subscription } from 'rxjs';
 import { CommonModule } from '@angular/common';
+import { ConstitutionForm } from './components/constitution-form/constitution-form';
+import { Constitutions } from './services/constitutions';
 import { CurrentUserForm } from './components/current-user-form/current-user-form';
 import { DeltaAuth } from './services/delta-auth';
 import { User } from '../../../common/user'
 import { Users } from './services/users';
-import { ConstitutionForm } from './components/constitution-form/constitution-form';
-import { Constitutions } from './services/constitutions';
 
 @Component({
   selector: 'app-root',
