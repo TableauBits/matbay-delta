@@ -1,7 +1,7 @@
 import { inject, Injectable, OnDestroy } from '@angular/core';
 import { HttpRequests } from './http-requests';
 import { Constitution, CreateConstitutionRequestBody, UserConstitution } from '../../../../common/constitution';
-import { WebsocketEvents, WSUserJoinMessage, WSUserLeaveMessage } from '../../../../common/websocket';
+import { WebsocketEvents, WSCstSubscribeMessage, WSCstUnsubscribeMessage, WSCstUserJoinMessage, WSCstUserLeaveMessage } from '../../../../common/websocket';
 import { CallbackFunction, WsRequests } from './ws-requests';
 
 function sortByJoinDate(a: UserConstitution, b: UserConstitution): number {
@@ -16,12 +16,21 @@ export class Constitutions implements OnDestroy {
   // Service injections
   private httpRequests = inject(HttpRequests);
   private wsRequests = inject(WsRequests);
-  
+
   private constitutions = new Map<number, Constitution>();
   private wsEvents = new Map<WebsocketEvents, CallbackFunction>
 
   ngOnDestroy(): void {
-    this.wsEvents.forEach((value, key) => this.wsRequests.off(key, value));
+    this.constitutions.forEach((value, key) => {
+      const message: WSCstUnsubscribeMessage = {
+        constitution: key,
+        deltaAuth: ""       // TODO
+      };
+      this.wsRequests.emit(WebsocketEvents.CST_UNSUBSCRIBE, message);
+    })
+    this.wsEvents.forEach((value, key) => {
+      this.wsRequests.off(key, value)
+    });
   }
 
   constructor() {
@@ -32,7 +41,7 @@ export class Constitutions implements OnDestroy {
     this.wsEvents = new Map()
       .set(WebsocketEvents.CST_USER_JOIN, this.onUserJoin.bind(this))
       .set(WebsocketEvents.CST_USER_LEAVE, this.onUserLeave.bind(this))
-    
+
     this.wsEvents.forEach((value, key) => this.wsRequests.on(key, value))
   }
 
@@ -42,6 +51,11 @@ export class Constitutions implements OnDestroy {
 
       constitutions.forEach((constitution) => {
         // TODO : Register to changes on the constitution with ws
+        const registerMessage: WSCstSubscribeMessage = {
+          constitution: constitution.id,
+          deltaAuth: "" // TODO
+        }
+        this.wsRequests.emit(WebsocketEvents.CST_SUBSCRIBE, registerMessage);
 
         // Sort users by join date
         constitution.userConstitution.sort((a, b) => sortByJoinDate(a, b));
@@ -79,14 +93,14 @@ export class Constitutions implements OnDestroy {
   }
 
   // Websocket callback
-  onUserJoin(message: WSUserJoinMessage): void {
+  onUserJoin(message: WSCstUserJoinMessage): void {
     const constitution = this.constitutions.get(message.constitution);
     if (!constitution) return;
     constitution.userConstitution.push(message.userConstitution);
     constitution.userConstitution.sort((a, b) => sortByJoinDate(a, b));
   }
 
-  onUserLeave(message: WSUserLeaveMessage): void {
+  onUserLeave(message: WSCstUserLeaveMessage): void {
     const constitution = this.constitutions.get(message.constitution);
     if (!constitution) return;
     constitution.userConstitution = constitution.userConstitution.filter(uc => uc.user !== message.user);
