@@ -2,13 +2,12 @@ import { eq } from "drizzle-orm";
 import { type Request, type Response, Router } from "express";
 import { Err, None, Option, Some } from "oxide.ts";
 import { v4 as uuidv4 } from "uuid";
+import type { UserUpdateRequestBody } from "../../../common/user";
 import { ensureAuthMiddleware } from "../auth/http";
 import { db } from "../db/http";
+import type { DB } from "../db-namepsace";
 import { HttpError, HttpStatus, sendResult } from "../utils";
 import { users } from "./schema";
-import type { UserUpdateRequestBody } from "../../../common/user";
-import type { DB } from "../db-namepsace";
-
 
 export async function createUser(userInfo: DB.User): Promise<void> {
     userInfo.id = uuidv4();
@@ -54,22 +53,19 @@ async function update(req: Request, res: Response): Promise<void> {
         sendResult(uid, res);
         return;
     }
-    
+
     // Ensure the user is updating their own info
     if (req.uid !== uid.unwrap()) {
-        sendResult(
-            Err(new HttpError(HttpStatus.Unauthorized, "cannot update another user's info")),
-            res,
-        );
+        sendResult(Err(new HttpError(HttpStatus.Unauthorized, "cannot update another user's info")), res);
         return;
     }
 
     // Extract the user info from the request body and update the database
     const userInfo = req.body as UserUpdateRequestBody;
-    const queryResult = await db.update(users).set(userInfo).where(eq(users.id, uid.unwrap())).returning()
-    
+    const queryResult = await db.update(users).set(userInfo).where(eq(users.id, uid.unwrap())).returning();
+
     const result = Some(queryResult[0] as DB.User).okOr(
-        new HttpError(HttpStatus.InternalError, "failed to update user info")
+        new HttpError(HttpStatus.InternalError, "failed to update user info"),
     );
 
     sendResult(result, res);

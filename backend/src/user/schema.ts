@@ -8,11 +8,10 @@ export const users = sqliteTable(
         username: text().notNull(),
         displayName: text().notNull(),
         imageURL: text().notNull(),
-        joinDate: text().notNull().$defaultFn(() => new Date().toISOString()),
+        joinDate: text()
+            .notNull()
+            .$defaultFn(() => new Date().toISOString()),
         description: text().notNull(),
     },
-    (table) => [
-        uniqueIndex("authID_idx").on(table.authID),
-        uniqueIndex("username_idx").on(table.username)
-    ],
+    (table) => [uniqueIndex("authID_idx").on(table.authID), uniqueIndex("username_idx").on(table.username)],
 );
