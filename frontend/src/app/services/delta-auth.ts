@@ -23,7 +23,6 @@ export class DeltaAuth {
   }
 
   onConnect(claims: IdToken): void {
-    // Manage http login
     this.http.get(`${environment.server.url}/api/auth/login`, {
       headers: {
         "delta-auth": claims.__raw
@@ -36,10 +35,6 @@ export class DeltaAuth {
         },
         error: (error) => console.error(error)
       });
-  }
-
-  onAuth(response: unknown): void {
-    console.log(response);
   }
 
   succesfullLoginResponse(claims: IdToken, response: string): void {

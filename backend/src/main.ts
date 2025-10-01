@@ -25,7 +25,6 @@ const httpServer = http.createServer(app);
 export const io = new Server(httpServer, { cors: { origin: "*" } });
 io.on("connect", (socket) => {
     attachWSListeners(socket);
-    consola.info("new socket registered");
 });
 
 httpServer.listen(port, listenIp, () => consola.info(`server listening on ${listenIp}:${port}`));

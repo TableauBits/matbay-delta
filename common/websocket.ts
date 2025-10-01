@@ -1,9 +1,6 @@
 import type { UserConstitution } from "./constitution";
 
 enum WebsocketEvents {
-  AUTH = "delta-authenticate",            // IN-OUT
-
-  // CST
   CST_USER_JOIN = "cst-user-join",        // OUT
   CST_USER_LEAVE = "cst-user-leave",      // OUT
   CST_SUBSCRIBE = "cst-subscribe",        // IN
