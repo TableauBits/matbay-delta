@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: backend.Dockerfile
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./data:/data
+      - ./dev.db:/app/dev.db
+    environment:
+      - DATABASE_URL=/data/dev.db
+      - PORT=3000
+      - ENVIRONMENT=development
+    depends_on:
+      - db-init
+
+  # Initialize the database directory
+  db-init:
+    image: busybox
+    volumes:
+      - ./data:/data
+    command: touch /data/init.done
+
+volumes:
+  data:

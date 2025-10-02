@@ -22,7 +22,6 @@
         "@types/dotenv": "^8.2.3",
         "@types/express": "^5.0.3",
         "@types/jsonwebtoken": "^9.0.10",
-        "better-sqlite3": "^12.2.0",
         "drizzle-kit": "^0.31.4",
       },
       "peerDependencies": {
