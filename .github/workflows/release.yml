@@ -9,7 +9,7 @@ env:
 
 jobs:
   deploy_backend:
-    name: Deploy backend to Fly.io
+    name: deploy backend to Fly.io
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -18,3 +18,15 @@ jobs:
         uses: superfly/flyctl-actions/setup-flyctl@master
       - name: Deploy backend
         run: flyctl deploy
+  deploy_frontend:
+    name: deploy frontend to firebase hosting
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: bun i && bun run build
+      - uses: FirebaseExtended/action-hosting-deploy@v0
+        with:
+          repoToken: ${{ secrets.GITHUB_TOKEN }}
+          firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_MATBACTIVITY }}
+          channelId: live
+          projectId: matbay-delta
