@@ -8,13 +8,16 @@ import { lastValueFrom } from 'rxjs';
   providedIn: 'root'
 })
 export class HttpRequests {
+  // Service injections
   private deltaAuth = inject(DeltaAuth);
   private http = inject(HttpClient)
+
+  private readonly url = `${environment.server.httpProtocol}${environment.server.domain}`
 
   async authenticatedGetRequest(endpoint: string): Promise<string> {
     const token = await this.deltaAuth.getIdToken();
 
-    return lastValueFrom(this.http.get(`${environment.server.url}/api/${endpoint}`, {
+    return lastValueFrom(this.http.get(`${this.url}/api/${endpoint}`, {
       headers: {
         "delta-auth": token.__raw
       },
@@ -25,7 +28,7 @@ export class HttpRequests {
   async authenticatedPostRequest(endpoint: string, body: unknown): Promise<string> {
     const token = await this.deltaAuth.getIdToken();
 
-    return lastValueFrom(this.http.post(`${environment.server.url}/api/${endpoint}`, body, {
+    return lastValueFrom(this.http.post(`${this.url}/api/${endpoint}`, body, {
       headers: {
         "delta-auth": token.__raw
       },
