@@ -2,36 +2,35 @@ import { eq } from "drizzle-orm";
 import { type Request, type Response, Router } from "express";
 import { Err, None, Option, Some } from "oxide.ts";
 import { v4 as uuidv4 } from "uuid";
-import { ensureAuthMiddleware } from "../auth/mod";
-import { db } from "../db/mod";
-import { HttpError, HttpStatus, sendResult } from "../utils";
-import { usersTable } from "./schema";
 import type { UserUpdateRequestBody } from "../../../common/user";
+import { ensureAuthMiddleware } from "../auth/http";
+import { db } from "../db/http";
+import type { DB } from "../db-namepsace";
+import { HttpError, HttpStatus, sendResult } from "../utils";
+import { users } from "./schema";
 
-export type User = typeof usersTable.$inferInsert;
-
-export async function createUser(userInfo: User): Promise<void> {
+export async function createUser(userInfo: DB.User): Promise<void> {
     userInfo.id = uuidv4();
 
-    await db.insert(usersTable).values(userInfo);
+    await db.insert(users).values(userInfo);
 }
 
-export async function getUserFromAuth(authID: string): Promise<Option<User>> {
-    const queryResult = await db.select().from(usersTable).where(eq(usersTable.authID, authID));
+export async function getUserFromAuth(authID: string): Promise<Option<DB.User>> {
+    const queryResult = await db.select().from(users).where(eq(users.authID, authID));
     if (queryResult.length === 0) {
         return None;
     }
 
-    return Some(queryResult[0] as User);
+    return Some(queryResult[0] as DB.User);
 }
 
-export async function getUser(uid: string): Promise<Option<User>> {
-    const queryResult = await db.select().from(usersTable).where(eq(usersTable.id, uid));
+export async function getUser(uid: string): Promise<Option<DB.User>> {
+    const queryResult = await db.select().from(users).where(eq(users.id, uid));
     if (queryResult.length === 0) {
         return None;
     }
 
-    return Some(queryResult[0] as User);
+    return Some(queryResult[0] as DB.User);
 }
 
 async function get(req: Request, res: Response): Promise<void> {
@@ -54,22 +53,19 @@ async function update(req: Request, res: Response): Promise<void> {
         sendResult(uid, res);
         return;
     }
-    
+
     // Ensure the user is updating their own info
     if (req.uid !== uid.unwrap()) {
-        sendResult(
-            Err(new HttpError(HttpStatus.Unauthorized, "cannot update another user's info")),
-            res,
-        );
+        sendResult(Err(new HttpError(HttpStatus.Unauthorized, "cannot update another user's info")), res);
         return;
     }
 
     // Extract the user info from the request body and update the database
     const userInfo = req.body as UserUpdateRequestBody;
-    const queryResult = await db.update(usersTable).set(userInfo).where(eq(usersTable.id, uid.unwrap())).returning()
-    
-    const result = Some(queryResult[0] as User).okOr(
-        new HttpError(HttpStatus.InternalError, "failed to update user info")
+    const queryResult = await db.update(users).set(userInfo).where(eq(users.id, uid.unwrap())).returning();
+
+    const result = Some(queryResult[0] as DB.User).okOr(
+        new HttpError(HttpStatus.InternalError, "failed to update user info"),
     );
 
     sendResult(result, res);
