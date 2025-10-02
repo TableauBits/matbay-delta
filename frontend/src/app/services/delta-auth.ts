@@ -12,6 +12,7 @@ export class DeltaAuth {
   private uid$: ReplaySubject<string> = new ReplaySubject<string>(1);
   private isAuthenticated$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
+  // Service injections
   private auth = inject(AuthService);
   private document = inject(DOCUMENT);
   private http = inject(HttpClient);
@@ -23,7 +24,8 @@ export class DeltaAuth {
   }
 
   onConnect(claims: IdToken): void {
-    this.http.get(`${environment.server.url}/api/auth/login`, {
+    const serverURL = `${environment.server.httpProtocol}${environment.server.domain}`;
+    this.http.get(`${serverURL}/api/auth/login`, {
       headers: {
         "delta-auth": claims.__raw
       },

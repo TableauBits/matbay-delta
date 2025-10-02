@@ -15,7 +15,8 @@ export const environment = {
 
   // Variables necessary for proper communication with the backend.
   server: {
-    url: "YOUR_SERVER_URL",           // The URL where your instance of the backend is hosted and joinable.
-    ws: "YOUR_WS_URL"
+    domain: "YOUR_SERVER_DOMAIN",         // Domain name of your backend instance
+    httpProtocol: "YOUR_HTTP_PROTOCOL",   // HTTP protocol (should be "http://" or "https://")
+    wsProtocol: "YOUR_WS_PROTOCOL"        // Websocket protocol (should be "ws://" or "wss://")
   }
 }

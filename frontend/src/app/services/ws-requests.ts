@@ -12,7 +12,7 @@ export type CallbackFunction = (...args: any[]) => void;
 })
 export class WsRequests {
   private deltaAuth = inject(DeltaAuth);
-  private socket = io(environment.server.ws);
+  private socket = io(`${environment.server.wsProtocol}${environment.server.domain}`);
 
   on(event: WebsocketEvents, callback: CallbackFunction) {
     this.socket.on(event, callback);
