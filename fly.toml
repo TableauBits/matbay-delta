@@ -7,6 +7,7 @@ app = 'matbay-delta-backend'
 primary_region = 'yyz'
 
 [build]
+  dockerfile = "backend.Dockerfile"
 
 [http_service]
   internal_port = 3000
@@ -24,3 +25,4 @@ primary_region = 'yyz'
 [mounts]
   source="sqlite_db"
   destination="/mnt/sqlite_db"
+  initial_size = "1gb"

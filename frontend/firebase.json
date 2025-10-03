@@ -1,0 +1,17 @@
+{
+  "hosting": {
+    "site": "matbay-delta",
+    "public": "dist/delta-frontend/browser",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ],
+    "rewrites": [
+      {
+        "source": "**",
+        "destination": "/index.html"
+      }
+    ]
+  }
+}
