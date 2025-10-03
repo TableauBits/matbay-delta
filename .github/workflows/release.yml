@@ -35,3 +35,9 @@ jobs:
           firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_MATBACTIVITY }}
           channelId: live
           projectId: matbactivity
+        env:
+          NG_APP_AUTH0_DOMAIN: "${{ vars.REPOSITORY_VAR }}"
+          NG_APP_AUTH0_CLIENT: "${{ vars.NG_APP_AUTH0_CLIENT }}"
+          NG_APP_SERVER_DOMAIN: "${{ vars.NG_APP_SERVER_DOMAIN }}"
+          NG_APP_SERVER_HTTP_PROTOCOL: "${{ vars.NG_APP_SERVER_HTTP_PROTOCOL }}"
+          NG_APP_SERVER_WS_PROTOCOL: "${{ vars.NG_APP_SERVER_WS_PROTOCOL }}"
