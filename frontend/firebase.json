@@ -1,6 +1,7 @@
 {
   "hosting": {
-    "public": "dist/delta-frontend",
+    "site": "matbay-delta",
+    "public": "dist/delta-frontend/browser",
     "ignore": [
       "firebase.json",
       "**/.*",
