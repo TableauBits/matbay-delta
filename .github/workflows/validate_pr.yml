@@ -25,7 +25,7 @@ jobs:
       - name: Set up Bun
         uses: oven-sh/setup-bun@v2
         with:
-          bun-version: stable
+          bun-version: latest
 
       - name: Cache backend Bun and dependencies
         uses: actions/cache@v4
@@ -56,7 +56,7 @@ jobs:
       - name: Set up Bun
         uses: oven-sh/setup-bun@v2
         with:
-          bun-version: stable
+          bun-version: latest
 
       - name: Cache frontend Bun and dependencies
         uses: actions/cache@v4
