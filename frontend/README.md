@@ -12,11 +12,11 @@ bun install
 ```
 
 ### Configure environment variables
-This frontend needs some configuration to know how to interact with the backend and to change its own behaviour. The project use [Angular application environments](https://angular.dev/tools/cli/environments) to manage the variables to use. To create a new Angular environment for a debug configuration, copy the template file `environment.template.ts` and rename it to `environment.development.ts` (the names need to be exact, as Angular will look for these exact names). Read through the comments in the file to tweak each variable's value appropriately.
+The frontend needs some configuration to know how to interact with the backend and to change its own behaviour. The project use [Angular application environments](https://angular.dev/tools/cli/environments) and [@ngx-env/builder](https://www.npmjs.com/package/@ngx-env/builder) to manage the environments variables to use. To create a new Angular environment for a debug configuration, copy the template file `environment.template.ts` and rename it to `environment.development.ts` (the names need to be exact, as Angular will look for these exact names). Read through the comments in the file to tweak each variable's value appropriately.
 
 The `src/environments` folder contains by default :
 * `environment.template.ts`, the template configuration to create new environment or to test the application.
-* `environment.ts`, the release configuration, to deploy the application. This configuration use environment variable that can be add with a `.env` file at the root of the `frontend`. To be detected, each variable must start with the prefix `NG_APP`.
+* `environment.ts`, the release configuration, to deploy the application. This configuration use environment variables that can be set in a `.env` file at the root of the `frontend` folder. To be detected, each variable must start with the prefix `NG_APP`.
 
 ### Run app
 
