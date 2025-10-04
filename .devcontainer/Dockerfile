@@ -1,7 +1,7 @@
 FROM alpine:latest
 
 # Global dependencies
-RUN apk add --no-cache bash git curl nodejs libstdc++ sqlite
+RUN apk add --no-cache bash git curl nodejs libstdc++ sqlite openssh uv
 
 # Install Bun
 RUN curl -fsSL https://bun.sh/install | bash

@@ -5,19 +5,70 @@ on:
     branches:
       - main
 
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
-  build:
+  validate-backend:
+    name: Validate backend
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
       - name: Set up Bun
         uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: stable
+
+      - name: Cache backend Bun and dependencies
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.bun
+            backend/node_modules
+            backend/.bun
+          key: ${{ runner.os }}-bun-backend-${{ hashFiles('backend/bun.lockb') }}
+          restore-keys: |
+            ${{ runner.os }}-bun-backend-
+
       - name: Validate backend code
         run: |
           cd backend
           bun install
           bun ci
+
+  validate-frontend:
+    name: Validate frontend
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: stable
+
+      - name: Cache frontend Bun and dependencies
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.bun
+            frontend/node_modules
+            frontend/.bun
+          key: ${{ runner.os }}-bun-frontend-${{ hashFiles('frontend/bun.lockb') }}
+          restore-keys: |
+            ${{ runner.os }}-bun-frontend-
+
       - name: Validate frontend code
         run: |
           cd frontend
