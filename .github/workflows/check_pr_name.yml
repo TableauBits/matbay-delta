@@ -10,7 +10,7 @@ on:
 
 jobs:
   check_commit_has_issue:
-    if: event.type == 'opened' || event.changes.title.from
+    if: ${{ !startsWith(github.head_ref, "dependabot/") }} && (event.type == 'opened' || event.changes.title.from)
     runs-on: ubuntu-latest
     steps:
       run: |
@@ -19,5 +19,3 @@ jobs:
           echo "PR title doesn't contain a DELTA-issue ID (please add hotfix if no issue is applicable)";
           exit 1;
         fi
-
-      
