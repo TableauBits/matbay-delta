@@ -1,0 +1,22 @@
+name: Check that the PR name contains a DELTA-issue ID.
+
+on:
+  pull_request:
+    branches:
+      - main
+    types:
+      - opened
+      - edited
+
+jobs:
+  check_commit_has_issue:
+    if: (! startsWith(github.head_ref, 'dependabot/')) && (github.event.type == 'opened' || github.event.changes.title.from)
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          title="${{ github.event.pull_request.title }}"
+          if ! echo $title | grep -E ".* \(((DELTA-[0-9]+)|hotfix)\)$"
+          then
+            echo "PR title doesn't contain a DELTA-issue ID (please add hotfix if no issue is applicable)";
+            exit 1;
+          fi
