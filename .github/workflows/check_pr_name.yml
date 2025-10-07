@@ -14,7 +14,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - run: |
-          title=${{ github.event.pull_request.title }}
+          title="${{ github.event.pull_request.title }}"
           if ! echo $title | grep -E ".* \(((DELTA-[0-9]+)|hotfix)\)$"
           then
             echo "PR title doesn't contain a DELTA-issue ID (please add hotfix if no issue is applicable)";
