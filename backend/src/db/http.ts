@@ -5,9 +5,10 @@ import { type Request, type Response, Router } from "express";
 import { Option } from "oxide.ts";
 import * as constitutionSchema from "../constitutions/schema";
 import * as userSchema from "../user/schema";
+import * as songSchema from "../songs/schema";
 
 // Get the complete schema by merging all individual schemas
-const schema = { ...userSchema, ...constitutionSchema };
+const schema = { ...userSchema, ...constitutionSchema, ...songSchema };
 
 export const dbURL = Option(process.env["DATABASE_URL"]).expect(
     "environment variable DATABASE_URL not found but is mandatory, check `.env.template`",
