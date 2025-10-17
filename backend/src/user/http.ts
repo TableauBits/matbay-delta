@@ -9,28 +9,28 @@ import type { DB } from "../db-namepsace";
 import { HttpError, HttpStatus, sendResult } from "../utils";
 import { users } from "./schema";
 
-export async function createUser(userInfo: DB.User): Promise<void> {
+export async function createUser(userInfo: DB.Insert.User): Promise<void> {
     userInfo.id = uuidv4();
 
     await db.insert(users).values(userInfo);
 }
 
-export async function getUserFromAuth(authID: string): Promise<Option<DB.User>> {
+export async function getUserFromAuth(authID: string): Promise<Option<DB.Select.User>> {
     const queryResult = await db.select().from(users).where(eq(users.authID, authID));
     if (queryResult.length === 0) {
         return None;
     }
 
-    return Some(queryResult[0] as DB.User);
+    return Some(queryResult[0] as DB.Select.User);
 }
 
-export async function getUser(uid: string): Promise<Option<DB.User>> {
+export async function getUser(uid: string): Promise<Option<DB.Select.User>> {
     const queryResult = await db.select().from(users).where(eq(users.id, uid));
     if (queryResult.length === 0) {
         return None;
     }
 
-    return Some(queryResult[0] as DB.User);
+    return Some(queryResult[0] as DB.Select.User);
 }
 
 async function get(req: Request, res: Response): Promise<void> {
@@ -64,7 +64,7 @@ async function update(req: Request, res: Response): Promise<void> {
     const userInfo = req.body as UserUpdateRequestBody;
     const queryResult = await db.update(users).set(userInfo).where(eq(users.id, uid.unwrap())).returning();
 
-    const result = Some(queryResult[0] as DB.User).okOr(
+    const result = Some(queryResult[0] as DB.Select.User).okOr(
         new HttpError(HttpStatus.InternalError, "failed to update user info"),
     );
 

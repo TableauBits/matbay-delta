@@ -10,7 +10,7 @@ import { constitutions, userConstitution } from "./schema";
 import { onUserJoinCallback, onUserLeaveCallback } from "./ws";
 
 // Utils functions
-async function addUserToConstitution(uid: string, cstid: number): Promise<Result<DB.UserConstitution, Error>> {
+async function addUserToConstitution(uid: string, cstid: number): Promise<Result<DB.Insert.UserConstitution, Error>> {
     const operation = async () =>
         await db
             .insert(userConstitution)
@@ -20,7 +20,7 @@ async function addUserToConstitution(uid: string, cstid: number): Promise<Result
             })
             .returning();
 
-    const insertResult = (await Result.safe(operation())).map((vals) => vals[0] as DB.UserConstitution);
+    const insertResult = (await Result.safe(operation())).map((vals) => vals[0] as DB.Select.UserConstitution);
     if (insertResult.isOk()) {
         onUserJoinCallback(insertResult.unwrap());
     }
@@ -28,7 +28,7 @@ async function addUserToConstitution(uid: string, cstid: number): Promise<Result
     return insertResult;
 }
 
-async function removeUserFromConstitution(uid: string, cstid: number): Promise<Result<DB.UserConstitution, Error>> {
+async function removeUserFromConstitution(uid: string, cstid: number): Promise<Result<DB.Select.UserConstitution, Error>> {
     const operation = async () =>
         await db
             .delete(userConstitution)
@@ -54,7 +54,7 @@ async function create(req: Request, res: Response): Promise<void> {
     const uid = Option(req.uid);
     if (uid.isNone()) {
         sendResult(
-            Err(new HttpError(HttpStatus.InternalError, "missing uid in request, this should never happen")),
+            Err(new HttpError(HttpStatus.BadRequest, "missing uid in request, this should never happen")),
             res,
         );
         return;
