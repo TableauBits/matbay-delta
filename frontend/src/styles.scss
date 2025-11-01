@@ -1,1 +1,144 @@
-/* You can add global styles to this file, and also import other style files */
+@import url("https://fonts.googleapis.com/css2?family=Madimi+One&family=Rubik:ital,wght@0,300..900;1,300..900&display=swap");
+
+$primary: #673ab7;
+$primary-dark: #393346;
+$secondary: #dbaeff;
+$secondary-dark: #ab9fc0;
+$background: #0e0e0e;
+$surface: #181719;
+$text: #ffffff;
+
+$magenta: #a834ac;
+$pink: #e750ad;
+$rose: #ef547b;
+$orange: #f75748;
+$yellow: #fed057;
+
+$radial-colorful-gradient: linear-gradient(
+    0deg,
+    rgba(255, 255, 255, 0.2) 0%,
+    rgba(255, 255, 255, 0.2) 100%
+  ),
+  radial-gradient(
+    797.62% 50% at 50% 50%,
+    $primary 0%,
+    $pink 34.5%,
+    $orange 67%,
+    $yellow 100%
+  );
+
+$stroke-radial: radial-gradient(
+  50% 50% at 50% 50%,
+  rgba(255, 255, 255, 0.5) 10%,
+  rgba(153, 153, 153, 0) 100%
+);
+
+$font-family-base: "Rubik", sans-serif;
+
+:root {
+  font-family: $font-family-base;
+}
+
+body {
+  background-color: $background;
+  color: $text;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 0;
+}
+
+h1 {
+  font-size: 3rem;
+}
+
+h2 {
+  font-size: 2rem;
+}
+
+.colorful-text {
+  background: radial-gradient(
+    50% 50% at 50% 50%,
+    $primary 0%,
+    $pink 48%,
+    $orange 83%,
+    $yellow 100%
+  );
+  mix-blend-mode: plus-lighter;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.madimi-one {
+  font-family: "Madimi One";
+  font-size: 115%;
+}
+
+button,
+.button {
+  color: $text;
+  font-family: $font-family-base;
+  font-size: 1rem;
+
+  display: flex;
+  padding: 0.75em 1.5em;
+  justify-content: center;
+  align-items: center;
+  gap: 0.75em;
+  margin: 0.5em;
+
+  border-radius: 4rem;
+  box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.25);
+  backdrop-filter: blur(25px);
+  background-color: transparent;
+
+  cursor: pointer;
+
+  &.colorful-border {
+    border: 1px solid var($radial-colorful-gradient, #673ab7);
+    background: radial-gradient(
+      1008.57% 60.91% at 53.04% 50%,
+      rgba(255, 227, 155, 0.05) 0%,
+      rgba(254, 208, 87, 0.05) 0.01%,
+      rgba(247, 87, 72, 0.05) 52.4%,
+      rgba(231, 80, 173, 0.05) 100%
+    );
+  }
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
+  width: max-content;
+
+  label {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1em;
+  }
+
+  input[type="text"],
+  input[type="password"],
+  textarea {
+    border: 1px solid $secondary;
+    border-radius: 4px;
+    padding: 0.5em;
+    background-color: $surface;
+    color: $text;
+
+    &:focus {
+      outline: none;
+      border-color: $primary;
+    }
+  }
+}
+
+hr {
+  height: 2px;
+  flex-shrink: 0;
+  border: 0;
+  background: $stroke-radial;
+}
