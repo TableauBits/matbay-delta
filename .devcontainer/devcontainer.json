@@ -7,8 +7,10 @@
     "mounts": [
         // Use named volumes for node_modules to improve performance
         "source=matbay-backend-node-modules,target=${containerWorkspaceFolder}/backend/node_modules,type=volume",
-        "source=matbay-frontend-node-modules,target=${containerWorkspaceFolder}/frontend/node_modules,type=volume"
+        "source=matbay-frontend-node-modules,target=${containerWorkspaceFolder}/frontend/node_modules,type=volume",
+        "source=${localEnv:HOME}${localEnv:USERPROFILE}/.ssh,target=/home/vscode/.ssh,type=bind,readonly"
     ],
+    "remoteUser": "vscode",
     "postCreateCommand": "cd backend && bun install && cd ../frontend && bun install",
     "customizations": {
         "vscode": {
