@@ -13,6 +13,7 @@ server. <br>
 @for (constitution of constitutions.getAll(); track $index) {
 <div>
   <h3>{{$index}} - {{constitution.name}} (id : {{constitution.id}}) </h3>
+  <hr>
   <p> Description : {{constitution.description}} </p>
   <p> Owner: {{(users.getUser(constitution.owner) | async)?.displayName}} </p>
   @for (user of constitution.userConstitution; track $index) {
@@ -22,8 +23,11 @@ server. <br>
       {{(users.getUser(user.user) | async)?.displayName}}
     </p>
   }
-  <button (click)="constitutions.join(constitution.id)"> Join constitution </button>
-  <button (click)="constitutions.leave(constitution.id)"> Leave constitution </button>
+  <app-add-song-form></app-add-song-form>
+  <div>
+    <button (click)="constitutions.join(constitution.id)"> Join constitution </button>
+    <button (click)="constitutions.leave(constitution.id)"> Leave constitution </button>
+  </div>
 </div>
 }
 <button (click)="deltaAuth.logout()"> Log out </button>
