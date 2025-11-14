@@ -54,7 +54,7 @@ export class AddSongForm {
   }
 
   getArtistIDsFromName(body: GetArtistIDByNameBody): Promise<number[]> {
-    return this.httpRequests.authenticatedPostRequest<number[]>('artist/getArtistIDFromName', body);
+    return this.httpRequests.authenticatedPostRequest<number[]>('artist/searchArtistsIDFromName', body);
   }
 
   async submitForm(): Promise<void> {
