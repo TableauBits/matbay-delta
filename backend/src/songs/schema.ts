@@ -9,7 +9,7 @@ const songs = sqliteTable("songs", {
 
     title: text().notNull(),
     /// This column is necessary to enforce that a song as at least one artist
-    // primaryArtist: integer().notNull().references(() => artists.id)
+    primaryArtist: integer().notNull().references(() => artists.id)
 });
 
 /// Artists table

@@ -26,8 +26,7 @@ export class Users {
     const newUser = new ReplaySubject<User>(1)
     this.users.set(uid, newUser);
 
-    this.httpRequests.authenticatedGetRequest(`user/get/${uid}`).then((response) => {
-      const user = JSON.parse(response) as User;
+    this.httpRequests.authenticatedGetRequest<User>(`user/get/${uid}`).then(user => {
       newUser.next(user);
     }).catch((error) => {
       console.error("failed to get user", error);
@@ -46,11 +45,10 @@ export class Users {
   async updateCurrentUserInfo(userInfo: UserUpdateRequestBody): Promise<void> {
     const uid = await this.deltaAuth.getUid();
 
-    this.httpRequests.authenticatedPostRequest(`user/update/${uid}`, userInfo).then((response) => {
-      const updatedUser = JSON.parse(response) as User;
+    this.httpRequests.authenticatedPostRequest<User>(`user/update/${uid}`, userInfo).then(user => {
       const userSubject = this.users.get(uid);
 
-      if (userSubject) userSubject.next(updatedUser);
+      if (userSubject) userSubject.next(user);
     }).catch((error) => {
       console.error("failed to update user info", error);
     });

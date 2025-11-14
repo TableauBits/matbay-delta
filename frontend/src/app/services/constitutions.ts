@@ -45,9 +45,7 @@ export class Constitutions implements OnDestroy {
   }
 
   private async serviceGetAllConstitutions(): Promise<void> {
-    this.httpRequests.authenticatedGetRequest("constitution/getAll").then((response) => {
-      const constitutions = JSON.parse(response) as Constitution[];
-
+    this.httpRequests.authenticatedGetRequest<Constitution[]>("constitution/getAll").then(constitutions => {
       constitutions.forEach(async (constitution) => {
         // Subscribe to the changes in the constitution
         await this.wsRequests.emit<WSCstSubscribeMessage>(
