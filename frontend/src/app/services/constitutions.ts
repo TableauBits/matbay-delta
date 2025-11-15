@@ -1,5 +1,5 @@
 import { CallbackFunction, WsRequests } from './ws-requests';
-import { Constitution, CreateConstitutionRequestBody, UserConstitution } from '../../../../common/constitution';
+import { Constitution, CreateConstitutionRequestBody, JoinConstitutionRequestBody, LeaveConstitutionRequestBody, UserConstitution } from '../../../../common/constitution';
 import { Injectable, OnDestroy, inject } from '@angular/core';
 import { WSCstSubscribeMessage, WSCstUnsubscribeMessage, WSCstUserJoinMessage, WSCstUserLeaveMessage, WebsocketEvents } from '../../../../common/websocket';
 import { HttpRequests } from './http-requests';
@@ -64,26 +64,20 @@ export class Constitutions implements OnDestroy {
     return Array.from(this.constitutions.values());
   }
 
-  create(body: CreateConstitutionRequestBody): void {
-    this.httpRequests.authenticatedPostRequest('constitution/create', body).then((response) => {
-      console.log("Constitution created:", response);
-    }).catch((error) => {
+  create(name: string, description: string): void {
+    this.httpRequests.authenticatedPostRequest<CreateConstitutionRequestBody>('constitution/create', {name, description}).catch((error) => {
       console.error("Failed to create constitution", error);
     });
   }
 
   join(id: number): void {
-    this.httpRequests.authenticatedGetRequest(`constitution/join/${id}`).then((response) => {
-      console.log("Joined constitution:", response);
-    }).catch((error) => {
+    this.httpRequests.authenticatedPostRequest<JoinConstitutionRequestBody>('constitution/join', {id}).catch((error) => {
       console.error("Failed to join constitution", error);
     });
   }
 
   leave(id: number): void {
-    this.httpRequests.authenticatedGetRequest(`constitution/leave/${id}`).then((response) => {
-      console.log("Leave constitution:", response);
-    }).catch((error) => {
+    this.httpRequests.authenticatedPostRequest<LeaveConstitutionRequestBody>('constitution/leave', {id}).catch((error) => {
       console.error("Failed to leave constitution", error);
     });
   }

@@ -37,7 +37,7 @@ async function getArtistsIDFromName(name: string): Promise<Result<number[], Erro
     return queryResult;
 }
 
-async function searchArtistsIDFromName(req: Request, res: Response): Promise<void> {
+async function searchIDFromName(req: Request, res: Response): Promise<void> {
     const body = req.body as GetArtistIDByNameBody;
 
     const ids = (await getArtistsIDFromName(body.name))
@@ -48,7 +48,8 @@ async function searchArtistsIDFromName(req: Request, res: Response): Promise<voi
 
 
 const artistApiRouter = Router();
-artistApiRouter.use("/searchArtistsIDFromName", ensureAuthMiddleware, searchArtistsIDFromName)
-artistApiRouter.use("/addArtist", ensureAuthMiddleware, addArtist);
+
+artistApiRouter.post("/searchIDFromName", ensureAuthMiddleware, searchIDFromName);
+artistApiRouter.post("/add", ensureAuthMiddleware, addArtist);
 
 export { artistApiRouter };

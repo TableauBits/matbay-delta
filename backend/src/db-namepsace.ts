@@ -8,8 +8,8 @@ export namespace DB {
         export type Artist = typeof artists.$inferInsert;
         export type Song = typeof songs.$inferInsert;
         export type SongArtist = typeof songArtist.$inferInsert;
-        export type UserConstitution = typeof userConstitution.$inferInsert;
         export type User = typeof users.$inferInsert;
+        export type UserConstitution = typeof userConstitution.$inferInsert;
     }
 
     export namespace Select {

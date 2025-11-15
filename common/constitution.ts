@@ -5,18 +5,26 @@ interface UserConstitution {
 }
 
 interface Constitution {
-  id: number,
-  name: string,
-  description: string,
-  owner: string,
-  creationDate: string,
-  userConstitution: UserConstitution[]
+  id: number;
+  name: string;
+  description: string;
+  owner: string;
+  creationDate: string;
+  userConstitution: UserConstitution[];
 }
 
 // Requests
 interface CreateConstitutionRequestBody {
-  name: string,
-  description: string,
+  name: string;
+  description: string;
 }
 
-export type { CreateConstitutionRequestBody, Constitution, UserConstitution };
+interface JoinConstitutionRequestBody {
+  id: number;
+}
+
+interface LeaveConstitutionRequestBody {
+  id: number;
+}
+
+export type { CreateConstitutionRequestBody, Constitution, JoinConstitutionRequestBody, LeaveConstitutionRequestBody, UserConstitution };

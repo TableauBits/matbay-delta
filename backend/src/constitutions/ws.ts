@@ -17,7 +17,8 @@ async function validateMessage(message: WSInMessage): Promise<boolean> {
 
 function attachWSListeners(socket: Socket) {
     // Subscribe the user to the changes on a constitution :
-    // The users list (when joining or leaving)
+    // The user list (when a user join or leave)
+    // TODO : The song list (when a song is added or removed)
     socket.on(WebsocketEvents.CST_SUBSCRIBE, async (message: WSCstSubscribeMessage) => {
         const isValid = await validateMessage(message);
         if (!isValid) return;
@@ -34,7 +35,9 @@ function attachWSListeners(socket: Socket) {
     });
 }
 
-function onUserJoinCallback(joinInfo: DB.UserConstitution) {
+// TODO : Add onSongAdded
+
+function onUserJoinCallback(joinInfo: DB.Select.UserConstitution) {
     const message: WSCstUserJoinMessage = {
         constitution: joinInfo.constitution,
         userConstitution: {
@@ -46,7 +49,7 @@ function onUserJoinCallback(joinInfo: DB.UserConstitution) {
     io.to(`${WebsocketEvents.CST_USER_JOIN}:${joinInfo.constitution}`).emit(WebsocketEvents.CST_USER_JOIN, message);
 }
 
-function onUserLeaveCallback(leaveInfo: DB.UserConstitution) {
+function onUserLeaveCallback(leaveInfo: DB.Select.UserConstitution) {
     const message: WSCstUserLeaveMessage = {
         constitution: leaveInfo.constitution,
         user: leaveInfo.user,

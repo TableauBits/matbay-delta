@@ -45,9 +45,8 @@ export class Users {
   async updateCurrentUserInfo(userInfo: UserUpdateRequestBody): Promise<void> {
     const uid = await this.deltaAuth.getUid();
 
-    this.httpRequests.authenticatedPostRequest<User>(`user/update/${uid}`, userInfo).then(user => {
+    this.httpRequests.authenticatedPostRequest<UserUpdateRequestBody, User>(`user/update`, userInfo).then(user => {
       const userSubject = this.users.get(uid);
-
       if (userSubject) userSubject.next(user);
     }).catch((error) => {
       console.error("failed to update user info", error);

@@ -1,12 +1,12 @@
 import { eq } from "drizzle-orm";
 import { type Request, type Response, Router } from "express";
-import { Err, None, Option, Some } from "oxide.ts";
+import { None, Option, Some } from "oxide.ts";
 import { v4 as uuidv4 } from "uuid";
 import type { UserUpdateRequestBody } from "../../../common/user";
 import { ensureAuthMiddleware } from "../auth/http";
 import { db } from "../db/http";
 import type { DB } from "../db-namepsace";
-import { HttpError, HttpStatus, sendResult } from "../utils";
+import { getBody, getReqUID, HttpError, HttpStatus, sendResult } from "../utils";
 import { users } from "./schema";
 
 export async function createUser(userInfo: DB.Insert.User): Promise<void> {
@@ -47,22 +47,20 @@ async function get(req: Request, res: Response): Promise<void> {
 }
 
 async function update(req: Request, res: Response): Promise<void> {
-    // Extract the uid from the request
-    const uid = Option(req.params["uid"]).okOr(new HttpError(HttpStatus.BadRequest, "missing user id from request"));
+    const userInfo = getBody<UserUpdateRequestBody>(req);
+    if (userInfo.isErr()) {
+        sendResult(userInfo, res);
+        return;
+    }
+
+    const uid = getReqUID(req);
     if (uid.isErr()) {
         sendResult(uid, res);
         return;
     }
 
-    // Ensure the user is updating their own info
-    if (req.uid !== uid.unwrap()) {
-        sendResult(Err(new HttpError(HttpStatus.Unauthorized, "cannot update another user's info")), res);
-        return;
-    }
-
     // Extract the user info from the request body and update the database
-    const userInfo = req.body as UserUpdateRequestBody;
-    const queryResult = await db.update(users).set(userInfo).where(eq(users.id, uid.unwrap())).returning();
+    const queryResult = await db.update(users).set(userInfo.unwrap()).where(eq(users.id, uid.unwrap())).returning();
 
     const result = Some(queryResult[0] as DB.Select.User).okOr(
         new HttpError(HttpStatus.InternalError, "failed to update user info"),
@@ -74,6 +72,6 @@ async function update(req: Request, res: Response): Promise<void> {
 const userApiRouter = Router();
 
 userApiRouter.use("/get/:uid", ensureAuthMiddleware, get);
-userApiRouter.use("/update/:uid", ensureAuthMiddleware, update);
+userApiRouter.post("/update", ensureAuthMiddleware, update);
 
 export { userApiRouter };

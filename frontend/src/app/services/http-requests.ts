@@ -14,7 +14,7 @@ export class HttpRequests {
 
   private readonly url = `${environment.server.httpProtocol}${environment.server.domain}`
 
-  async authenticatedGetRequest<T>(endpoint: string): Promise<T> {
+  async authenticatedGetRequest<Out>(endpoint: string): Promise<Out> {
     const token = await this.deltaAuth.getIdToken();
 
     return JSON.parse(await lastValueFrom(this.http.get(`${this.url}/api/${endpoint}`, {
@@ -22,10 +22,10 @@ export class HttpRequests {
         "delta-auth": token.__raw
       },
       responseType: "text"
-    }))) as T;
+    }))) as Out;
   }
 
-  async authenticatedPostRequest<T>(endpoint: string, body: unknown): Promise<T> {
+  async authenticatedPostRequest<In, Out = {}>(endpoint: string, body: In): Promise<Out> {
     const token = await this.deltaAuth.getIdToken();
 
     return JSON.parse(await lastValueFrom(this.http.post(`${this.url}/api/${endpoint}`, body, {
@@ -33,6 +33,6 @@ export class HttpRequests {
         "delta-auth": token.__raw
       },
       responseType: "text"
-    }))) as T;
+    }))) as Out;
   }
 }

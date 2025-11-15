@@ -113,8 +113,8 @@ const authApiRouter = Router();
 const authDevRouter = Router();
 
 authDevRouter.use("/token", tokenDevRouter);
-authDevRouter.use("/check", ensureAuthMiddleware, checkAuth);
 
-authApiRouter.use("/login", login);
+authDevRouter.get("/check", ensureAuthMiddleware, checkAuth);
+authApiRouter.get("/login", login);
 
 export { authApiRouter, authDevRouter, ensureAuthMiddleware };

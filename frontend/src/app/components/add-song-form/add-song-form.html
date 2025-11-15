@@ -2,6 +2,8 @@
 <form [formGroup]="songForm" class="song-form">
   <label> Title: </label>
   <input formControlName="title" placeholder="Song title">
+  <label> URL: </label>
+  <input formControlName="url" placeholder="Song URL">
   <div formArrayName="artists">
     <h4>Artists</h4>
     <button (click)="addArtist()">+ Add another artist</button>
