@@ -1,9 +1,8 @@
 import { type NextFunction, type Request, type Response, Router } from "express";
 import { Err, Ok, Option } from "oxide.ts";
-
-import { createUser, getUserFromAuth } from "../user/http";
 import { HttpError, HttpStatus, sendResult } from "../utils";
 import { tokenDevRouter, validateToken } from "./token";
+import { createUser, getUserFromAuth } from "../user/utils";
 
 async function ensureAuthMiddleware(req: Request, res: Response, next: NextFunction) {
     const headerFetch = Option(req.header("delta-auth")).okOr(
@@ -55,7 +54,7 @@ async function ensureAuthMiddleware(req: Request, res: Response, next: NextFunct
     next();
 }
 
-async function checkAuth(_req: Request, res: Response) {
+async function check(_req: Request, res: Response) {
     sendResult(Ok("successfully logged in"), res);
 }
 
@@ -114,7 +113,7 @@ const authDevRouter = Router();
 
 authDevRouter.use("/token", tokenDevRouter);
 
-authDevRouter.get("/check", ensureAuthMiddleware, checkAuth);
+authDevRouter.get("/check", ensureAuthMiddleware, check);
 authApiRouter.get("/login", login);
 
 export { authApiRouter, authDevRouter, ensureAuthMiddleware };

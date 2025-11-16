@@ -1,38 +1,15 @@
 import { eq } from "drizzle-orm";
 import { type Request, type Response, Router } from "express";
-import { None, Option, Some } from "oxide.ts";
-import { v4 as uuidv4 } from "uuid";
+import { Option, Some } from "oxide.ts";
 import type { UserUpdateRequestBody } from "../../../common/user";
 import { ensureAuthMiddleware } from "../auth/http";
 import { db } from "../db/http";
 import type { DB } from "../db-namepsace";
 import { getBody, getReqUID, HttpError, HttpStatus, sendResult } from "../utils";
 import { users } from "./schema";
+import { getUser } from "./utils";
 
-export async function createUser(userInfo: DB.Insert.User): Promise<void> {
-    userInfo.id = uuidv4();
-
-    await db.insert(users).values(userInfo);
-}
-
-export async function getUserFromAuth(authID: string): Promise<Option<DB.Select.User>> {
-    const queryResult = await db.select().from(users).where(eq(users.authID, authID));
-    if (queryResult.length === 0) {
-        return None;
-    }
-
-    return Some(queryResult[0] as DB.Select.User);
-}
-
-export async function getUser(uid: string): Promise<Option<DB.Select.User>> {
-    const queryResult = await db.select().from(users).where(eq(users.id, uid));
-    if (queryResult.length === 0) {
-        return None;
-    }
-
-    return Some(queryResult[0] as DB.Select.User);
-}
-
+ 
 async function get(req: Request, res: Response): Promise<void> {
     const uid = Option(req.params["uid"]).okOr(new HttpError(HttpStatus.BadRequest, "missing user id from request"));
     if (uid.isErr()) {
@@ -71,7 +48,7 @@ async function update(req: Request, res: Response): Promise<void> {
 
 const userApiRouter = Router();
 
-userApiRouter.use("/get/:uid", ensureAuthMiddleware, get);
+userApiRouter.get("/get/:uid", ensureAuthMiddleware, get);
 userApiRouter.post("/update", ensureAuthMiddleware, update);
 
 export { userApiRouter };

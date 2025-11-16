@@ -61,8 +61,8 @@ const userConstitutionRelation = relations(userConstitution, ({ one }) => ({
 const songConstitution = sqliteTable("songConstitution", {
     id: integer("id").primaryKey(),
 
-    url: text().notNull(),
-    song: text()
+    // url: text().notNull(),
+    song: integer()
         .notNull()
         .references(() => songs.id),
     user: text()

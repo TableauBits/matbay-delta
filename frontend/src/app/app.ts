@@ -27,19 +27,17 @@ export class App implements OnDestroy {
 
   currentUser: User | undefined;
 
-  ngOnDestroy() {
+  ngOnDestroy(): void {
     this.subscriptions.unsubscribe();
   }
 
   constructor() {
     this.currentUserObs = this.users.getCurrentUser();
-    
-    this.currentUserObs.then((userObs) => {
+
+    this.currentUserObs.then(userObs => {
       if (!userObs) return;
 
-      const subscription = userObs.subscribe((user) => {
-        this.currentUser = user;
-      });
+      const subscription = userObs.subscribe(user => { this.currentUser = user; });
       this.subscriptions.add(subscription);
     });
   }

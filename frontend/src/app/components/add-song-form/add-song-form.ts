@@ -1,7 +1,8 @@
-import { Component, inject } from '@angular/core';
+import { Component, computed, inject, input } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AddArtistRequestBody, AddSongRequestBody, Artist, ArtistContributions, GetArtistIDByNameBody, Song } from '../../../../../common/song';
 import { HttpRequests } from '../../services/http-requests';
+import { AddSongConstitutionRequestBody } from '../../../../../common/constitution';
 
 type FormArtist = {
   name: string;
@@ -18,6 +19,8 @@ export class AddSongForm {
   // Service injections
   private httpRequests = inject(HttpRequests);
   private formBuilder = inject(FormBuilder);
+
+  constitution = input.required<number>()
 
   // Form
   songForm: FormGroup;
@@ -54,8 +57,6 @@ export class AddSongForm {
   }
 
   async submitForm(): Promise<void> {
-    console.log(this.songForm.value);
-
     // Get the ids of already registered artists
     const incompleteArtistIds = await Promise.all(
       (this.songForm.value.artists as FormArtist[])
@@ -82,10 +83,13 @@ export class AddSongForm {
 
     console.log(song);
 
-
     // TODO : link song to artists
 
     // TODO : link song to constitution
+    this.httpRequests.authenticatedPostRequest<AddSongConstitutionRequestBody>('constitution/addSong', {
+      song: song.id,
+      constitution: this.constitution(),
+    });
 
     // Reset the form
     this.songForm.reset();

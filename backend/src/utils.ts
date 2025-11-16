@@ -37,6 +37,7 @@ export function sendResult<T, E extends HttpError>(result: Result<T, E>, res: Re
 }
 
 export function getBody<T>(req: Request): Result<T, HttpError> {
+    // Add type guard
     return Option(req.body).map((val) => val as T).okOr(new HttpError(HttpStatus.BadRequest, "missing body"));
 }
 

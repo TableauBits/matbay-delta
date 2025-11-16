@@ -23,7 +23,7 @@ server. <br>
       {{(users.getUser(user.user) | async)?.displayName}}
     </p>
   }
-  <app-add-song-form></app-add-song-form>
+  <app-add-song-form [constitution]="constitution.id"></app-add-song-form>
   <div>
     <button (click)="constitutions.join(constitution.id)"> Join constitution </button>
     <button (click)="constitutions.leave(constitution.id)"> Leave constitution </button>

@@ -27,4 +27,9 @@ interface LeaveConstitutionRequestBody {
   id: number;
 }
 
-export type { CreateConstitutionRequestBody, Constitution, JoinConstitutionRequestBody, LeaveConstitutionRequestBody, UserConstitution };
+interface AddSongConstitutionRequestBody {
+  song: number;
+  constitution: number;
+}
+
+export type { AddSongConstitutionRequestBody, CreateConstitutionRequestBody, Constitution, JoinConstitutionRequestBody, LeaveConstitutionRequestBody, UserConstitution };
