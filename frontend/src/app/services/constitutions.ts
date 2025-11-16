@@ -1,12 +1,17 @@
 import { CallbackFunction, WsRequests } from './ws-requests';
-import { Constitution, CreateConstitutionRequestBody, JoinConstitutionRequestBody, LeaveConstitutionRequestBody, UserConstitution } from '../../../../common/constitution';
+import { Constitution, CreateConstitutionRequestBody, JoinConstitutionRequestBody, LeaveConstitutionRequestBody } from '../../../../common/constitution';
 import { Injectable, OnDestroy, inject } from '@angular/core';
-import { WSCstSubscribeMessage, WSCstUnsubscribeMessage, WSCstUserJoinMessage, WSCstUserLeaveMessage, WebsocketEvents } from '../../../../common/websocket';
+import { WSCstSongAddMessage, WSCstSubscribeMessage, WSCstUnsubscribeMessage, WSCstUserJoinMessage, WSCstUserLeaveMessage, WebsocketEvents } from '../../../../common/websocket';
 import { HttpRequests } from './http-requests';
 
-function sortByJoinDate(a: UserConstitution, b: UserConstitution): number {
+function sortByJoinDate(a: { joinDate: string }, b: { joinDate: string }): number {
   if (a.joinDate === b.joinDate) return 0;
   return a.joinDate < b.joinDate ? -1 : 1;
+}
+
+function sortByAddDate(a: { addDate: string }, b: { addDate: string }): number {
+  if (a.addDate === b.addDate) return 0;
+  return a.addDate < b.addDate ? -1 : 1;
 }
 
 @Injectable({
@@ -38,8 +43,9 @@ export class Constitutions implements OnDestroy {
 
     // Initialize the list of events to react with websockets
     this.wsEvents = new Map()
+      .set(WebsocketEvents.CST_SONG_ADD, this.onSongAdd.bind(this))
       .set(WebsocketEvents.CST_USER_JOIN, this.onUserJoin.bind(this))
-      .set(WebsocketEvents.CST_USER_LEAVE, this.onUserLeave.bind(this))
+      .set(WebsocketEvents.CST_USER_LEAVE, this.onUserLeave.bind(this));
 
     this.wsEvents.forEach((value, key) => this.wsRequests.on(key, value));
   }
@@ -55,6 +61,10 @@ export class Constitutions implements OnDestroy {
 
         // Sort users by join date
         constitution.userConstitution.sort((a, b) => sortByJoinDate(a, b));
+
+        // Sort songs by add date
+        constitution.songConstitution.sort((a, b) => sortByAddDate(a, b));
+
         this.constitutions.set(constitution.id, constitution);
       });
     })
@@ -65,24 +75,31 @@ export class Constitutions implements OnDestroy {
   }
 
   create(name: string, description: string): void {
-    this.httpRequests.authenticatedPostRequest<CreateConstitutionRequestBody>('constitution/create', {name, description}).catch((error) => {
+    this.httpRequests.authenticatedPostRequest<CreateConstitutionRequestBody>('constitution/create', { name, description }).catch((error) => {
       console.error("Failed to create constitution", error);
     });
   }
 
   join(id: number): void {
-    this.httpRequests.authenticatedPostRequest<JoinConstitutionRequestBody>('constitution/join', {id}).catch((error) => {
+    this.httpRequests.authenticatedPostRequest<JoinConstitutionRequestBody>('constitution/join', { id }).catch((error) => {
       console.error("Failed to join constitution", error);
     });
   }
 
   leave(id: number): void {
-    this.httpRequests.authenticatedPostRequest<LeaveConstitutionRequestBody>('constitution/leave', {id}).catch((error) => {
+    this.httpRequests.authenticatedPostRequest<LeaveConstitutionRequestBody>('constitution/leave', { id }).catch((error) => {
       console.error("Failed to leave constitution", error);
     });
   }
 
   // Websocket callback
+  onSongAdd(message: WSCstSongAddMessage): void {
+    const constitution = this.constitutions.get(message.constitution);
+    if (!constitution) return;
+    constitution.songConstitution.push(message.songConstitution);
+    constitution.songConstitution.sort((a, b) => sortByAddDate(a, b));
+  }
+
   onUserJoin(message: WSCstUserJoinMessage): void {
     const constitution = this.constitutions.get(message.constitution);
     if (!constitution) return;

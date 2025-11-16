@@ -5,7 +5,7 @@ import { ensureAuthMiddleware } from "../auth/http";
 import { db } from "../db/http";
 import { getBody, getReqUID, HttpError, HttpStatus, sendResult } from "../utils";
 import { constitutions } from "./schema";
-import { addSongConstitution, addUserToConstitution, isMember, removeUserFromConstitution, searchSongs } from "./utils";
+import { addSongToConstitution, addUserToConstitution, isMember, removeUserFromConstitution, searchSongs } from "./utils";
 
 
 // GET ROUTES
@@ -19,6 +19,13 @@ async function getAll(_: Request, res: Response): Promise<void> {
                     joinDate: true,
                 },
             },
+            songConstitution: {
+                columns: {
+                    song: true,
+                    user: true,
+                    addDate: true,
+                }
+            }
         },
     });
 
@@ -65,7 +72,7 @@ async function addSong(req: Request, res: Response): Promise<void> {
     }
 
     const participation = body.unwrap();
-    const result = (await (addSongConstitution(participation.constitution, participation.song, uid.unwrap())))
+    const result = (await (addSongToConstitution(participation.constitution, participation.song, uid.unwrap())))
         .map(() => { return {} })
         .mapErr(
             (err) => new HttpError(HttpStatus.UnprocessableContent, `failed to add song '${participation.song}' constitution '${participation.constitution}' ${err}`),

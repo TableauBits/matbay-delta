@@ -16,12 +16,24 @@ server. <br>
   <hr>
   <p> Description : {{constitution.description}} </p>
   <p> Owner: {{(users.getUser(constitution.owner) | async)?.displayName}} </p>
+  <h3> Participants </h3>
   @for (user of constitution.userConstitution; track $index) {
-    <p>
-      Participant {{$index}} :
-      <img [src]="(users.getUser(user.user) | async)?.imageURL" width="25" height="25" alt="photo de profil de {{(users.getUser(user.user) | async)?.imageURL}}">
-      {{(users.getUser(user.user) | async)?.displayName}}
-    </p>
+  <p>
+    Participant {{$index}} :
+    <img [src]="(users.getUser(user.user) | async)?.imageURL" width="25" height="25"
+      alt="photo de profil de {{(users.getUser(user.user) | async)?.imageURL}}">
+    {{(users.getUser(user.user) | async)?.displayName}}
+  </p>
+  }
+  <h3> Songs </h3>
+  @for (song of constitution.songConstitution; track $index) {
+  <p>
+    Song {{$index}} : (id: {{song.song}}) added by     <img [src]="(users.getUser(song.user) | async)?.imageURL" width="25" height="25"
+      alt="photo de profil de {{(users.getUser(song.user) | async)?.imageURL}}"> {{(users.getUser(song.user) | async)?.displayName}}
+  </p>
+  }
+  @if(constitution.songConstitution.length === 0) {
+    No song.
   }
   <app-add-song-form [constitution]="constitution.id"></app-add-song-form>
   <div>

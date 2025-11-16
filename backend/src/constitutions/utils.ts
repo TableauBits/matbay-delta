@@ -1,6 +1,6 @@
 import { Option, Result } from "oxide.ts";
 import type { DB } from "../db-namepsace";
-import { onUserJoinCallback, onUserLeaveCallback } from "./ws";
+import { onSongAddCallback, onUserJoinCallback, onUserLeaveCallback } from "./ws";
 import { db } from "../db/http";
 import { songConstitution, userConstitution } from "./schema";
 import { and, eq } from "drizzle-orm";
@@ -22,15 +22,20 @@ async function addUserToConstitution(uid: string, cstid: number): Promise<Result
     return insertResult;
 }
 
-async function addSongConstitution(constitution: number, song: number, user: string): Promise<Result<DB.Insert.SongConstitution[], Error>> {
+async function addSongToConstitution(constitution: number, song: number, user: string): Promise<Result<DB.Insert.SongConstitution, Error>> {
     const operation = async () => await db.insert(songConstitution)
         .values({
             constitution,
             song,
             user
         }).returning()
+    
+    const insertResult = (await Result.safe(operation())).map((vals) => vals[0] as DB.Select.SongConstitution);
 
-    return await Result.safe(operation());
+    // Update users who were listening to changes
+    if (insertResult.isOk()) onSongAddCallback(insertResult.unwrap());
+
+    return insertResult;
 }
 
 async function isMember(uid: string, cstid: number): Promise<Result<boolean, Error>> {
@@ -72,4 +77,4 @@ async function searchSongs(cstid: number): Promise<Result<DB.Select.SongConstitu
 }
 
 
-export { addUserToConstitution, addSongConstitution, isMember, removeUserFromConstitution, searchSongs }
+export { addUserToConstitution, addSongToConstitution, isMember, removeUserFromConstitution, searchSongs }

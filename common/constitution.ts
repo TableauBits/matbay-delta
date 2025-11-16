@@ -4,6 +4,12 @@ interface UserConstitution {
   joinDate: string;
 }
 
+interface SongConstitution {
+  song: number;
+  user: string;
+  addDate: string;
+}
+
 interface Constitution {
   id: number;
   name: string;
@@ -11,6 +17,7 @@ interface Constitution {
   owner: string;
   creationDate: string;
   userConstitution: UserConstitution[];
+  songConstitution: SongConstitution[];
 }
 
 // Requests
@@ -32,4 +39,12 @@ interface AddSongConstitutionRequestBody {
   constitution: number;
 }
 
-export type { AddSongConstitutionRequestBody, CreateConstitutionRequestBody, Constitution, JoinConstitutionRequestBody, LeaveConstitutionRequestBody, UserConstitution };
+export type { 
+  Constitution,
+  UserConstitution,
+  SongConstitution,
+  AddSongConstitutionRequestBody,
+  CreateConstitutionRequestBody,
+  JoinConstitutionRequestBody,
+  LeaveConstitutionRequestBody
+};
