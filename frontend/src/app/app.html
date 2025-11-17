@@ -17,23 +17,29 @@ server. <br>
   <p> Description : {{constitution.description}} </p>
   <p> Owner: {{(users.getUser(constitution.owner) | async)?.displayName}} </p>
   <h3> Participants </h3>
-  @for (user of constitution.userConstitution; track $index) {
+  @for (userConstitution of constitution.userConstitution; track $index) {
   <p>
     Participant {{$index}} :
-    <img [src]="(users.getUser(user.user) | async)?.imageURL" width="25" height="25"
-      alt="photo de profil de {{(users.getUser(user.user) | async)?.imageURL}}">
-    {{(users.getUser(user.user) | async)?.displayName}}
+    @if (users.getUser(userConstitution.user) | async; as user) {
+    <img [src]="user.imageURL" width="25" height="25" alt="photo de profil de {{user.imageURL}}">
+    {{user.displayName}}
+    }
   </p>
   }
   <h3> Songs </h3>
-  @for (song of constitution.songConstitution; track $index) {
+  @for (songConstitution of constitution.songConstitution; track $index) {
+  @if(songs.getSong(songConstitution.song) | async; as song) {
   <p>
-    Song {{$index}} : (id: {{song.song}}) added by     <img [src]="(users.getUser(song.user) | async)?.imageURL" width="25" height="25"
-      alt="photo de profil de {{(users.getUser(song.user) | async)?.imageURL}}"> {{(users.getUser(song.user) | async)?.displayName}}
+    Song {{$index}} : {{song.title}} (id: {{songConstitution.song}}) from artist (id: {{song.primaryArtist}}) added by
+    @if (users.getUser(songConstitution.user) | async; as user) {
+    <img [src]="user.imageURL" width="25" height="25" alt="photo de profil de {{user.imageURL}}">
+    {{user.displayName}}
+    }
   </p>
   }
+  }
   @if(constitution.songConstitution.length === 0) {
-    No song.
+  No song.
   }
   <app-add-song-form [constitution]="constitution.id"></app-add-song-form>
   <div>

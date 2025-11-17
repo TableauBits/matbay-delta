@@ -17,8 +17,8 @@ async function get(req: Request, res: Response): Promise<void> {
         return;
     }
 
-    const user = (await getUser(uid.unwrap())).okOr(
-        new HttpError(HttpStatus.NotFound, "no user found with the specified uid"),
+    const user = (await getUser(uid.unwrap())).mapErr(err =>
+        new HttpError(HttpStatus.NotFound, `failed to get user info from uid ${err}`),
     );
     sendResult(user, res);
 }

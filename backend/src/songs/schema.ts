@@ -2,7 +2,7 @@ import { relations } from "drizzle-orm";
 import { integer, sqliteTable, text, unique } from "drizzle-orm/sqlite-core";
 
 // Tables
-// Songs table
+/// Songs table
 const songs = sqliteTable("songs", {
     id: integer("id").primaryKey(),
     creationDate: text().notNull().$defaultFn(() => new Date().toISOString()),
@@ -10,7 +10,7 @@ const songs = sqliteTable("songs", {
     title: text().notNull(),
     /// This column is necessary to enforce that a song as at least one artist
     primaryArtist: integer().notNull().references(() => artists.id)
-});
+}, (t) => [unique().on(t.title, t.primaryArtist)]);
 
 /// Artists table
 const artists = sqliteTable("artists", {
@@ -28,7 +28,7 @@ const albums = sqliteTable("albums", {
     title: text().notNull(),
 });
 
-/// Relations
+// Relations
 /// song <==> artist
 const songArtist = sqliteTable("songArtist", {
     id: integer("id").primaryKey(),

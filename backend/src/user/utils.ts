@@ -2,7 +2,7 @@ import { v4 as uuidv4 } from "uuid";
 import { users } from "./schema";
 import type { DB } from "../db-namepsace";
 import { db } from "../db/http";
-import { None, Some, type Option } from "oxide.ts";
+import { Result, Option } from "oxide.ts";
 import { eq } from "drizzle-orm";
 
 
@@ -12,22 +12,30 @@ async function createUser(userInfo: DB.Insert.User): Promise<void> {
     await db.insert(users).values(userInfo);
 }
 
-async function getUser(uid: string): Promise<Option<DB.Select.User>> {
-    const queryResult = await db.select().from(users).where(eq(users.id, uid));
-    if (queryResult.length === 0) {
-        return None;
-    }
+// TODO : add a generic function to just search a row from an id ? Like :
+// TODO : ...(table, column, value)
+async function getUser(uid: string): Promise<Result<DB.Select.User, Error>> {
+    const operation = async () => await db.select()
+        .from(users)
+        .where(eq(users.id, uid));
 
-    return Some(queryResult[0] as DB.Select.User);
+    const queryResult = await Result.safe(operation());
+    if (queryResult.isErr()) return queryResult;
+
+    return Option(queryResult.unwrap().at(0))
+        .okOr(new Error(`No user with uid: ${uid}`));
 }
 
-async function getUserFromAuth(authID: string): Promise<Option<DB.Select.User>> {
-    const queryResult = await db.select().from(users).where(eq(users.authID, authID));
-    if (queryResult.length === 0) {
-        return None;
-    }
-
-    return Some(queryResult[0] as DB.Select.User);
+async function getUserFromAuth(authID: string): Promise<Result<DB.Select.User, Error>> {
+    const operation = async () => await db.select()
+        .from(users)
+        .where(eq(users.authID, authID));
+    
+    const queryResult = await Result.safe(operation());
+    if (queryResult.isErr()) return queryResult;
+    
+    return Option(queryResult.unwrap().at(0))
+        .okOr(new Error(`No user with authID: ${authID}`));
 }
 
 

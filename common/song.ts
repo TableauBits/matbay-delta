@@ -27,8 +27,4 @@ interface AddSongRequestBody {
   primaryArtist: number;
 }
 
-interface GetArtistIDByNameBody {
-  name: string;
-}
-
-export { type Artist, ArtistContributions, type AddArtistRequestBody, type AddSongRequestBody, type GetArtistIDByNameBody, type Song };
+export { type Artist, ArtistContributions, type AddArtistRequestBody, type AddSongRequestBody, type Song };

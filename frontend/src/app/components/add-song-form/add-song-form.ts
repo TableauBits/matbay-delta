@@ -1,6 +1,6 @@
-import { Component, computed, inject, input } from '@angular/core';
+import { Component, inject, input } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { AddArtistRequestBody, AddSongRequestBody, Artist, ArtistContributions, GetArtistIDByNameBody, Song } from '../../../../../common/song';
+import { AddArtistRequestBody, AddSongRequestBody, Artist, ArtistContributions, Song } from '../../../../../common/song';
 import { HttpRequests } from '../../services/http-requests';
 import { AddSongConstitutionRequestBody } from '../../../../../common/constitution';
 
@@ -61,7 +61,7 @@ export class AddSongForm {
     const incompleteArtistIds = await Promise.all(
       (this.songForm.value.artists as FormArtist[])
         .map(async artist => (
-          await this.httpRequests.authenticatedPostRequest<GetArtistIDByNameBody, number[]>('artist/searchIDFromName', { name: artist.name })
+          await this.httpRequests.authenticatedGetRequest<number[]>(`artist/searchIDFromName/${artist}`)
         ).at(0))
     );
 

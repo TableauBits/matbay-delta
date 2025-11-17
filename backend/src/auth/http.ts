@@ -1,5 +1,5 @@
 import { type NextFunction, type Request, type Response, Router } from "express";
-import { Err, Ok, Option } from "oxide.ts";
+import { Ok, Option } from "oxide.ts";
 import { HttpError, HttpStatus, sendResult } from "../utils";
 import { tokenDevRouter, validateToken } from "./token";
 import { createUser, getUserFromAuth } from "../user/utils";
@@ -22,34 +22,27 @@ async function ensureAuthMiddleware(req: Request, res: Response, next: NextFunct
         return;
     }
 
-    const maybeAuthID = Option(validation.unwrap().sub).okOr(
+    const authID = Option(validation.unwrap().sub).okOr(
         new HttpError(
             HttpStatus.UnprocessableContent,
             "failed to authenticate: the decoded jwt does not provided the necessary 'aud' claim",
         ),
     );
-    if (maybeAuthID.isErr()) {
-        sendResult(maybeAuthID, res);
+    if (authID.isErr()) {
+        sendResult(authID, res);
         return;
     }
 
-    const authID = maybeAuthID.unwrap();
-    const maybeUser = await getUserFromAuth(authID);
-    if (maybeUser.isNone()) {
-        sendResult(
-            Err(
-                new HttpError(
-                    HttpStatus.Unauthorized,
-                    "account is valid but not registered, call the login endpoint first",
-                ),
-            ),
-            res,
-        );
+    const user = (await getUserFromAuth(authID.unwrap()))
+        .mapErr(err => new HttpError(HttpStatus.Unauthorized, `account is valid but not registered, call the login endpoint first : ${err}`));
+
+    if (user.isErr()) {
+        sendResult(user, res);
         return;
     }
 
     // Save uid in the request for later use
-    req.uid = maybeUser.unwrap().id;
+    req.uid = user.unwrap().id;
 
     next();
 }
@@ -75,8 +68,9 @@ async function login(req: Request, res: Response) {
         sendResult(error, res);
         return;
     }
+    const tokenPayload = validation.unwrap();
 
-    const maybeAuthID = Option(validation.unwrap().sub).okOr(
+    const maybeAuthID = Option(tokenPayload.sub).okOr(
         new HttpError(
             HttpStatus.UnprocessableContent,
             "failed to authenticate: the decoded jwt does not provided the necessary 'aud' claim",
@@ -89,7 +83,8 @@ async function login(req: Request, res: Response) {
 
     const authID = maybeAuthID.unwrap();
     const maybeUser = await getUserFromAuth(authID);
-    if (maybeUser.isSome()) {
+
+    if (maybeUser.isOk()) {
         sendResult(Ok(maybeUser.unwrap().id), res);
         return;
     }
@@ -97,10 +92,10 @@ async function login(req: Request, res: Response) {
     const newUser = {
         id: "",
         authID,
-        displayName: validation.unwrap()["nickname"] ?? "New User",
-        username: validation.unwrap()["name"] ?? authID,
+        displayName: tokenPayload["nickname"] ?? "New User",
+        username: tokenPayload["name"] ?? authID,
         description: "",
-        imageURL: validation.unwrap()["picture"] ?? "",
+        imageURL: tokenPayload["picture"] ?? "",
         joinDate: new Date().toISOString(),
     };
 

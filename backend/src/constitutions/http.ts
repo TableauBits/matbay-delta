@@ -32,6 +32,7 @@ async function getAll(_: Request, res: Response): Promise<void> {
     sendResult(Ok(allConstitutions), res);
 }
 
+// TODO : Still necessary ?
 async function getSongs(req: Request, res: Response): Promise<void> {
     // Check if the user is in the user list of the constitution
     const uid = getReqUID(req);
@@ -40,7 +41,10 @@ async function getSongs(req: Request, res: Response): Promise<void> {
         return;
     }
 
-    const cstid = Option(req.params["id"]).map(val => parseInt(val)).okOr(new HttpError(HttpStatus.BadRequest, "missing constitution id from request"));
+    const cstid = Option(req.params["id"])
+        .map(val => parseInt(val))
+        .okOr(new HttpError(HttpStatus.BadRequest, "missing constitution id from request"));
+        
     if (cstid.isErr()) {
         sendResult(cstid, res);
         return;

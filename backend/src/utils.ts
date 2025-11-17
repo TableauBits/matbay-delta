@@ -45,3 +45,7 @@ export function getReqUID(req: Request): Result<string, HttpError> {
     return Option(req.uid)
     .okOr(new HttpError(HttpStatus.InternalError, "missing uid in request, this should never happen"))
 }
+
+export function getParam(req: Request, key: string): Result<string, HttpError> {
+    return Option(req.params[key]).okOr(new HttpError(HttpStatus.BadRequest, `missing '${key}' from request`));
+}
