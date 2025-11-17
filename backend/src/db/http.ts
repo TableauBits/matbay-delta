@@ -4,8 +4,8 @@ import { migrate } from "drizzle-orm/bun-sqlite/migrator";
 import { type Request, type Response, Router } from "express";
 import { Option } from "oxide.ts";
 import * as constitutionSchema from "../constitutions/schema";
-import * as userSchema from "../user/schema";
 import * as songSchema from "../songs/schema";
+import * as userSchema from "../user/schema";
 
 // Get the complete schema by merging all individual schemas
 const schema = { ...userSchema, ...constitutionSchema, ...songSchema };

@@ -38,12 +38,15 @@ export function sendResult<T, E extends HttpError>(result: Result<T, E>, res: Re
 
 export function getBody<T>(req: Request): Result<T, HttpError> {
     // Add type guard
-    return Option(req.body).map((val) => val as T).okOr(new HttpError(HttpStatus.BadRequest, "missing body"));
+    return Option(req.body)
+        .map((val) => val as T)
+        .okOr(new HttpError(HttpStatus.BadRequest, "missing body"));
 }
 
 export function getReqUID(req: Request): Result<string, HttpError> {
-    return Option(req.uid)
-    .okOr(new HttpError(HttpStatus.InternalError, "missing uid in request, this should never happen"))
+    return Option(req.uid).okOr(
+        new HttpError(HttpStatus.InternalError, "missing uid in request, this should never happen"),
+    );
 }
 
 export function getParam(req: Request, key: string): Result<string, HttpError> {

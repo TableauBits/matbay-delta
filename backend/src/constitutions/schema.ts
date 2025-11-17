@@ -1,7 +1,7 @@
 import { relations } from "drizzle-orm/relations";
 import { integer, sqliteTable, text, unique } from "drizzle-orm/sqlite-core";
-import { users } from "../user/schema";
 import { songs } from "../songs/schema";
+import { users } from "../user/schema";
 
 /// Tables
 /// Constitutions table
@@ -58,23 +58,27 @@ const userConstitutionRelation = relations(userConstitution, ({ one }) => ({
 }));
 
 /// song <==> constitution
-const songConstitution = sqliteTable("songConstitution", {
-    id: integer("id").primaryKey(),
+const songConstitution = sqliteTable(
+    "songConstitution",
+    {
+        id: integer("id").primaryKey(),
 
-    // url: text().notNull(),
-    song: integer()
-        .notNull()
-        .references(() => songs.id),
-    user: text()
-        .notNull()
-        .references(() => users.id),
-    constitution: integer()
-        .notNull()
-        .references(() => constitutions.id),
-    addDate: text()
-        .notNull()
-        .$defaultFn(() => new Date().toISOString()),
-}, (t) => [unique().on(t.song, t.user, t.constitution)]);
+        // url: text().notNull(),
+        song: integer()
+            .notNull()
+            .references(() => songs.id),
+        user: text()
+            .notNull()
+            .references(() => users.id),
+        constitution: integer()
+            .notNull()
+            .references(() => constitutions.id),
+        addDate: text()
+            .notNull()
+            .$defaultFn(() => new Date().toISOString()),
+    },
+    (t) => [unique().on(t.song, t.user, t.constitution)],
+);
 
 /// One song can be added to many constitutions
 const songToConstitution = relations(songs, ({ many }) => ({
@@ -88,9 +92,9 @@ const constitutionToSong = relations(constitutions, ({ many }) => ({
 
 /// A row in songConstitution table only references one song and one constitution
 const songConstitutionRelation = relations(songConstitution, ({ one }) => ({
-    song: one(songs, {fields: [songConstitution.song], references: [songs.id]}),
-    user: one(users, {fields: [songConstitution.user], references: [users.id]}),
-    constitution: one(constitutions, {fields: [songConstitution.constitution], references: [constitutions.id]}),
+    song: one(songs, { fields: [songConstitution.song], references: [songs.id] }),
+    user: one(users, { fields: [songConstitution.user], references: [users.id] }),
+    constitution: one(constitutions, { fields: [songConstitution.constitution], references: [constitutions.id] }),
 }));
 
 export {
@@ -102,5 +106,5 @@ export {
     songConstitution,
     songToConstitution,
     constitutionToSong,
-    songConstitutionRelation
+    songConstitutionRelation,
 };

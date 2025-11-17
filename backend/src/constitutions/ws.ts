@@ -25,7 +25,7 @@ function attachWSListeners(socket: Socket): void {
         if (!isValid) return;
         socket.join(`${WebsocketEvents.CST_USER_JOIN}:${message.constitution}`);
         socket.join(`${WebsocketEvents.CST_USER_LEAVE}:${message.constitution}`);
-        socket.join(`${WebsocketEvents.CST_SONG_ADD}:${message.constitution}`)
+        socket.join(`${WebsocketEvents.CST_SONG_ADD}:${message.constitution}`);
     });
 
     // Unsubscribre the user of the changes
@@ -64,10 +64,10 @@ function onSongAddCallback(addInfo: DB.Select.SongConstitution): void {
         songConstitution: {
             song: addInfo.song,
             user: addInfo.user,
-            addDate: addInfo.addDate
-        }
+            addDate: addInfo.addDate,
+        },
     };
-    
+
     io.to(`${WebsocketEvents.CST_SONG_ADD}:${addInfo.constitution}`).emit(WebsocketEvents.CST_SONG_ADD, message);
 }
 

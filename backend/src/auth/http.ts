@@ -1,8 +1,8 @@
 import { type NextFunction, type Request, type Response, Router } from "express";
 import { Ok, Option } from "oxide.ts";
+import { createUser, getUserFromAuth } from "../user/utils";
 import { HttpError, HttpStatus, sendResult } from "../utils";
 import { tokenDevRouter, validateToken } from "./token";
-import { createUser, getUserFromAuth } from "../user/utils";
 
 async function ensureAuthMiddleware(req: Request, res: Response, next: NextFunction) {
     const headerFetch = Option(req.header("delta-auth")).okOr(
@@ -33,8 +33,13 @@ async function ensureAuthMiddleware(req: Request, res: Response, next: NextFunct
         return;
     }
 
-    const user = (await getUserFromAuth(authID.unwrap()))
-        .mapErr(err => new HttpError(HttpStatus.Unauthorized, `account is valid but not registered, call the login endpoint first : ${err}`));
+    const user = (await getUserFromAuth(authID.unwrap())).mapErr(
+        (err) =>
+            new HttpError(
+                HttpStatus.Unauthorized,
+                `account is valid but not registered, call the login endpoint first : ${err}`,
+            ),
+    );
 
     if (user.isErr()) {
         sendResult(user, res);

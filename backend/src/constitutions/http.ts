@@ -1,12 +1,22 @@
 import { type Request, type Response, Router } from "express";
 import { Err, Ok, Option } from "oxide.ts";
-import type { AddSongConstitutionRequestBody, CreateConstitutionRequestBody, JoinConstitutionRequestBody, LeaveConstitutionRequestBody } from "../../../common/constitution";
+import type {
+    AddSongConstitutionRequestBody,
+    CreateConstitutionRequestBody,
+    JoinConstitutionRequestBody,
+    LeaveConstitutionRequestBody,
+} from "../../../common/constitution";
 import { ensureAuthMiddleware } from "../auth/http";
 import { db } from "../db/http";
 import { getBody, getReqUID, HttpError, HttpStatus, sendResult } from "../utils";
 import { constitutions } from "./schema";
-import { addSongToConstitution, addUserToConstitution, isMember, removeUserFromConstitution, searchSongs } from "./utils";
-
+import {
+    addSongToConstitution,
+    addUserToConstitution,
+    isMember,
+    removeUserFromConstitution,
+    searchSongs,
+} from "./utils";
 
 // GET ROUTES
 async function getAll(_: Request, res: Response): Promise<void> {
@@ -24,8 +34,8 @@ async function getAll(_: Request, res: Response): Promise<void> {
                     song: true,
                     user: true,
                     addDate: true,
-                }
-            }
+                },
+            },
         },
     });
 
@@ -42,22 +52,26 @@ async function getSongs(req: Request, res: Response): Promise<void> {
     }
 
     const cstid = Option(req.params["id"])
-        .map(val => parseInt(val))
+        .map((val) => parseInt(val))
         .okOr(new HttpError(HttpStatus.BadRequest, "missing constitution id from request"));
-        
+
     if (cstid.isErr()) {
         sendResult(cstid, res);
         return;
     }
 
-    const authorized = (await isMember(uid.unwrap(), cstid.unwrap())).mapErr(() => new HttpError(HttpStatus.Unauthorized, "You are not authorized to inspect this constitution"));
+    const authorized = (await isMember(uid.unwrap(), cstid.unwrap())).mapErr(
+        () => new HttpError(HttpStatus.Unauthorized, "You are not authorized to inspect this constitution"),
+    );
     if (authorized.isErr() || !authorized.unwrap()) {
         sendResult(authorized, res);
         return;
     }
 
     // Get all the songs of the constitution
-    const songs = (await searchSongs(cstid.unwrap())).mapErr(err => new HttpError(HttpStatus.InternalError, `failed to fetch songs from constitution: ${err}`));
+    const songs = (await searchSongs(cstid.unwrap())).mapErr(
+        (err) => new HttpError(HttpStatus.InternalError, `failed to fetch songs from constitution: ${err}`),
+    );
     sendResult(songs, res);
 }
 
@@ -76,10 +90,16 @@ async function addSong(req: Request, res: Response): Promise<void> {
     }
 
     const participation = body.unwrap();
-    const result = (await (addSongToConstitution(participation.constitution, participation.song, uid.unwrap())))
-        .map(() => { return {} })
+    const result = (await addSongToConstitution(participation.constitution, participation.song, uid.unwrap()))
+        .map(() => {
+            return {};
+        })
         .mapErr(
-            (err) => new HttpError(HttpStatus.UnprocessableContent, `failed to add song '${participation.song}' constitution '${participation.constitution}' ${err}`),
+            (err) =>
+                new HttpError(
+                    HttpStatus.UnprocessableContent,
+                    `failed to add song '${participation.song}' constitution '${participation.constitution}' ${err}`,
+                ),
         );
 
     sendResult(result, res);
@@ -118,7 +138,9 @@ async function create(req: Request, res: Response): Promise<void> {
     // TODO : This should be done in a transaction ?
     sendResult(
         (await addUserToConstitution(uid.unwrap(), cstid.unwrap()))
-            .map(() => { return {} })
+            .map(() => {
+                return {};
+            })
             .mapErr((err) => new HttpError(HttpStatus.UnprocessableContent, `failed to join constitution ${err}`)),
         res,
     );
@@ -146,10 +168,10 @@ async function join(req: Request, res: Response): Promise<void> {
     }
 
     const result = (await addUserToConstitution(uid.unwrap(), id.unwrap()))
-        .map(() => { return {} })
-        .mapErr(
-            (err) => new HttpError(HttpStatus.UnprocessableContent, `failed to join constitution ${err}`),
-        );
+        .map(() => {
+            return {};
+        })
+        .mapErr((err) => new HttpError(HttpStatus.UnprocessableContent, `failed to join constitution ${err}`));
     sendResult(result, res);
 }
 
@@ -177,17 +199,16 @@ async function leave(req: Request, res: Response): Promise<void> {
     }
 
     const result = (await removeUserFromConstitution(uid.unwrap(), id.unwrap()))
-        .map(() => { return {} })
-        .mapErr(
-            (err) => new HttpError(HttpStatus.UnprocessableContent, `failed to leave constitution ${err}`),
-        );
+        .map(() => {
+            return {};
+        })
+        .mapErr((err) => new HttpError(HttpStatus.UnprocessableContent, `failed to leave constitution ${err}`));
     sendResult(result, res);
 }
 
-
 const constitutionApiRouter = Router();
 
-constitutionApiRouter.get("/getAll", ensureAuthMiddleware, getAll);                 // Debug route ?
+constitutionApiRouter.get("/getAll", ensureAuthMiddleware, getAll); // Debug route ?
 constitutionApiRouter.get("/getSongs/:id", ensureAuthMiddleware, getSongs);
 
 constitutionApiRouter.post("/addSong", ensureAuthMiddleware, addSong);

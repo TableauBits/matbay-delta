@@ -1,10 +1,9 @@
-import { v4 as uuidv4 } from "uuid";
-import { users } from "./schema";
-import type { DB } from "../db-namepsace";
-import { db } from "../db/http";
-import { Result, Option } from "oxide.ts";
 import { eq } from "drizzle-orm";
-
+import { Option, Result } from "oxide.ts";
+import { v4 as uuidv4 } from "uuid";
+import { db } from "../db/http";
+import type { DB } from "../db-namepsace";
+import { users } from "./schema";
 
 async function createUser(userInfo: DB.Insert.User): Promise<void> {
     userInfo.id = uuidv4();
@@ -15,28 +14,21 @@ async function createUser(userInfo: DB.Insert.User): Promise<void> {
 // TODO : add a generic function to just search a row from an id ? Like :
 // TODO : ...(table, column, value)
 async function getUser(uid: string): Promise<Result<DB.Select.User, Error>> {
-    const operation = async () => await db.select()
-        .from(users)
-        .where(eq(users.id, uid));
+    const operation = async () => await db.select().from(users).where(eq(users.id, uid));
 
     const queryResult = await Result.safe(operation());
     if (queryResult.isErr()) return queryResult;
 
-    return Option(queryResult.unwrap().at(0))
-        .okOr(new Error(`No user with uid: ${uid}`));
+    return Option(queryResult.unwrap().at(0)).okOr(new Error(`No user with uid: ${uid}`));
 }
 
 async function getUserFromAuth(authID: string): Promise<Result<DB.Select.User, Error>> {
-    const operation = async () => await db.select()
-        .from(users)
-        .where(eq(users.authID, authID));
-    
+    const operation = async () => await db.select().from(users).where(eq(users.authID, authID));
+
     const queryResult = await Result.safe(operation());
     if (queryResult.isErr()) return queryResult;
-    
-    return Option(queryResult.unwrap().at(0))
-        .okOr(new Error(`No user with authID: ${authID}`));
+
+    return Option(queryResult.unwrap().at(0)).okOr(new Error(`No user with authID: ${authID}`));
 }
 
-
-export { createUser, getUser, getUserFromAuth }
+export { createUser, getUser, getUserFromAuth };

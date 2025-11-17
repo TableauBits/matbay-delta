@@ -1,10 +1,10 @@
 import { Router } from "express";
+import { artistApiRouter } from "./artists/http";
 import { authApiRouter, authDevRouter } from "./auth/http";
 import { constitutionApiRouter } from "./constitutions/http";
 import { dbApiRouter, dbDevRouter } from "./db/http";
-import { userApiRouter } from "./user/http";
 import { songApiRouter } from "./songs/http";
-import { artistApiRouter } from "./artists/http";
+import { userApiRouter } from "./user/http";
 
 const apiRouter = Router();
 const devRouter = Router();

@@ -9,7 +9,6 @@ import { getBody, getReqUID, HttpError, HttpStatus, sendResult } from "../utils"
 import { users } from "./schema";
 import { getUser } from "./utils";
 
- 
 async function get(req: Request, res: Response): Promise<void> {
     const uid = Option(req.params["uid"]).okOr(new HttpError(HttpStatus.BadRequest, "missing user id from request"));
     if (uid.isErr()) {
@@ -17,8 +16,8 @@ async function get(req: Request, res: Response): Promise<void> {
         return;
     }
 
-    const user = (await getUser(uid.unwrap())).mapErr(err =>
-        new HttpError(HttpStatus.NotFound, `failed to get user info from uid ${err}`),
+    const user = (await getUser(uid.unwrap())).mapErr(
+        (err) => new HttpError(HttpStatus.NotFound, `failed to get user info from uid ${err}`),
     );
     sendResult(user, res);
 }
