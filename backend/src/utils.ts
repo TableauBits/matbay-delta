@@ -1,4 +1,3 @@
-import consola from "consola";
 import type { NextFunction, Request, Response } from "express";
 import { Err, match, Option, type Result } from "oxide.ts";
 
@@ -60,19 +59,25 @@ export function errorHandler(err: Error, _req: Request, res: Response, next: Nex
     next();
 }
 
-export function getBody<T>(req: Request): Result<T, HttpError> {
+export function getBody<T>(req: Request): T {
     // Add type guard
-    return Option(req.body)
-        .map((val) => val as T)
-        .okOr(new HttpError(HttpStatus.BadRequest, "missing body"));
-}
-
-export function getReqUID(req: Request): Result<string, HttpError> {
-    return Option(req.uid).okOr(
-        new HttpError(HttpStatus.InternalError, "missing uid in request, this should never happen"),
+    return unwrapHTTP(
+        Option(req.body)
+            .map((val) => val as T)
+            .okOr(new HttpError(HttpStatus.BadRequest, "missing body")),
     );
 }
 
-export function getParam(req: Request, key: string): Result<string, HttpError> {
-    return Option(req.params[key]).okOr(new HttpError(HttpStatus.BadRequest, `missing '${key}' from request`));
+export function getReqUID(req: Request): string {
+    return unwrapHTTP(
+        Option(req.uid).okOr(
+            new HttpError(HttpStatus.InternalError, "missing uid in request, this should never happen"),
+        ),
+    );
+}
+
+export function getParam(req: Request, key: string): string {
+    return unwrapHTTP(
+        Option(req.params[key]).okOr(new HttpError(HttpStatus.BadRequest, `missing '${key}' from request`)),
+    );
 }

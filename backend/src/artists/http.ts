@@ -7,12 +7,8 @@ import { createArtist, getArtistsIDFromName } from "./utils";
 // GET ROUTES
 async function searchIDFromName(req: Request, res: Response): Promise<void> {
     const name = getParam(req, "name");
-    if (name.isErr()) {
-        sendResult(name, res);
-        return;
-    }
 
-    const ids = (await getArtistsIDFromName(name.unwrap())).mapErr(
+    const ids = (await getArtistsIDFromName(name)).mapErr(
         (err) => new HttpError(HttpStatus.InternalError, `failed to search artist in database: ${err}`),
     );
 
@@ -25,7 +21,7 @@ async function add(req: Request, res: Response): Promise<void> {
 
     // TODO : check if artist already exists and return it instead of creating a new one
 
-    const dbResult = (await createArtist(artist.unwrap())).mapErr(
+    const dbResult = (await createArtist(artist)).mapErr(
         (err) => new HttpError(HttpStatus.InternalError, `failed to create artist in database: ${err}`),
     );
 

@@ -4,7 +4,7 @@ import { createUser, getUserFromAuth } from "../user/utils";
 import { HttpError, HttpStatus, sendResult, unwrapHTTP } from "../utils";
 import { tokenDevRouter, validateToken } from "./token";
 
-async function ensureAuthMiddleware(req: Request, res: Response, next: NextFunction) {
+async function ensureAuthMiddleware(req: Request, _res: Response, next: NextFunction) {
     const headerFetch = unwrapHTTP(
         Option(req.header("delta-auth")).okOr(new HttpError(HttpStatus.Unauthorized, "no token found in headers")),
     );
