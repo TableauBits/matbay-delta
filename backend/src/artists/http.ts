@@ -5,7 +5,7 @@ import { getBody, getParam, HttpError, HttpStatus, sendResult } from "../utils";
 import { createArtist, getArtistsIDFromName } from "./utils";
 
 // GET ROUTES
-async function searchIDFromName(req: Request, res: Response): Promise<void> {
+async function search(req: Request, res: Response): Promise<void> {
     const name = getParam(req, "name");
 
     const ids = (await getArtistsIDFromName(name)).mapErr(
@@ -30,7 +30,8 @@ async function add(req: Request, res: Response): Promise<void> {
 
 const artistApiRouter = Router();
 
+artistApiRouter.get("/search/:name", ensureAuthMiddleware, search);
+
 artistApiRouter.post("/add", ensureAuthMiddleware, add);
-artistApiRouter.post("/search/:name", ensureAuthMiddleware, searchIDFromName);
 
 export { artistApiRouter };

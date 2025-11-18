@@ -61,7 +61,7 @@ export class AddSongForm {
     const incompleteArtistIds = await Promise.all(
       (this.songForm.value.artists as FormArtist[])
         .map(async artist => (
-          await this.httpRequests.authenticatedGetRequest<number[]>(`artist/searchIDFromName/${artist}`)
+          await this.httpRequests.authenticatedGetRequest<number[]>(`artist/search/${artist.name}`)
         ).at(0))
     );
 
