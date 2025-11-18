@@ -1,5 +1,6 @@
-import type { Request, Response } from "express";
-import { match, Option, type Result } from "oxide.ts";
+import consola from "consola";
+import type { NextFunction, Request, Response } from "express";
+import { Err, match, Option, type Result } from "oxide.ts";
 
 export enum HttpStatus {
     Ok = 200,
@@ -34,6 +35,29 @@ export function sendResult<T, E extends HttpError>(result: Result<T, E>, res: Re
         },
     });
     /** biome-ignore-end lint/style/useNamingConvention: Ok and Err here are coming from oxide.ts */
+}
+
+export function unwrapHTTP<T>(result: Result<T, Error>): T {
+    /** biome-ignore-start lint/style/useNamingConvention: Ok and Err here are coming from oxide.ts */
+    return match(result, {
+        Ok: (val) => val,
+        Err: (err) => {
+            throw err;
+        },
+    });
+    /** biome-ignore-end lint/style/useNamingConvention: Ok and Err here are coming from oxide.ts */
+}
+
+export function errorHandler(err: Error, _req: Request, res: Response, next: NextFunction) {
+    var error: Err<HttpError>;
+    if (err instanceof HttpError) {
+        error = Err(err);
+    } else {
+        error = Err(new HttpError(HttpStatus.InternalError, `Unknown internal error: ${err}`));
+    }
+
+    sendResult(error, res);
+    next();
 }
 
 export function getBody<T>(req: Request): Result<T, HttpError> {
