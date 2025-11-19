@@ -1,12 +1,13 @@
 import { Component, inject, input } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { AddArtistRequestBody, AddSongRequestBody, Artist, ArtistContributions, Song } from '../../../../../common/song';
+import { AddSongRequestBody, Song } from '../../../../../common/song';
+import { AddArtistRequestBody, Artist, ArtistContribution } from '../../../../../common/artist';
 import { HttpRequests } from '../../services/http-requests';
 import { AddSongConstitutionRequestBody } from '../../../../../common/constitution';
 
 type FormArtist = {
   name: string;
-  role: ArtistContributions;
+  role: ArtistContribution;
 }
 
 @Component({
@@ -29,7 +30,7 @@ export class AddSongForm {
     this.songForm = this.formBuilder.group({
       title: [undefined, Validators.required],  // TODO : max number of chars ?
       url: [undefined, Validators.required],  // TODO : Validate url ?
-      artists: this.formBuilder.array([this.createArtistFormGroup(ArtistContributions.MAIN)])
+      artists: this.formBuilder.array([this.createArtistFormGroup(ArtistContribution.MAIN)])
     });
   }
 
@@ -37,7 +38,7 @@ export class AddSongForm {
     return this.songForm.get('artists') as FormArray;
   }
 
-  createArtistFormGroup(contribution?: ArtistContributions): FormGroup {
+  createArtistFormGroup(contribution?: ArtistContribution): FormGroup {
     return this.formBuilder.group({
       name: [undefined, Validators.required],
       role: [contribution, Validators.required]
@@ -53,7 +54,7 @@ export class AddSongForm {
   }
 
   getContributions(): string[] {
-    return Object.values(ArtistContributions);
+    return Object.values(ArtistContribution);
   }
 
   async submitForm(): Promise<void> {
@@ -76,18 +77,23 @@ export class AddSongForm {
     })
 
     // Add the song
-    const song = await this.httpRequests.authenticatedPostRequest<AddSongRequestBody, Song>('song/add', {
-      title: this.songForm.value.title,
-      primaryArtist: artistIds[0]
-    });
+    // Check if the song already exists in db
+    const songsQuery = await this.httpRequests.authenticatedGetRequest<number[]>(`song/search/${artistIds[0]}/${this.songForm.value.title}`)
 
-    console.log(song);
-
-    // TODO : link song to artists
+    let songID = songsQuery.at(0);
+    if (!songID) {
+      songID = (await this.httpRequests.authenticatedPostRequest<AddSongRequestBody, Song>('song/add', {
+        song: {
+          title: this.songForm.value.title,
+          primaryArtist: artistIds[0]
+        },
+        otherContributions: artistIds.filter((_, index) => index !== 0).map((val, index) => [val, (this.songForm.value.artists as FormArtist[])[index].role])
+      })).id;
+    }
 
     // TODO : link song to constitution
     this.httpRequests.authenticatedPostRequest<AddSongConstitutionRequestBody>('constitution/addSong', {
-      song: song.id,
+      song: songID,
       constitution: this.constitution(),
     });
 

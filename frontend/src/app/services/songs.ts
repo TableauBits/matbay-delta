@@ -35,5 +35,5 @@ export class Songs {
   }
 
   // TODO : add a method to update the cache with an array of songs when requesting a constitution ?
-  // updateCache(ids: number[]): void {}
+  // addSongs(ids: number[]): void {}
 }

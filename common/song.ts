@@ -1,15 +1,6 @@
+import type { ArtistContribution } from "./artist";
+
 // Type
-interface Artist {
-  id: number;
-  name: string;
-  creationDate: string;
-}
-
-enum ArtistContributions {
-  MAIN = "main",
-  FEATURING = "featuring"
-}
-
 interface Song {
   id: number;
   creationDate: string;
@@ -18,13 +9,15 @@ interface Song {
 }
 
 // Requests
-interface AddArtistRequestBody {
-  name: string;
-}
-
 interface AddSongRequestBody {
-  title: string;
-  primaryArtist: number;
+  song: {
+    title: string;
+    primaryArtist: number;
+  }
+  otherContributions: [number, ArtistContribution][];
 }
 
-export { type Artist, ArtistContributions, type AddArtistRequestBody, type AddSongRequestBody, type Song };
+export {
+  type AddSongRequestBody,
+  type Song
+};

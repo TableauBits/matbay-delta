@@ -9,6 +9,7 @@ import { User } from '../../../common/user'
 import { Users } from './services/users';
 import { AddSongForm } from './components/add-song-form/add-song-form';
 import { Songs } from './services/songs';
+import { Artists } from './services/artists';
 
 @Component({
   selector: 'app-root',
@@ -22,6 +23,7 @@ export class App implements OnDestroy {
   deltaAuth = inject(DeltaAuth);
   songs = inject(Songs);
   users = inject(Users);
+  artists = inject(Artists);
 
   // Observable of the current user data
   private currentUserObs: Promise<Observable<User> | undefined>;

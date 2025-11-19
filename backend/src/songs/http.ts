@@ -16,9 +16,9 @@ async function get(req: Request, res: Response): Promise<void> {
 
 // POST ROUTES
 async function add(req: Request, res: Response): Promise<void> {
-    const song = getBody<AddSongRequestBody>(req);
+    const body = getBody<AddSongRequestBody>(req);
 
-    const dbResult = (await createSong(song)).mapErr(
+    const dbResult = (await createSong(body.song, body.otherContributions)).mapErr(
         (err) => new HttpError(HttpStatus.InternalError, `failed to create song in database: ${err}`),
     );
     sendResult(dbResult, res);

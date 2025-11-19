@@ -19,7 +19,7 @@ server. <br>
   <h3> Participants </h3>
   @for (userConstitution of constitution.userConstitution; track $index) {
   <p>
-    Participant {{$index}} :
+    Participant {{$index+1}} :
     @if (users.getUser(userConstitution.user) | async; as user) {
     <img [src]="user.imageURL" width="25" height="25" alt="photo de profil de {{user.imageURL}}">
     {{user.displayName}}
@@ -28,14 +28,19 @@ server. <br>
   }
   <h3> Songs </h3>
   @for (songConstitution of constitution.songConstitution; track $index) {
-  @if(songs.getSong(songConstitution.song) | async; as song) {
+  @if({
+  song: songs.getSong(songConstitution.song) | async,
+  user: users.getUser(songConstitution.user) | async,
+  }; as observers) {
+  @if(observers.song && artists.getArtist(observers.song.primaryArtist) | async; as artist) {
   <p>
-    Song {{$index}} : {{song.title}} (id: {{songConstitution.song}}) from artist (id: {{song.primaryArtist}}) added by
-    @if (users.getUser(songConstitution.user) | async; as user) {
-    <img [src]="user.imageURL" width="25" height="25" alt="photo de profil de {{user.imageURL}}">
-    {{user.displayName}}
-    }
+    Song {{$index+1}} : {{observers.song?.title}} (id: {{observers.song?.id}}) from artist {{artist.name}} (id:
+    {{observers.song?.primaryArtist}}) added by
+    <img [src]="observers.user?.imageURL" width="25" height="25" alt="photo de profil de {{observers.user?.imageURL}}">
+    {{observers.user?.displayName}}
   </p>
+  }
+
   }
   }
   @if(constitution.songConstitution.length === 0) {
