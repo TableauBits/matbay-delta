@@ -2,8 +2,9 @@ import { and, eq } from "drizzle-orm";
 import { Option, Result } from "oxide.ts";
 import { db } from "../db/http";
 import type { DB } from "../db-namepsace";
-import { songConstitution, userConstitution } from "./schema";
+
 import { onSongAddCallback, onUserJoinCallback, onUserLeaveCallback } from "./ws";
+import { songConstitution, userConstitution } from "../db/schemas";
 
 async function addUserToConstitution(uid: string, cstid: number): Promise<Result<DB.Insert.UserConstitution, Error>> {
     const operation = async () =>

@@ -1,4 +1,4 @@
-import type { ArtistContribution } from "./artist";
+import type { ArtistContribution, ArtistContributionType } from "./artist";
 
 // Type
 interface Song {
@@ -6,6 +6,7 @@ interface Song {
   creationDate: string;
   title: string;
   primaryArtist: number;
+  songArtist: {artist: number, contribution: ArtistContributionType}[]
 }
 
 // Requests

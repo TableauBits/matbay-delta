@@ -4,6 +4,8 @@ enum ArtistContribution {
   FEATURING = "featuring"
 }
 
+type ArtistContributionType = `${ArtistContribution}`;
+
 interface Artist {
   id: number;
   name: string;
@@ -19,4 +21,5 @@ export {
   type AddArtistRequestBody,
   type Artist,
   ArtistContribution,
+  type ArtistContributionType,
 }

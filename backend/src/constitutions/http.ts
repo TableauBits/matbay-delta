@@ -9,7 +9,6 @@ import type {
 import { ensureAuthMiddleware } from "../auth/http";
 import { db } from "../db/http";
 import { getBody, getParam, getReqUID, HttpError, HttpStatus, sendResult, unwrapHTTP } from "../utils";
-import { constitutions } from "./schema";
 import {
     addSongToConstitution,
     addUserToConstitution,
@@ -17,6 +16,7 @@ import {
     removeUserFromConstitution,
     searchSongs,
 } from "./utils";
+import { constitutions } from "../db/schemas";
 
 // GET ROUTES
 async function getAll(_: Request, res: Response): Promise<void> {

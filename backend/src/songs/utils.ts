@@ -1,9 +1,10 @@
 import { and, eq } from "drizzle-orm";
 import { Option, Result } from "oxide.ts";
-import { ArtistContributions } from "../../../common/song";
+import { ArtistContribution } from "../../../common/artist";
 import { db } from "../db/http";
 import type { DB } from "../db-namepsace";
-import { songArtist, songs } from "./schema";
+import type { Song } from "../../../common/song";
+import { songArtist, songs } from "../db/schemas";
 
 type Transaction = Parameters<Parameters<(typeof db)["transaction"]>[0]>[0];
 
@@ -27,8 +28,19 @@ async function createSong(song: DB.Insert.Song, additionalArtists: [number, Arti
     return transactionResult;
 }
 
-async function getSong(id: number): Promise<Result<DB.Select.Song, Error>> {
-    const operation = async () => await db.select().from(songs).where(eq(songs.id, id));
+async function getSong(id: number): Promise<Result<Song, Error>> {
+    // Get the song with the specified id and get the list of contributing artists (and the type of their contribution)
+    const operation = async () => await db.query.songs.findMany({
+        where: eq(songs.id, id),
+        with: {
+            songArtist: {
+                columns: {
+                    artist: true,
+                    contribution: true,
+                }
+            }
+        }
+    });
 
     const queryResult = await Result.safe(operation());
     if (queryResult.isErr()) return queryResult;

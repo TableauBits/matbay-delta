@@ -10,6 +10,8 @@ import { Users } from './services/users';
 import { AddSongForm } from './components/add-song-form/add-song-form';
 import { Songs } from './services/songs';
 import { Artists } from './services/artists';
+import { ArtistContribution, ArtistContributionType } from '../../../common/artist';
+import { Song } from '../../../common/song';
 
 @Component({
   selector: 'app-root',
@@ -44,5 +46,10 @@ export class App implements OnDestroy {
       const subscription = userObs.subscribe(user => { this.currentUser = user; });
       this.subscriptions.add(subscription);
     });
+  }
+
+  getSongArtists(song: Song | null): {artist: number, contribution: ArtistContributionType}[] {
+    if (!song) return [];
+    return song.songArtist;
   }
 }

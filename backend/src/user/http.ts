@@ -6,8 +6,9 @@ import { ensureAuthMiddleware } from "../auth/http";
 import { db } from "../db/http";
 import type { DB } from "../db-namepsace";
 import { getBody, getParam, getReqUID, HttpError, HttpStatus, sendResult } from "../utils";
-import { users } from "./schema";
+
 import { getUser } from "./utils";
+import { users } from "../db/schemas";
 
 async function get(req: Request, res: Response): Promise<void> {
     const uid = getParam(req, "uid");

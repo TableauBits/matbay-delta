@@ -3,7 +3,8 @@ import { Option, Result } from "oxide.ts";
 import { v4 as uuidv4 } from "uuid";
 import { db } from "../db/http";
 import type { DB } from "../db-namepsace";
-import { users } from "./schema";
+import { users } from "../db/schemas";
+
 
 async function createUser(userInfo: DB.Insert.User): Promise<void> {
     userInfo.id = uuidv4();

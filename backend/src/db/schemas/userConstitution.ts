@@ -1,0 +1,51 @@
+import { integer, sqliteTable, text, unique } from "drizzle-orm/sqlite-core";
+import { users } from "./user";
+import { constitutions } from "./constitution";
+import { relations } from "drizzle-orm";
+
+const userConstitution = sqliteTable(
+    "userConstitution",
+    {
+        id: integer("id").primaryKey(),
+
+        user: text()
+            .notNull()
+            .references(() => users.id),
+        constitution: integer()
+            .notNull()
+            .references(() => constitutions.id),
+        joinDate: text()
+            .notNull()
+            .$defaultFn(() => new Date().toISOString()),
+    },
+    (t) => [unique().on(t.user, t.constitution)],
+);
+
+/// A user can participate in many constitutions
+// const userToConstitution = relations(users, ({ many }) => ({
+//     userConstitution: many(userConstitution),
+// }));
+
+/// A constitution can have many participating users
+// const constitutionToUser = relations(constitutions, ({ many }) => ({
+//     userConstitution: many(userConstitution),
+// }));
+
+/// A constitution participation links one user to one constitution
+const userConstitutionRelation = relations(userConstitution, ({ one }) => ({
+    user: one(users, {
+        fields: [userConstitution.user],
+        references: [users.id],
+    }),
+    constitution: one(constitutions, {
+        fields: [userConstitution.constitution],
+        references: [constitutions.id],
+    }),
+}));
+
+export {
+    userConstitution,
+    // userToConstitution,
+    // constitutionToUser,
+    userConstitutionRelation
+};
