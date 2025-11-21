@@ -23,15 +23,16 @@ function attachWSListeners(socket: Socket): void {
     socket.on(WebsocketEvents.CST_SUBSCRIBE, async (message: WSCstSubscribeMessage) => {
         const isValid = await validateMessage(message);
         if (!isValid) return;
+        socket.join(`${WebsocketEvents.CST_SONG_ADD}:${message.constitution}`);
         socket.join(`${WebsocketEvents.CST_USER_JOIN}:${message.constitution}`);
         socket.join(`${WebsocketEvents.CST_USER_LEAVE}:${message.constitution}`);
-        socket.join(`${WebsocketEvents.CST_SONG_ADD}:${message.constitution}`);
     });
 
     // Unsubscribre the user of the changes
     socket.on(WebsocketEvents.CST_UNSUBSCRIBE, async (message: WSCstUnsubscribeMessage) => {
         const isValid = await validateMessage(message);
         if (!isValid) return;
+        socket.leave(`${WebsocketEvents.CST_SONG_ADD}:${message.constitution}`);
         socket.leave(`${WebsocketEvents.CST_USER_JOIN}:${message.constitution}`);
         socket.leave(`${WebsocketEvents.CST_USER_LEAVE}:${message.constitution}`);
     });
