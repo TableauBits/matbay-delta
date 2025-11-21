@@ -71,6 +71,13 @@
       "when": 1763324385954,
       "tag": "0009_easy_absorbing_man",
       "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "6",
+      "when": 1763693975817,
+      "tag": "0010_smiling_tiger_shark",
+      "breakpoints": true
     }
   ]
 }
