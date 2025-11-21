@@ -21,25 +21,10 @@ const songArtist = sqliteTable(
     (t) => [unique().on(t.artist, t.song, t.contribution)],
 );
 
-// // One song can have multiple artists
-// const songToArtists = relations(songs, ({ many }) => ({
-//     songArtist: many(songArtist),
-// }));
-
-// One artist can have multiple song contributions
-// const artistToSongs = relations(artists, ({ many }) => ({
-//     songArtist: many(songArtist),
-// }));
-
 // An entry in the songArtist table only references one song and one artist
 const songArtistRelation = relations(songArtist, ({ one }) => ({
     song: one(songs, { fields: [songArtist.song], references: [songs.id] }),
     artist: one(artists, { fields: [songArtist.artist], references: [artists.id] }),
 }));
 
-export {
-    songArtist,
-    // songToArtists,
-    // artistToSongs,
-    songArtistRelation
-}
+export { songArtist, songArtistRelation };

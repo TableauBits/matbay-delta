@@ -1,5 +1,5 @@
 import { type Request, type Response, Router } from "express";
-import { Err, Ok, Option } from "oxide.ts";
+import { Ok, Option } from "oxide.ts";
 import type {
     AddSongConstitutionRequestBody,
     CreateConstitutionRequestBody,
@@ -8,13 +8,11 @@ import type {
 } from "../../../common/constitution";
 import { ensureAuthMiddleware } from "../auth/http";
 import { db } from "../db/http";
-import { getBody, getParam, getReqUID, HttpError, HttpStatus, sendResult, unwrapHTTP } from "../utils";
+import { getBody, getReqUID, HttpError, HttpStatus, sendResult, unwrapHTTP } from "../utils";
 import {
     addSongToConstitution,
     addUserToConstitution,
-    isMember,
     removeUserFromConstitution,
-    searchSongs,
 } from "./utils";
 import { constitutions } from "../db/schemas";
 
@@ -42,31 +40,6 @@ async function getAll(_: Request, res: Response): Promise<void> {
     sendResult(Ok(allConstitutions), res);
 }
 
-// TODO : Still necessary ?
-async function getSongs(req: Request, res: Response): Promise<void> {
-    // Check if the user is in the user list of the constitution
-    const uid = getReqUID(req);
-    const cstid = parseInt(getParam(req, "id"));
-
-    unwrapHTTP(
-        (await isMember(uid, cstid))
-            .map((authorized) => {
-                if (!authorized) return Err("not authorized");
-                return Ok(authorized);
-            })
-            .flatten()
-            .mapErr(
-                () => new HttpError(HttpStatus.Unauthorized, "You are not authorized to inspect this constitution"),
-            ),
-    );
-
-    // Get all the songs of the constitution
-    const songs = (await searchSongs(cstid)).mapErr(
-        (err) => new HttpError(HttpStatus.InternalError, `failed to fetch songs from constitution: ${err}`),
-    );
-    sendResult(songs, res);
-}
-
 // POST ROUTES
 async function addSong(req: Request, res: Response): Promise<void> {
     const uid = getReqUID(req);
@@ -88,7 +61,6 @@ async function addSong(req: Request, res: Response): Promise<void> {
 }
 
 async function create(req: Request, res: Response): Promise<void> {
-    // TODO : Add validation of the body
     // TODO : Add validation of the permissions of the user (is he allowed to create a constitution ?)
     const uid = getReqUID(req);
     const body = getBody<CreateConstitutionRequestBody>(req);
@@ -159,7 +131,6 @@ async function leave(req: Request, res: Response): Promise<void> {
 const constitutionApiRouter = Router();
 
 constitutionApiRouter.get("/getAll", ensureAuthMiddleware, getAll); // Debug route ?
-constitutionApiRouter.get("/getSongs/:id", ensureAuthMiddleware, getSongs);
 
 constitutionApiRouter.post("/addSong", ensureAuthMiddleware, addSong);
 constitutionApiRouter.post("/create", ensureAuthMiddleware, create);
