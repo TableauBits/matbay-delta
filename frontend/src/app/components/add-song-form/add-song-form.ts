@@ -1,11 +1,11 @@
+import { AddArtistRequestBody, Artist, ArtistContribution } from '../../../../../common/artist';
+import { AddSongRequestBody, Song } from '../../../../../common/song';
 import { Component, inject, input } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { AddSongRequestBody, Song } from '../../../../../common/song';
-import { AddArtistRequestBody, Artist, ArtistContribution } from '../../../../../common/artist';
-import { HttpRequests } from '../../services/http-requests';
 import { AddSongConstitutionRequestBody } from '../../../../../common/constitution';
+import { HttpRequests } from '../../services/http-requests';
 
-type FormArtist = {
+interface FormArtist {
   name: string;
   role: ArtistContribution;
 }

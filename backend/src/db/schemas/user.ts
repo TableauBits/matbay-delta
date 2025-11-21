@@ -15,14 +15,11 @@ const users = sqliteTable(
             .$defaultFn(() => new Date().toISOString()),
         description: text().notNull(),
     },
-    (table) => [
-        uniqueIndex("authID_idx").on(table.authID),
-        uniqueIndex("username_idx").on(table.username)
-    ],
+    (table) => [uniqueIndex("authID_idx").on(table.authID), uniqueIndex("username_idx").on(table.username)],
 );
 
-const usersRelations = relations(users, ({one, many}) => ({
-    userConstitution: many(userConstitution),       // A user can participate in many constitutions
+const usersRelations = relations(users, ({ many }) => ({
+    userConstitution: many(userConstitution), // A user can participate in many constitutions
 }));
 
 export { users, usersRelations };

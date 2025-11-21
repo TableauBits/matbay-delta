@@ -4,11 +4,10 @@ import { Some } from "oxide.ts";
 import type { UserUpdateRequestBody } from "../../../common/user";
 import { ensureAuthMiddleware } from "../auth/http";
 import { db } from "../db/http";
+import { users } from "../db/schemas";
 import type { DB } from "../db-namepsace";
 import { getBody, getParam, getReqUID, HttpError, HttpStatus, sendResult } from "../utils";
-
 import { getUser } from "./utils";
-import { users } from "../db/schemas";
 
 async function get(req: Request, res: Response): Promise<void> {
     const uid = getParam(req, "uid");

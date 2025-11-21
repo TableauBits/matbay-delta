@@ -1,9 +1,13 @@
 <h3> Add a song </h3>
 <form [formGroup]="songForm" class="song-form">
-  <label> Title: </label>
-  <input formControlName="title" placeholder="Song title">
-  <label> URL: </label>
-  <input formControlName="url" placeholder="Song URL">
+  <label>
+    Title:
+    <input formControlName="title" placeholder="Song title">
+  </label>
+  <label>
+    URL:
+    <input formControlName="url" placeholder="Song URL">
+  </label>
   <div formArrayName="artists">
     <h4>Artists</h4>
     <button (click)="addArtist()">+ Add another artist</button>
@@ -25,7 +29,7 @@
           </div>
         </div>
         <!-- You need to have at least one artist per song, so you can't remove the first artist -->
-        @if (i != 0) {
+        @if (i !== 0) {
           <button (click)="removeArtist(i)">Remove</button>
         }
       </div>

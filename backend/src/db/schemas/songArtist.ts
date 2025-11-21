@@ -1,7 +1,7 @@
-import { integer, sqliteTable, text, unique } from "drizzle-orm/sqlite-core";
-import { songs } from "./song";
-import { artists } from "./artist";
 import { relations } from "drizzle-orm";
+import { integer, sqliteTable, text, unique } from "drizzle-orm/sqlite-core";
+import { artists } from "./artist";
+import { songs } from "./song";
 
 const songArtist = sqliteTable(
     "songArtist",

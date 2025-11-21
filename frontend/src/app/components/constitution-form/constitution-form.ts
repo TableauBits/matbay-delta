@@ -26,7 +26,6 @@ export class ConstitutionForm {
 
   onSubmit(): void {
     // Send data
-    this.form.valid
     this.constitutions.create(this.form.value.name ?? "", this.form.value.description ?? "");
 
     // Clean form

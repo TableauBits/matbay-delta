@@ -1,8 +1,8 @@
 import { relations } from "drizzle-orm/relations";
 import { integer, sqliteTable, text, unique } from "drizzle-orm/sqlite-core";
+import { constitutions } from "./constitution";
 import { songs } from "./song";
 import { users } from "./user";
-import { constitutions } from "./constitution";
 
 const songConstitution = sqliteTable(
     "songConstitution",
@@ -47,5 +47,5 @@ export {
     songConstitution,
     // songToConstitution,
     // constitutionToSong,
-    songConstitutionRelation
-}
+    songConstitutionRelation,
+};

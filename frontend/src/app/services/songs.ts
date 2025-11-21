@@ -1,7 +1,7 @@
-import { inject, Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
+import { Observable, ReplaySubject } from 'rxjs';
 import { HttpRequests } from './http-requests';
 import { Song } from '../../../../common/song';
-import { Observable, ReplaySubject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'

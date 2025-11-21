@@ -1,17 +1,17 @@
 import { Component, OnDestroy, inject } from '@angular/core';
 import { Observable, Subscription } from 'rxjs';
+import { AddSongForm } from './components/add-song-form/add-song-form';
+import { ArtistContributionType } from '../../../common/artist';
+import { Artists } from './services/artists';
 import { CommonModule } from '@angular/common';
 import { ConstitutionForm } from './components/constitution-form/constitution-form';
 import { Constitutions } from './services/constitutions';
 import { CurrentUserForm } from './components/current-user-form/current-user-form';
 import { DeltaAuth } from './services/delta-auth';
+import { Song } from '../../../common/song';
+import { Songs } from './services/songs';
 import { User } from '../../../common/user'
 import { Users } from './services/users';
-import { AddSongForm } from './components/add-song-form/add-song-form';
-import { Songs } from './services/songs';
-import { Artists } from './services/artists';
-import { ArtistContribution, ArtistContributionType } from '../../../common/artist';
-import { Song } from '../../../common/song';
 
 @Component({
   selector: 'app-root',

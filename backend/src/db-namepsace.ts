@@ -1,4 +1,12 @@
-import type { artists, constitutions, songArtist, songConstitution, songs, userConstitution, users } from "./db/schemas";
+import type {
+    artists,
+    constitutions,
+    songArtist,
+    songConstitution,
+    songs,
+    userConstitution,
+    users,
+} from "./db/schemas";
 
 // biome-ignore lint/style/useNamingConvention: DB namespace being uppercase is not problematic
 export namespace DB {

@@ -1,14 +1,17 @@
 import { and, eq } from "drizzle-orm";
 import { Option, Result } from "oxide.ts";
 import { ArtistContribution } from "../../../common/artist";
-import { db } from "../db/http";
-import type { DB } from "../db-namepsace";
 import type { Song } from "../../../common/song";
+import { db } from "../db/http";
 import { songArtist, songs } from "../db/schemas";
+import type { DB } from "../db-namepsace";
 
 type Transaction = Parameters<Parameters<(typeof db)["transaction"]>[0]>[0];
 
-async function createSong(song: DB.Insert.Song, additionalArtists: [number, ArtistContribution][]): Promise<Result<DB.Select.Song, Error>> {
+async function createSong(
+    song: DB.Insert.Song,
+    additionalArtists: [number, ArtistContribution][],
+): Promise<Result<DB.Select.Song, Error>> {
     const transactionResult = db.transaction(async (tx) => {
         // Insert new song in table
         const operation = async () => await tx.insert(songs).values(song).returning();
@@ -20,7 +23,10 @@ async function createSong(song: DB.Insert.Song, additionalArtists: [number, Arti
         const songData = insertResult.unwrap();
 
         // Add a link between the song and the primary artist
-        const artistLinks: [number, ArtistContribution][] = [[songData.primaryArtist, ArtistContribution.MAIN], ...additionalArtists];
+        const artistLinks: [number, ArtistContribution][] = [
+            [songData.primaryArtist, ArtistContribution.MAIN],
+            ...additionalArtists,
+        ];
         linkSongToArtists(songData.id, artistLinks, tx);
         return insertResult;
     });
@@ -30,17 +36,18 @@ async function createSong(song: DB.Insert.Song, additionalArtists: [number, Arti
 
 async function getSong(id: number): Promise<Result<Song, Error>> {
     // Get the song with the specified id and get the list of contributing artists (and the type of their contribution)
-    const operation = async () => await db.query.songs.findMany({
-        where: eq(songs.id, id),
-        with: {
-            songArtist: {
-                columns: {
-                    artist: true,
-                    contribution: true,
-                }
-            }
-        }
-    });
+    const operation = async () =>
+        await db.query.songs.findMany({
+            where: eq(songs.id, id),
+            with: {
+                songArtist: {
+                    columns: {
+                        artist: true,
+                        contribution: true,
+                    },
+                },
+            },
+        });
 
     const queryResult = await Result.safe(operation());
     if (queryResult.isErr()) return queryResult;

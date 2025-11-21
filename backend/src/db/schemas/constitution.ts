@@ -1,7 +1,7 @@
-import { integer, sqliteTable, text } from "drizzle-orm/sqlite-core";
-import { users } from "./user";
 import { relations } from "drizzle-orm";
+import { integer, sqliteTable, text } from "drizzle-orm/sqlite-core";
 import { songConstitution } from "./songConstitution";
+import { users } from "./user";
 import { userConstitution } from "./userConstitution";
 
 const constitutions = sqliteTable("constitutions", {
@@ -15,9 +15,9 @@ const constitutions = sqliteTable("constitutions", {
     owner: text().references(() => users.id),
 });
 
-const constitutionsRelations = relations(constitutions, ({ one, many }) => ({
+const constitutionsRelations = relations(constitutions, ({ many }) => ({
     songConstitution: many(songConstitution),
-    userConstitution: many(userConstitution),     // A constitution can have many participating users
+    userConstitution: many(userConstitution), // A constitution can have many participating users
 }));
 
 export { constitutions, constitutionsRelations };

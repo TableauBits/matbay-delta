@@ -1,7 +1,7 @@
-import { inject, Injectable } from '@angular/core';
-import { HttpRequests } from './http-requests';
-import { Artist } from '../../../../common/artist';
+import { Injectable, inject } from '@angular/core';
 import { Observable, ReplaySubject } from 'rxjs';
+import { Artist } from '../../../../common/artist';
+import { HttpRequests } from './http-requests';
 
 @Injectable({
   providedIn: 'root'

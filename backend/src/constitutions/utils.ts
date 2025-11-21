@@ -1,19 +1,19 @@
 import { and, eq } from "drizzle-orm";
 import { Option, Result } from "oxide.ts";
 import { db } from "../db/http";
-import type { DB } from "../db-namepsace";
-
-import { onSongAddCallback, onUserJoinCallback, onUserLeaveCallback } from "./ws";
 import { songConstitution, userConstitution } from "../db/schemas";
+import type { DB } from "../db-namepsace";
+import { onSongAddCallback, onUserJoinCallback, onUserLeaveCallback } from "./ws";
 
 async function addUserToConstitution(uid: string, cstid: number): Promise<Result<DB.Insert.UserConstitution, Error>> {
-    const operation = async () => await db
-        .insert(userConstitution)
-        .values({
-            user: uid,
-            constitution: cstid,
-        })
-        .returning();
+    const operation = async () =>
+        await db
+            .insert(userConstitution)
+            .values({
+                user: uid,
+                constitution: cstid,
+            })
+            .returning();
 
     const insertResult = (await Result.safe(operation())).map((vals) => vals[0] as DB.Select.UserConstitution);
 
@@ -28,14 +28,15 @@ async function addSongToConstitution(
     song: number,
     user: string,
 ): Promise<Result<DB.Insert.SongConstitution, Error>> {
-    const operation = async () => await db
-        .insert(songConstitution)
-        .values({
-            constitution,
-            song,
-            user,
-        })
-        .returning();
+    const operation = async () =>
+        await db
+            .insert(songConstitution)
+            .values({
+                constitution,
+                song,
+                user,
+            })
+            .returning();
 
     const insertResult = (await Result.safe(operation())).map((vals) => vals[0] as DB.Select.SongConstitution);
 
@@ -59,10 +60,11 @@ async function removeUserFromConstitution(
     uid: string,
     cstid: number,
 ): Promise<Result<DB.Select.UserConstitution, Error>> {
-    const operation = async () => await db
-        .delete(userConstitution)
-        .where(and(eq(userConstitution.user, uid), eq(userConstitution.constitution, cstid)))
-        .returning();
+    const operation = async () =>
+        await db
+            .delete(userConstitution)
+            .where(and(eq(userConstitution.user, uid), eq(userConstitution.constitution, cstid)))
+            .returning();
 
     const removeResult = (await Result.safe(operation())).map((vals) => Option(vals[0]));
     if (removeResult.isErr()) return removeResult;
@@ -75,9 +77,4 @@ async function removeUserFromConstitution(
     return removeRow;
 }
 
-export {
-    addSongToConstitution,
-    addUserToConstitution,
-    isMember,
-    removeUserFromConstitution
-};
+export { addSongToConstitution, addUserToConstitution, isMember, removeUserFromConstitution };

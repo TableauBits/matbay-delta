@@ -3,7 +3,7 @@ import { drizzle } from "drizzle-orm/bun-sqlite";
 import { migrate } from "drizzle-orm/bun-sqlite/migrator";
 import { type Request, type Response, Router } from "express";
 import { Option } from "oxide.ts";
-import * as schema from "./schemas/index"
+import * as schema from "./schemas/index";
 
 export const dbURL = Option(process.env["DATABASE_URL"]).expect(
     "environment variable DATABASE_URL not found but is mandatory, check `.env.template`",
