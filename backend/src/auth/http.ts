@@ -88,7 +88,7 @@ function crash(_req: Request, _res: Response) {
 }
 
 function crashHTTP(_req: Request, _res: Response) {
-    unwrapHTTP(Err(new HttpError(HttpStatus.BadRequest, "wesh")));
+    unwrapHTTP(Err(new HttpError(HttpStatus.BadRequest, "crash")));
 }
 
 const authApiRouter = Router();

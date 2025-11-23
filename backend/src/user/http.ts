@@ -1,6 +1,6 @@
 import { eq } from "drizzle-orm";
 import { type Request, type Response, Router } from "express";
-import { Some } from "oxide.ts";
+import { Option } from "oxide.ts";
 import type { UserUpdateRequestBody } from "../../../common/user";
 import { ensureAuthMiddleware } from "../auth/http";
 import { db } from "../db/http";
@@ -24,9 +24,9 @@ async function update(req: Request, res: Response): Promise<void> {
 
     // Extract the user info from the request body and update the database
     const queryResult = await db.update(users).set(userInfo).where(eq(users.id, uid)).returning();
-    const result = Some(queryResult[0] as DB.Select.User).okOr(
-        new HttpError(HttpStatus.InternalError, "failed to update user info"),
-    );
+    const result = Option(queryResult.at(0))
+        .map((val) => val as DB.Select.User)
+        .okOr(new HttpError(HttpStatus.InternalError, "failed to update user info"));
 
     sendResult(result, res);
 }
