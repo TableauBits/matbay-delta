@@ -14,7 +14,7 @@ const songs = sqliteTable(
             .$defaultFn(() => new Date().toISOString()),
 
         title: text().notNull(),
-        /// This column is necessary to enforce that a song as at least one artist
+        /// This column is necessary to enforce that a song has at least one artist
         primaryArtist: integer()
             .notNull()
             .references(() => artists.id),
