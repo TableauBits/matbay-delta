@@ -21,16 +21,6 @@ const userConstitution = sqliteTable(
     (t) => [unique().on(t.user, t.constitution)],
 );
 
-/// A user can participate in many constitutions
-// const userToConstitution = relations(users, ({ many }) => ({
-//     userConstitution: many(userConstitution),
-// }));
-
-/// A constitution can have many participating users
-// const constitutionToUser = relations(constitutions, ({ many }) => ({
-//     userConstitution: many(userConstitution),
-// }));
-
 /// A constitution participation links one user to one constitution
 const userConstitutionRelation = relations(userConstitution, ({ one }) => ({
     user: one(users, {
@@ -43,9 +33,4 @@ const userConstitutionRelation = relations(userConstitution, ({ one }) => ({
     }),
 }));
 
-export {
-    userConstitution,
-    // userToConstitution,
-    // constitutionToUser,
-    userConstitutionRelation,
-};
+export { userConstitution, userConstitutionRelation };

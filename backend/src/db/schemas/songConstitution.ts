@@ -26,16 +26,6 @@ const songConstitution = sqliteTable(
     (t) => [unique().on(t.song, t.user, t.constitution)],
 );
 
-/// One song can be added to many constitutions
-// const songToConstitution = relations(songs, ({ many }) => ({
-//     songConstitution: many(songConstitution),
-// }));
-
-/// One constitution can have many participating songs
-// const constitutionToSong = relations(constitutions, ({ many }) => ({
-//     songConstitution: many(songConstitution),
-// }));
-
 /// A row in songConstitution table only references one song and one constitution
 const songConstitutionRelation = relations(songConstitution, ({ one }) => ({
     song: one(songs, { fields: [songConstitution.song], references: [songs.id] }),
@@ -43,9 +33,4 @@ const songConstitutionRelation = relations(songConstitution, ({ one }) => ({
     constitution: one(constitutions, { fields: [songConstitution.constitution], references: [constitutions.id] }),
 }));
 
-export {
-    songConstitution,
-    // songToConstitution,
-    // constitutionToSong,
-    songConstitutionRelation,
-};
+export { songConstitution, songConstitutionRelation };
