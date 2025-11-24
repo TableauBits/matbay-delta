@@ -18,12 +18,10 @@ async function addSong(
     const transactionResult = db.transaction(async (tx) => {
         // Insert new song in table
         const insertResult = await createSong(song);
-
-        // Return an error if the insert failed
         if (insertResult.isErr()) return insertResult;
         const songData = insertResult.unwrap();
 
-        // Add a link between the song and the primary artist
+        // Add a link between the song and the artists
         const artistLinks: [number, ArtistContribution][] = [
             [songData.primaryArtist, ArtistContribution.MAIN],
             ...additionalArtists,
@@ -51,7 +49,8 @@ async function createSong(song: DB.Insert.Song, tx?: Transaction): Promise<Resul
 
 async function getSong(id: number): Promise<Result<Song, Error>> {
     // Get the song with the specified id with :
-    // - The list of contributing artists (and the type of their contribution)
+    // - The list of contributing artists (the artist id and the contribution type)
+    // - The list of sources (the source original id and platform)
     const operation = async () =>
         await db.query.songs.findMany({
             where: eq(songs.id, id),
@@ -62,11 +61,17 @@ async function getSong(id: number): Promise<Result<Song, Error>> {
                         contribution: true,
                     },
                 },
+                songSource: {
+                    columns: {
+                        sourceID: true,
+                        platform: true,
+                    }
+                }
             },
         });
 
-    const queryResult = await Result.safe(operation());
-    return queryResult.andThen((val) => Option(val.at(0)).okOr(new Error(`No song with id: ${id}`)));
+    return (await Result.safe(operation()))
+        .andThen((val) => Option(val.at(0)).okOr(new Error(`No song with id: ${id}`)));;
 }
 
 async function searchSong(title: string, aid: number): Promise<Result<number[], Error>> {
