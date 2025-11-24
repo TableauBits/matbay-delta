@@ -16,10 +16,13 @@ async function addUserToConstitution(uid: string, cstid: number): Promise<Result
             })
             .returning();
 
-    const insertResult = (await Result.safe(operation())).map((vals) => vals[0] as DB.Select.UserConstitution);
-
-    // Update users who were listening to changes
-    if (insertResult.isOk()) onUserJoinCallback(insertResult.unwrap());
+    const insertResult = (await Result.safe(operation()))
+        .andThen((users) => Option(users.at(0)).okOr(new Error("failed to add user participation in the database")))
+        .map((user) => {
+            // Update users who were listening to changes
+            onUserJoinCallback(user);
+            return user;
+        });
 
     return insertResult;
 }
@@ -36,8 +39,9 @@ async function addSongToConstitution(constitution: number, song: number, user: s
             .returning();
 
     const insertResult = (await Result.safe(operation()))
-        .andThen((val) => Option(val.at(0)).okOr(new Error("failed to insert song into database")))
+        .andThen((songs) => Option(songs.at(0)).okOr(new Error("failed to insert song into database")))
         .map((song) => {
+            // Update users who were listening to changes
             onSongAddCallback(song);
             return {};
         });
@@ -65,15 +69,15 @@ async function removeUserFromConstitution(
             .where(and(eq(userConstitution.user, uid), eq(userConstitution.constitution, cstid)))
             .returning();
 
-    const removeResult = (await Result.safe(operation())).map((vals) => Option(vals[0]));
-    if (removeResult.isErr()) return removeResult;
+    const removeResult = (await Result.safe(operation()))
+        .andThen((users) => Option(users.at(0)).okOr(new Error("failed to remove user participation in the database")))
+        .map((user) => {
+            // Update users who were listening to changes
+            onUserLeaveCallback(user);
+            return user;
+        });
 
-    const removeRow = removeResult.unwrap().okOr(new Error("nothing to remove"));
-
-    // Update users who were listening to changes
-    if (removeRow.isOk()) onUserLeaveCallback(removeRow.unwrap());
-
-    return removeRow;
+    return removeResult;
 }
 
 export { addSongToConstitution, addUserToConstitution, isMember, removeUserFromConstitution };
