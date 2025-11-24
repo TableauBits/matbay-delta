@@ -41,17 +41,13 @@ async function addSong(req: Request, res: Response): Promise<void> {
     const uid = getReqUID(req);
     const participation = getBody<AddSongConstitutionRequestBody>(req);
 
-    const result = (await addSongToConstitution(participation.constitution, participation.song, uid))
-        .map(() => {
-            return {};
-        })
-        .mapErr(
-            (err) =>
-                new HttpError(
-                    HttpStatus.UnprocessableContent,
-                    `failed to add song '${participation.song}' constitution '${participation.constitution}' ${err}`,
-                ),
-        );
+    const result = (await addSongToConstitution(participation.constitution, participation.song, uid)).mapErr(
+        (err) =>
+            new HttpError(
+                HttpStatus.UnprocessableContent,
+                `failed to add song '${participation.song}' constitution '${participation.constitution}' ${err}`,
+            ),
+    );
 
     sendResult(result, res);
 }

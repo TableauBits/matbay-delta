@@ -1,5 +1,6 @@
 import { and, eq } from "drizzle-orm";
 import { Option, Result } from "oxide.ts";
+import type { Unit } from "../../../common/utils.ts";
 import { db } from "../db/http";
 import { songConstitution, userConstitution } from "../db/schemas";
 import type { DB } from "../db-namepsace";
@@ -23,11 +24,7 @@ async function addUserToConstitution(uid: string, cstid: number): Promise<Result
     return insertResult;
 }
 
-async function addSongToConstitution(
-    constitution: number,
-    song: number,
-    user: string,
-): Promise<Result<DB.Insert.SongConstitution, Error>> {
+async function addSongToConstitution(constitution: number, song: number, user: string): Promise<Result<Unit, Error>> {
     const operation = async () =>
         await db
             .insert(songConstitution)
@@ -42,7 +39,7 @@ async function addSongToConstitution(
         .andThen((val) => Option(val.at(0)).okOr(new Error("failed to insert song into database")))
         .map((song) => {
             onSongAddCallback(song);
-            return song;
+            return {};
         });
 
     return insertResult;
