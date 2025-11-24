@@ -2,7 +2,7 @@ import { type Request, type Response, Router } from "express";
 import type { AddSongRequestBody } from "../../../common/song";
 import { ensureAuthMiddleware } from "../auth/http";
 import { getBody, getParam, HttpError, HttpStatus, sendResult } from "../utils";
-import { createSong, getSong, searchSong } from "./utils";
+import { addSong, getSong, searchSong } from "./utils";
 
 // GET ROUTES
 async function get(req: Request, res: Response): Promise<void> {
@@ -18,7 +18,7 @@ async function get(req: Request, res: Response): Promise<void> {
 async function add(req: Request, res: Response): Promise<void> {
     const body = getBody<AddSongRequestBody>(req);
 
-    const dbResult = (await createSong(body.song, body.otherContributions, body.sources)).mapErr(
+    const dbResult = (await addSong(body.song, body.otherContributions, body.sources)).mapErr(
         (err) => new HttpError(HttpStatus.InternalError, `failed to create song in database: ${err}`),
     );
     sendResult(dbResult, res);

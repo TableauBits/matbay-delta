@@ -10,18 +10,14 @@ import parseUrl from "parse-url";
 
 type Transaction = Parameters<Parameters<(typeof db)["transaction"]>[0]>[0];
 
-async function createSong(
+async function addSong(
     song: DB.Insert.Song,
     additionalArtists: [number, ArtistContribution][],
     sources: string[],
 ): Promise<Result<DB.Select.Song, Error>> {
     const transactionResult = db.transaction(async (tx) => {
         // Insert new song in table
-        // TODO : Move the creation logic to an other function
-        const operation = async () => await tx.insert(songs).values(song).returning();
-        const insertResult = (await Result.safe(operation())).andThen((songs) =>
-            Option(songs.at(0)).okOr(new Error("failed to add song to database")),
-        );
+        const insertResult = await createSong(song);
 
         // Return an error if the insert failed
         if (insertResult.isErr()) return insertResult;
@@ -34,12 +30,23 @@ async function createSong(
         ];
         linkSongToArtists(songData.id, artistLinks, tx);
 
+        // Creates sources of the song
         createSources(songData.id, sources, tx);
 
         return insertResult;
     });
 
     return transactionResult;
+}
+
+async function createSong(song: DB.Insert.Song, tx?: Transaction): Promise<Result<DB.Select.Song, Error>> {
+    const ctx = tx ? tx : db;
+    const operation = async () => await ctx.insert(songs).values(song).returning();
+
+    // Only insert one song, so only take the first returned value
+    return (await Result.safe(operation())).andThen((artists) =>
+        Option(artists.at(0)).okOr(new Error("failed to add song to database")),
+    );
 }
 
 async function getSong(id: number): Promise<Result<Song, Error>> {
@@ -127,4 +134,4 @@ async function linkSongToArtists(song: number, artists: [number, ArtistContribut
     return await Result.safe(operation());
 }
 
-export { createSong, getSong, searchSong };
+export { addSong, getSong, searchSong };
