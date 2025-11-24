@@ -1,19 +1,23 @@
 import { and, eq } from "drizzle-orm";
-import { Option, Result } from "oxide.ts";
+import { Err, Option, Result } from "oxide.ts";
 import { ArtistContribution } from "../../../common/artist";
+import { SourcePlatform } from "../../../common/source";
 import type { Song } from "../../../common/song";
 import { db } from "../db/http";
-import { songArtist, songs } from "../db/schemas";
+import { songArtist, songs, songSource } from "../db/schemas";
 import type { DB } from "../db-namepsace";
+import parseUrl from "parse-url";
 
 type Transaction = Parameters<Parameters<(typeof db)["transaction"]>[0]>[0];
 
 async function createSong(
     song: DB.Insert.Song,
     additionalArtists: [number, ArtistContribution][],
+    sources: string[],
 ): Promise<Result<DB.Select.Song, Error>> {
     const transactionResult = db.transaction(async (tx) => {
         // Insert new song in table
+        // TODO : Move the creation logic to an other function
         const operation = async () => await tx.insert(songs).values(song).returning();
         const insertResult = (await Result.safe(operation())).andThen((songs) =>
             Option(songs.at(0)).okOr(new Error("failed to add song to database")),
@@ -21,7 +25,6 @@ async function createSong(
 
         // Return an error if the insert failed
         if (insertResult.isErr()) return insertResult;
-
         const songData = insertResult.unwrap();
 
         // Add a link between the song and the primary artist
@@ -30,6 +33,9 @@ async function createSong(
             ...additionalArtists,
         ];
         linkSongToArtists(songData.id, artistLinks, tx);
+
+        createSources(songData.id, sources, tx);
+
         return insertResult;
     });
 
@@ -67,7 +73,50 @@ async function searchSong(title: string, aid: number): Promise<Result<number[], 
     return Result.safe(operation());
 }
 
-async function linkSongToArtists(song: number, artists: [number, ArtistContribution][], tx?: Transaction) {
+enum SourceHost {
+    "YOUTUBE",
+    "YOUTU_BE"
+}
+
+function getSourceInfo(source: parseUrl.ParsedUrl, host: SourceHost) {
+    switch (host) {
+        case SourceHost.YOUTUBE:
+            return Option(source.query["v"])
+                .map((sourceID) => { return { sourceID, platform: SourcePlatform.YOUTUBE } })
+                .okOr(new Error("invalid URL for host"));
+        case SourceHost.YOUTU_BE:
+            return Option(source.pathname.split('/').at(-1))
+                .map((sourceID) => { return { sourceID, platform: SourcePlatform.YOUTUBE } })
+                .okOr(new Error("invalid URL for host"));
+        default:
+            return Err(new Error("invalid host"));
+    }
+}
+
+const knownHosts = new Map<string, SourceHost>()
+    .set("youtu.be", SourceHost.YOUTU_BE)
+    .set("youtube.com", SourceHost.YOUTUBE)
+
+async function createSources(song: number, sources: string[], tx?: Transaction): Promise<Result<DB.Select.SongSource[], Error>> {
+    const ctx = tx ? tx : db;
+
+    const rows = Result.all(...sources.map(sourceURL => {
+        const source = parseUrl(sourceURL, true);
+
+        return Option(knownHosts.get(source.host))
+            .okOr(new Error("unknown host"))
+            .andThen((host: SourceHost) => {
+                return getSourceInfo(source, host);
+            }).map((sourceInfo) => { return { ...sourceInfo, song } });
+    }));
+    if (rows.isErr()) return rows;
+
+    const operation = async () => await ctx.insert(songSource).values(rows.unwrap()).returning();
+
+    return await Result.safe(operation());
+}
+
+async function linkSongToArtists(song: number, artists: [number, ArtistContribution][], tx?: Transaction): Promise<Result<DB.Select.SongArtist[], Error>> {
     const ctx = tx ? tx : db;
     const rows = artists.map(([artist, contribution]) => {
         return { song, artist, contribution } as DB.Insert.SongArtist;

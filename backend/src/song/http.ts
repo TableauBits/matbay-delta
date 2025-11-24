@@ -18,7 +18,7 @@ async function get(req: Request, res: Response): Promise<void> {
 async function add(req: Request, res: Response): Promise<void> {
     const body = getBody<AddSongRequestBody>(req);
 
-    const dbResult = (await createSong(body.song, body.otherContributions)).mapErr(
+    const dbResult = (await createSong(body.song, body.otherContributions, body.sources)).mapErr(
         (err) => new HttpError(HttpStatus.InternalError, `failed to create song in database: ${err}`),
     );
     sendResult(dbResult, res);

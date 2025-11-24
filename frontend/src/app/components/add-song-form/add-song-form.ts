@@ -87,7 +87,8 @@ export class AddSongForm {
           title: this.songForm.value.title,
           primaryArtist: artistIds[0]
         },
-        otherContributions: artistIds.filter((_, index) => index !== 0).map((val, index) => [val, (this.songForm.value.artists as FormArtist[])[index].role])
+        otherContributions: artistIds.filter((_, index) => index !== 0).map((val, index) => [val, (this.songForm.value.artists as FormArtist[])[index].role]),
+        sources: []
       })).id;
     }
 

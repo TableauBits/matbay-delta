@@ -4,6 +4,7 @@ import { artists } from "./artist";
 import { songAlbum } from "./songAlbum";
 import { songArtist } from "./songArtist";
 import { songConstitution } from "./songConstitution";
+import { songSource } from "./songSource";
 
 const songs = sqliteTable(
     "songs",
@@ -26,6 +27,7 @@ const songsRelations = relations(songs, ({ many }) => ({
     songAlbum: many(songAlbum), // One song can be in multiple albums
     songArtist: many(songArtist), // One song can have multiple artists
     songConstitution: many(songConstitution), // One song can be added to many constitutions
+    songSource: many(songSource), // One song can have multiple sources
 }));
 
 export { songs, songsRelations };
