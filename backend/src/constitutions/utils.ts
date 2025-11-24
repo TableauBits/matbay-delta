@@ -38,10 +38,12 @@ async function addSongToConstitution(
             })
             .returning();
 
-    const insertResult = (await Result.safe(operation())).map((vals) => vals[0] as DB.Select.SongConstitution);
-
-    // Update users who were listening to changes
-    if (insertResult.isOk()) onSongAddCallback(insertResult.unwrap());
+    const insertResult = (await Result.safe(operation()))
+        .andThen((val) => Option(val.at(0)).okOr(new Error("failed to insert song into database")))
+        .map((song) => {
+            onSongAddCallback(song);
+            return song;
+        });
 
     return insertResult;
 }
