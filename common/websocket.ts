@@ -1,8 +1,9 @@
-import type { UserConstitution } from "./constitution";
+import type { UserConstitution, SongConstitution } from "./constitution";
 
 enum WebsocketEvents {
   CST_USER_JOIN = "cst-user-join",        // OUT
   CST_USER_LEAVE = "cst-user-leave",      // OUT
+  CST_SONG_ADD = "cst-song-add",          // IN
   CST_SUBSCRIBE = "cst-subscribe",        // IN
   CST_UNSUBSCRIBE = "cst-unsubscribe"     // IN
 }
@@ -36,8 +37,17 @@ interface WSCstUserLeaveMessage {
   user: string;
 }
 
+interface WSCstSongAddMessage {
+  constitution: number;
+  songConstitution: SongConstitution;
+}
+
 export {
   WebsocketEvents,
   type WSInMessage,
-  type WSCstUserJoinMessage, type WSCstUserLeaveMessage, type WSCstSubscribeMessage, type WSCstUnsubscribeMessage
+  type WSCstSongAddMessage,
+  type WSCstUserJoinMessage,
+  type WSCstUserLeaveMessage,
+  type WSCstSubscribeMessage,
+  type WSCstUnsubscribeMessage,
 };

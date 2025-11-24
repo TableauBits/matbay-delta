@@ -1,0 +1,40 @@
+<h3> Add a song </h3>
+<form [formGroup]="songForm" class="song-form">
+  <label>
+    Title:
+    <input formControlName="title" placeholder="Song title">
+  </label>
+  <label>
+    URL:
+    <input formControlName="url" placeholder="Song URL">
+  </label>
+  <div formArrayName="artists">
+    <h4>Artists</h4>
+    <button (click)="addArtist()">+ Add another artist</button>
+    @for (artistForm of artists.controls; track $index; let i = $index) {
+      <div [formGroupName]="i">
+        <div class="artist-inputs">
+          Artist {{i}}
+          <div>
+            <label for="name-{{i}}">Name:</label>
+            <input id="name-{{i}}" formControlName="name" placeholder="Artist name">
+          
+         
+            <label for="role-{{i}}">Role:</label>
+            <select id="role-{{i}}" formControlName="role">
+              @for (contribution of getContributions(); track $index) {
+                <option value="{{contribution}}"> {{contribution}} </option>
+              }
+            </select>
+          </div>
+        </div>
+        <!-- You need to have at least one artist per song, so you can't remove the first artist -->
+        @if (i !== 0) {
+          <button (click)="removeArtist(i)">Remove</button>
+        }
+      </div>
+    }
+  </div>
+</form>
+<button [disabled]="!songForm.valid" (click)="submitForm()">Submit song</button>
+

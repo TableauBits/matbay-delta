@@ -1,66 +1,61 @@
-import { and, eq } from "drizzle-orm";
 import { type Request, type Response, Router } from "express";
-import { Err, Ok, Option, Result } from "oxide.ts";
-import type { CreateConstitutionRequestBody } from "../../../common/constitution";
+import { Ok, Option } from "oxide.ts";
+import type {
+    AddSongConstitutionRequestBody,
+    CreateConstitutionRequestBody,
+    JoinConstitutionRequestBody,
+    LeaveConstitutionRequestBody,
+} from "../../../common/constitution";
 import { ensureAuthMiddleware } from "../auth/http";
 import { db } from "../db/http";
-import type { DB } from "../db-namepsace";
-import { HttpError, HttpStatus, sendResult } from "../utils";
-import { constitutions, userConstitution } from "./schema";
-import { onUserJoinCallback, onUserLeaveCallback } from "./ws";
+import { constitutions } from "../db/schemas";
+import { getBody, getReqUID, HttpError, HttpStatus, sendResult, unwrapHTTP } from "../utils";
+import { addSongToConstitution, addUserToConstitution, removeUserFromConstitution } from "./utils";
 
-// Utils functions
-async function addUserToConstitution(uid: string, cstid: number): Promise<Result<DB.UserConstitution, Error>> {
-    const operation = async () =>
-        await db
-            .insert(userConstitution)
-            .values({
-                user: uid,
-                constitution: cstid,
-            })
-            .returning();
+// GET ROUTES
+async function getAll(_: Request, res: Response): Promise<void> {
+    // Get all constitutions with the list of participants
+    const allConstitutions = await db.query.constitutions.findMany({
+        with: {
+            userConstitution: {
+                columns: {
+                    user: true,
+                    joinDate: true,
+                },
+            },
+            songConstitution: {
+                columns: {
+                    song: true,
+                    user: true,
+                    addDate: true,
+                },
+            },
+        },
+    });
 
-    const insertResult = (await Result.safe(operation())).map((vals) => vals[0] as DB.UserConstitution);
-    if (insertResult.isOk()) {
-        onUserJoinCallback(insertResult.unwrap());
-    }
-
-    return insertResult;
+    sendResult(Ok(allConstitutions), res);
 }
 
-async function removeUserFromConstitution(uid: string, cstid: number): Promise<Result<DB.UserConstitution, Error>> {
-    const operation = async () =>
-        await db
-            .delete(userConstitution)
-            .where(and(eq(userConstitution.user, uid), eq(userConstitution.constitution, cstid)))
-            .returning();
+// POST ROUTES
+async function addSong(req: Request, res: Response): Promise<void> {
+    const uid = getReqUID(req);
+    const participation = getBody<AddSongConstitutionRequestBody>(req);
 
-    const removeResult = (await Result.safe(operation())).map((vals) => Option(vals[0]));
-    if (removeResult.isErr()) return removeResult;
+    const result = (await addSongToConstitution(participation.constitution, participation.song, uid)).mapErr(
+        (err) =>
+            new HttpError(
+                HttpStatus.UnprocessableContent,
+                `failed to add song '${participation.song}' constitution '${participation.constitution}' ${err}`,
+            ),
+    );
 
-    const removeRow = removeResult.unwrap().okOr(new Error("nothing to remove"));
-    if (removeRow.isOk()) {
-        onUserLeaveCallback(removeRow.unwrap());
-    }
-
-    return removeRow;
+    sendResult(result, res);
 }
 
-// Endpoint functions
 async function create(req: Request, res: Response): Promise<void> {
-    // TODO : Add validation of the body
     // TODO : Add validation of the permissions of the user (is he allowed to create a constitution ?)
-
-    const uid = Option(req.uid);
-    if (uid.isNone()) {
-        sendResult(
-            Err(new HttpError(HttpStatus.InternalError, "missing uid in request, this should never happen")),
-            res,
-        );
-        return;
-    }
-
-    const body = req.body as CreateConstitutionRequestBody;
+    const uid = getReqUID(req);
+    const body = getBody<CreateConstitutionRequestBody>(req);
 
     // Create the constitution
     const queryResult = await db
@@ -73,67 +68,31 @@ async function create(req: Request, res: Response): Promise<void> {
         .returning();
 
     // Get the id of the created constitution
-    const cstid = Option(queryResult[0]?.id);
-    if (cstid.isNone()) {
-        sendResult(Err(new HttpError(HttpStatus.InternalError, "failed to create constitution. no id returned")), res);
-        return;
-    }
+    const cstid = unwrapHTTP(
+        Option(queryResult.at(0)?.id).okOr(
+            new HttpError(HttpStatus.InternalError, "failed to create constitution. no id returned"),
+        ),
+    );
 
     // Add the user as a participant of the constitution
     // TODO : This should be done in a transaction ?
-    // TODO : Return the created constitution instead of a simple message ?
     sendResult(
-        (await addUserToConstitution(uid.unwrap(), cstid.unwrap()))
-            .map(() => "constitution created")
-            .mapErr((err) => new HttpError(HttpStatus.UnprocessableContent, `failed to join constitution ${err}`)),
+        (await addUserToConstitution(uid, cstid)).mapErr(
+            (err) => new HttpError(HttpStatus.UnprocessableContent, `failed to join constitution ${err}`),
+        ),
         res,
     );
 }
 
-async function getAll(_: Request, res: Response): Promise<void> {
-    // Get all constitutions with the list of participants
-    const allConstitutions = await db.query.constitutions.findMany({
-        with: {
-            userConstitution: {
-                columns: {
-                    user: true,
-                    joinDate: true,
-                },
-            },
-        },
-    });
-
-    sendResult(Ok(allConstitutions), res);
-}
-
 async function join(req: Request, res: Response): Promise<void> {
-    const uid = Option(req.uid);
-    if (uid.isNone()) {
-        sendResult(
-            Err(new HttpError(HttpStatus.InternalError, "missing uid in request, this should never happen")),
-            res,
-        );
-        return;
-    }
+    const body = getBody<JoinConstitutionRequestBody>(req);
+    const uid = getReqUID(req);
 
-    const id = Option(req.params["id"]).okOr(
-        new HttpError(HttpStatus.BadRequest, "missing constitution id from request"),
+    const id = unwrapHTTP(
+        Option(body.id).okOr(new HttpError(HttpStatus.BadRequest, "missing constitution id from request")),
     );
-    if (id.isErr()) {
-        sendResult(id, res);
-        return;
-    }
 
-    const cstid = Result.safe(() => parseInt(id.unwrap()));
-    if (cstid.isErr()) {
-        sendResult(
-            Err(new HttpError(HttpStatus.BadRequest, `constitution id could not be parse: ${cstid.unwrapErr()}`)),
-            res,
-        );
-        return;
-    }
-
-    const result = (await addUserToConstitution(uid.unwrap(), cstid.unwrap())).mapErr(
+    const result = (await addUserToConstitution(uid, id)).mapErr(
         (err) => new HttpError(HttpStatus.UnprocessableContent, `failed to join constitution ${err}`),
     );
     sendResult(result, res);
@@ -142,33 +101,14 @@ async function join(req: Request, res: Response): Promise<void> {
 async function leave(req: Request, res: Response): Promise<void> {
     // TODO : The owner of a constitution should not be able to leave it
     // TODO : If the last user leaves the constitution, should it be deleted ?
-    const uid = Option(req.uid);
-    if (uid.isNone()) {
-        sendResult(
-            Err(new HttpError(HttpStatus.InternalError, "missing uid in request, this should never happen")),
-            res,
-        );
-        return;
-    }
+    const body = getBody<LeaveConstitutionRequestBody>(req);
+    const uid = getReqUID(req);
 
-    const id = Option(req.params["id"]).okOr(
-        new HttpError(HttpStatus.BadRequest, "missing constitution id from request"),
+    const id = unwrapHTTP(
+        Option(body.id).okOr(new HttpError(HttpStatus.BadRequest, "missing constitution id from request")),
     );
-    if (id.isErr()) {
-        sendResult(id, res);
-        return;
-    }
 
-    const cstid = Result.safe(() => parseInt(id.unwrap()));
-    if (cstid.isErr()) {
-        sendResult(
-            Err(new HttpError(HttpStatus.BadRequest, `constitution id could not be parse: ${cstid.unwrapErr()}`)),
-            res,
-        );
-        return;
-    }
-
-    const result = (await removeUserFromConstitution(uid.unwrap(), cstid.unwrap())).mapErr(
+    const result = (await removeUserFromConstitution(uid, id)).mapErr(
         (err) => new HttpError(HttpStatus.UnprocessableContent, `failed to leave constitution ${err}`),
     );
     sendResult(result, res);
@@ -176,9 +116,11 @@ async function leave(req: Request, res: Response): Promise<void> {
 
 const constitutionApiRouter = Router();
 
-constitutionApiRouter.use("/create", ensureAuthMiddleware, create);
-constitutionApiRouter.use("/getAll", ensureAuthMiddleware, getAll);
-constitutionApiRouter.use("/join/:id", ensureAuthMiddleware, join);
-constitutionApiRouter.use("/leave/:id", ensureAuthMiddleware, leave);
+constitutionApiRouter.get("/getAll", ensureAuthMiddleware, getAll); // Debug route ?
+
+constitutionApiRouter.post("/addSong", ensureAuthMiddleware, addSong);
+constitutionApiRouter.post("/create", ensureAuthMiddleware, create);
+constitutionApiRouter.post("/join", ensureAuthMiddleware, join);
+constitutionApiRouter.post("/leave", ensureAuthMiddleware, leave);
 
 export { constitutionApiRouter };

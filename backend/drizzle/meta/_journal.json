@@ -57,6 +57,27 @@
       "when": 1758812297566,
       "tag": "0007_brown_squadron_supreme",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "6",
+      "when": 1763135887745,
+      "tag": "0008_strange_harrier",
+      "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "6",
+      "when": 1763324385954,
+      "tag": "0009_easy_absorbing_man",
+      "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "6",
+      "when": 1763693975817,
+      "tag": "0010_smiling_tiger_shark",
+      "breakpoints": true
     }
   ]
 }
