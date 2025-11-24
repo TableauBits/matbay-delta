@@ -1,7 +1,7 @@
 import { and, eq } from "drizzle-orm";
 import { Err, Option, Result } from "oxide.ts";
 import { ArtistContribution } from "../../../common/artist";
-import { SourcePlatform } from "../../../common/source";
+import { KNOWN_HOSTS, SourceHost, SourcePlatform } from "../../../common/source";
 import type { Song } from "../../../common/song";
 import { db } from "../db/http";
 import { songArtist, songs, songSource } from "../db/schemas";
@@ -50,7 +50,8 @@ async function createSong(song: DB.Insert.Song, tx?: Transaction): Promise<Resul
 }
 
 async function getSong(id: number): Promise<Result<Song, Error>> {
-    // Get the song with the specified id and get the list of contributing artists (and the type of their contribution)
+    // Get the song with the specified id with :
+    // - The list of contributing artists (and the type of their contribution)
     const operation = async () =>
         await db.query.songs.findMany({
             where: eq(songs.id, id),
@@ -80,11 +81,6 @@ async function searchSong(title: string, aid: number): Promise<Result<number[], 
     return Result.safe(operation());
 }
 
-enum SourceHost {
-    "YOUTUBE",
-    "YOUTU_BE"
-}
-
 function getSourceInfo(source: parseUrl.ParsedUrl, host: SourceHost) {
     switch (host) {
         case SourceHost.YOUTUBE:
@@ -100,17 +96,13 @@ function getSourceInfo(source: parseUrl.ParsedUrl, host: SourceHost) {
     }
 }
 
-const knownHosts = new Map<string, SourceHost>()
-    .set("youtu.be", SourceHost.YOUTU_BE)
-    .set("youtube.com", SourceHost.YOUTUBE)
-
 async function createSources(song: number, sources: string[], tx?: Transaction): Promise<Result<DB.Select.SongSource[], Error>> {
     const ctx = tx ? tx : db;
 
     const rows = Result.all(...sources.map(sourceURL => {
         const source = parseUrl(sourceURL, true);
 
-        return Option(knownHosts.get(source.host))
+        return Option(KNOWN_HOSTS.get(source.host))
             .okOr(new Error("unknown host"))
             .andThen((host: SourceHost) => {
                 return getSourceInfo(source, host);
