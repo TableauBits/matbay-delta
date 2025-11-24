@@ -1,9 +1,9 @@
 import { and, eq } from "drizzle-orm";
 import { Option, Result } from "oxide.ts";
 import type { Unit } from "../../../common/utils.ts";
-import { db } from "../db/http";
-import { songConstitution, userConstitution } from "../db/schemas";
-import { onSongAddCallback, onUserJoinCallback, onUserLeaveCallback } from "./ws";
+import { db } from "../db/http.ts";
+import { songConstitution, userConstitution } from "../db/schemas/index.ts";
+import { onSongAddCallback, onUserJoinCallback, onUserLeaveCallback } from "./ws.ts";
 
 async function addUserToConstitution(uid: string, cstid: number): Promise<Result<Unit, Error>> {
     const operation = async () =>
