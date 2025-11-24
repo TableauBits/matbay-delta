@@ -77,11 +77,9 @@ async function create(req: Request, res: Response): Promise<void> {
     // Add the user as a participant of the constitution
     // TODO : This should be done in a transaction ?
     sendResult(
-        (await addUserToConstitution(uid, cstid))
-            .map(() => {
-                return {};
-            })
-            .mapErr((err) => new HttpError(HttpStatus.UnprocessableContent, `failed to join constitution ${err}`)),
+        (await addUserToConstitution(uid, cstid)).mapErr(
+            (err) => new HttpError(HttpStatus.UnprocessableContent, `failed to join constitution ${err}`),
+        ),
         res,
     );
 }
@@ -94,11 +92,9 @@ async function join(req: Request, res: Response): Promise<void> {
         Option(body.id).okOr(new HttpError(HttpStatus.BadRequest, "missing constitution id from request")),
     );
 
-    const result = (await addUserToConstitution(uid, id))
-        .map(() => {
-            return {};
-        })
-        .mapErr((err) => new HttpError(HttpStatus.UnprocessableContent, `failed to join constitution ${err}`));
+    const result = (await addUserToConstitution(uid, id)).mapErr(
+        (err) => new HttpError(HttpStatus.UnprocessableContent, `failed to join constitution ${err}`),
+    );
     sendResult(result, res);
 }
 
@@ -112,11 +108,9 @@ async function leave(req: Request, res: Response): Promise<void> {
         Option(body.id).okOr(new HttpError(HttpStatus.BadRequest, "missing constitution id from request")),
     );
 
-    const result = (await removeUserFromConstitution(uid, id))
-        .map(() => {
-            return {};
-        })
-        .mapErr((err) => new HttpError(HttpStatus.UnprocessableContent, `failed to leave constitution ${err}`));
+    const result = (await removeUserFromConstitution(uid, id)).mapErr(
+        (err) => new HttpError(HttpStatus.UnprocessableContent, `failed to leave constitution ${err}`),
+    );
     sendResult(result, res);
 }
 
