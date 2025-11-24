@@ -15,7 +15,7 @@ async function getArtist(id: number): Promise<Result<DB.Select.Artist, Error>> {
     const operation = async () => await db.select().from(artists).where(eq(artists.id, id));
 
     const queryResult = await Result.safe(operation());
-    return queryResult.map((val) => Option(val.at(0)).okOr(new Error(`No artist with id: ${id}`))).flatten();
+    return queryResult.andThen((val) => Option(val.at(0)).okOr(new Error(`No artist with id: ${id}`)));
 }
 
 async function getArtistsIDFromName(name: string): Promise<Result<number[], Error>> {

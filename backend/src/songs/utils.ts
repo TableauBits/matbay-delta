@@ -50,7 +50,7 @@ async function getSong(id: number): Promise<Result<Song, Error>> {
         });
 
     const queryResult = await Result.safe(operation());
-    return queryResult.map((val) => Option(val.at(0)).okOr(new Error(`No song with id: ${id}`))).flatten();
+    return queryResult.andThen((val) => Option(val.at(0)).okOr(new Error(`No song with id: ${id}`)));
 }
 
 async function searchSong(title: string, aid: number): Promise<Result<number[], Error>> {
