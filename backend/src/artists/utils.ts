@@ -8,7 +8,9 @@ async function createArtist(artist: DB.Insert.Artist): Promise<Result<DB.Select.
     const operation = async () => await db.insert(artists).values(artist).returning();
 
     // Only insert one artist, so only take the first returned value
-    return (await Result.safe(operation())).map((vals) => vals[0] as DB.Select.Artist);
+    return (await Result.safe(operation())).andThen((artists) =>
+        Option(artists.at(0)).okOr(new Error("failed to add artist to database")),
+    );
 }
 
 async function getArtist(id: number): Promise<Result<DB.Select.Artist, Error>> {

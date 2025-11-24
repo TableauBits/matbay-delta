@@ -69,7 +69,7 @@ async function create(req: Request, res: Response): Promise<void> {
 
     // Get the id of the created constitution
     const cstid = unwrapHTTP(
-        Option(queryResult[0]?.id).okOr(
+        Option(queryResult.at(0)?.id).okOr(
             new HttpError(HttpStatus.InternalError, "failed to create constitution. no id returned"),
         ),
     );

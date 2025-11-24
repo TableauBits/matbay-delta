@@ -15,7 +15,9 @@ async function createSong(
     const transactionResult = db.transaction(async (tx) => {
         // Insert new song in table
         const operation = async () => await tx.insert(songs).values(song).returning();
-        const insertResult = (await Result.safe(operation())).map((vals) => vals[0] as DB.Select.Song);
+        const insertResult = (await Result.safe(operation())).andThen((songs) =>
+            Option(songs.at(0)).okOr(new Error("failed to add song to database")),
+        );
 
         // Return an error if the insert failed
         if (insertResult.isErr()) return insertResult;
