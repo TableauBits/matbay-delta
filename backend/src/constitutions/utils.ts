@@ -3,10 +3,9 @@ import { Option, Result } from "oxide.ts";
 import type { Unit } from "../../../common/utils.ts";
 import { db } from "../db/http";
 import { songConstitution, userConstitution } from "../db/schemas";
-import type { DB } from "../db-namepsace";
 import { onSongAddCallback, onUserJoinCallback, onUserLeaveCallback } from "./ws";
 
-async function addUserToConstitution(uid: string, cstid: number): Promise<Result<DB.Insert.UserConstitution, Error>> {
+async function addUserToConstitution(uid: string, cstid: number): Promise<Result<Unit, Error>> {
     const operation = async () =>
         await db
             .insert(userConstitution)
@@ -21,7 +20,7 @@ async function addUserToConstitution(uid: string, cstid: number): Promise<Result
         .map((user) => {
             // Update users who were listening to changes
             onUserJoinCallback(user);
-            return user;
+            return {};
         });
 
     return insertResult;
@@ -59,10 +58,7 @@ async function isMember(uid: string, cstid: number): Promise<Result<boolean, Err
     return (await Result.safe(operation())).map((results) => results.length !== 0);
 }
 
-async function removeUserFromConstitution(
-    uid: string,
-    cstid: number,
-): Promise<Result<DB.Select.UserConstitution, Error>> {
+async function removeUserFromConstitution(uid: string, cstid: number): Promise<Result<Unit, Error>> {
     const operation = async () =>
         await db
             .delete(userConstitution)
@@ -74,7 +70,7 @@ async function removeUserFromConstitution(
         .map((user) => {
             // Update users who were listening to changes
             onUserLeaveCallback(user);
-            return user;
+            return {};
         });
 
     return removeResult;
