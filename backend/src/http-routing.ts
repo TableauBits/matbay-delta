@@ -1,9 +1,9 @@
 import { Router } from "express";
-import { artistApiRouter } from "./artists/http";
+import { artistApiRouter } from "./artist/http";
 import { authApiRouter, authDevRouter } from "./auth/http";
-import { constitutionApiRouter } from "./constitutions/http";
+import { constitutionApiRouter } from "./constitution/http";
 import { dbApiRouter, dbDevRouter } from "./db/http";
-import { songApiRouter } from "./songs/http";
+import { songApiRouter } from "./song/http";
 import { userApiRouter } from "./user/http";
 import { errorHandler } from "./utils";
 
