@@ -77,7 +77,5 @@ export function getReqUID(req: Request): string {
 }
 
 export function getParam(req: Request, key: string): string {
-    return unwrap(
-        Option(req.params[key]).okOr(new HttpError(HttpStatus.BadRequest, `missing '${key}' from request`)),
-    );
+    return unwrap(Option(req.params[key]).okOr(new HttpError(HttpStatus.BadRequest, `missing '${key}' from request`)));
 }

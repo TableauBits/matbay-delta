@@ -1,12 +1,12 @@
 import { and, eq } from "drizzle-orm";
 import { Err, Option, Result } from "oxide.ts";
-import { ArtistContribution } from "../../../common/artist";
-import { KNOWN_HOSTS, SourceHost, SourcePlatform } from "../../../common/source";
-import type { Song } from "../../../common/song";
-import { db } from "../db/http";
-import { songArtist, songs, songSource } from "../db/schemas";
-import type { DB } from "../db-namepsace";
 import parseUrl from "parse-url";
+import { ArtistContribution } from "../../../common/artist";
+import type { Song } from "../../../common/song";
+import { KNOWN_HOSTS, SourceHost, SourcePlatform } from "../../../common/source";
+import { db } from "../db/http";
+import { songArtist, songSource, songs } from "../db/schemas";
+import type { DB } from "../db-namepsace";
 import { unwrap } from "../utils";
 
 type Transaction = Parameters<Parameters<(typeof db)["transaction"]>[0]>[0];
@@ -16,22 +16,24 @@ async function addSong(
     additionalArtists: [number, ArtistContribution][],
     sources: string[],
 ): Promise<Result<DB.Select.Song, Error>> {
-    const transactionResult = Result.safe(db.transaction(async (tx) => {
-        // Insert new song in table
-        const songData = unwrap(await createSong(song, tx));
+    const transactionResult = Result.safe(
+        db.transaction(async (tx) => {
+            // Insert new song in table
+            const songData = unwrap(await createSong(song, tx));
 
-        // Add a link between the song and the artists
-        const artistLinks: [number, ArtistContribution][] = [
-            [songData.primaryArtist, ArtistContribution.MAIN],
-            ...additionalArtists,
-        ];
-        unwrap(await linkSongToArtists(songData.id, artistLinks, tx));
+            // Add a link between the song and the artists
+            const artistLinks: [number, ArtistContribution][] = [
+                [songData.primaryArtist, ArtistContribution.MAIN],
+                ...additionalArtists,
+            ];
+            unwrap(await linkSongToArtists(songData.id, artistLinks, tx));
 
-        // Creates sources of the song
-        unwrap(await createSources(songData.id, sources, tx));
+            // Creates sources of the song
+            unwrap(await createSources(songData.id, sources, tx));
 
-        return songData;
-    }));
+            return songData;
+        }),
+    );
 
     return transactionResult;
 }
@@ -64,13 +66,14 @@ async function getSong(id: number): Promise<Result<Song, Error>> {
                     columns: {
                         sourceID: true,
                         platform: true,
-                    }
-                }
+                    },
+                },
             },
         });
 
-    return (await Result.safe(operation()))
-        .andThen((val) => Option(val.at(0)).okOr(new Error(`No song with id: ${id}`)));;
+    return (await Result.safe(operation())).andThen((val) =>
+        Option(val.at(0)).okOr(new Error(`No song with id: ${id}`)),
+    );
 }
 
 async function searchSong(title: string, aid: number): Promise<Result<number[], Error>> {
@@ -89,29 +92,42 @@ function getSourceInfo(source: parseUrl.ParsedUrl, host: SourceHost) {
     switch (host) {
         case SourceHost.YOUTUBE:
             return Option(source.query["v"])
-                .map((sourceID) => { return { sourceID, platform: SourcePlatform.YOUTUBE } })
+                .map((sourceID) => {
+                    return { sourceID, platform: SourcePlatform.YOUTUBE };
+                })
                 .okOr(new Error("invalid URL for host"));
         case SourceHost.YOUTU_BE:
-            return Option(source.pathname.split('/').at(-1))
-                .map((sourceID) => { return { sourceID, platform: SourcePlatform.YOUTUBE } })
+            return Option(source.pathname.split("/").at(-1))
+                .map((sourceID) => {
+                    return { sourceID, platform: SourcePlatform.YOUTUBE };
+                })
                 .okOr(new Error("invalid URL for host"));
         default:
             return Err(new Error("invalid host"));
     }
 }
 
-async function createSources(song: number, sources: string[], tx?: Transaction): Promise<Result<DB.Select.SongSource[], Error>> {
+async function createSources(
+    song: number,
+    sources: string[],
+    tx?: Transaction,
+): Promise<Result<DB.Select.SongSource[], Error>> {
     const ctx = tx ? tx : db;
 
-    const rows = Result.all(...sources.map(sourceURL => {
-        const source = parseUrl(sourceURL, true);
+    const rows = Result.all(
+        ...sources.map((sourceURL) => {
+            const source = parseUrl(sourceURL, true);
 
-        return Option(KNOWN_HOSTS.get(source.host))
-            .okOr(new Error("unknown host"))
-            .andThen((host: SourceHost) => {
-                return getSourceInfo(source, host);
-            }).map((sourceInfo) => { return { ...sourceInfo, song } });
-    }));
+            return Option(KNOWN_HOSTS.get(source.host))
+                .okOr(new Error("unknown host"))
+                .andThen((host: SourceHost) => {
+                    return getSourceInfo(source, host);
+                })
+                .map((sourceInfo) => {
+                    return { ...sourceInfo, song };
+                });
+        }),
+    );
     if (rows.isErr()) return rows;
 
     const operation = async () => await ctx.insert(songSource).values(rows.unwrap()).returning();
@@ -119,7 +135,11 @@ async function createSources(song: number, sources: string[], tx?: Transaction):
     return await Result.safe(operation());
 }
 
-async function linkSongToArtists(song: number, artists: [number, ArtistContribution][], tx?: Transaction): Promise<Result<DB.Select.SongArtist[], Error>> {
+async function linkSongToArtists(
+    song: number,
+    artists: [number, ArtistContribution][],
+    tx?: Transaction,
+): Promise<Result<DB.Select.SongArtist[], Error>> {
     const ctx = tx ? tx : db;
     const rows = artists.map(([artist, contribution]) => {
         return { song, artist, contribution } as DB.Insert.SongArtist;
