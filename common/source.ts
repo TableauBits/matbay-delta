@@ -11,7 +11,7 @@ enum SourceHost {
 
 const KNOWN_HOSTS = new Map<string, SourceHost>()
   .set("youtu.be", SourceHost.YOUTU_BE)
-  .set("youtube.com", SourceHost.YOUTUBE)
+  .set("youtube.com", SourceHost.YOUTUBE);
 
 export {
   KNOWN_HOSTS,

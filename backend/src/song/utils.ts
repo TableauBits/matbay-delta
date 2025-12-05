@@ -7,6 +7,7 @@ import { db } from "../db/http";
 import { songArtist, songs, songSource } from "../db/schemas";
 import type { DB } from "../db-namepsace";
 import parseUrl from "parse-url";
+import { unwrap } from "../utils";
 
 type Transaction = Parameters<Parameters<(typeof db)["transaction"]>[0]>[0];
 
@@ -15,24 +16,22 @@ async function addSong(
     additionalArtists: [number, ArtistContribution][],
     sources: string[],
 ): Promise<Result<DB.Select.Song, Error>> {
-    const transactionResult = db.transaction(async (tx) => {
+    const transactionResult = Result.safe(db.transaction(async (tx) => {
         // Insert new song in table
-        const insertResult = await createSong(song);
-        if (insertResult.isErr()) return insertResult;
-        const songData = insertResult.unwrap();
+        const songData = unwrap(await createSong(song, tx));
 
         // Add a link between the song and the artists
         const artistLinks: [number, ArtistContribution][] = [
             [songData.primaryArtist, ArtistContribution.MAIN],
             ...additionalArtists,
         ];
-        linkSongToArtists(songData.id, artistLinks, tx);
+        unwrap(await linkSongToArtists(songData.id, artistLinks, tx));
 
         // Creates sources of the song
-        createSources(songData.id, sources, tx);
+        unwrap(await createSources(songData.id, sources, tx));
 
-        return insertResult;
-    });
+        return songData;
+    }));
 
     return transactionResult;
 }

@@ -16,8 +16,8 @@ const constitutions = sqliteTable("constitutions", {
 });
 
 const constitutionsRelations = relations(constitutions, ({ many }) => ({
-    songConstitution: many(songConstitution),
-    userConstitution: many(userConstitution), // A constitution can have many participating users
+    songConstitution: many(songConstitution), // A constitution have multiple songs
+    userConstitution: many(userConstitution), // A constitution have multiple users
 }));
 
 export { constitutions, constitutionsRelations };

@@ -36,7 +36,7 @@ export function sendResult<T, E extends HttpError>(result: Result<T, E>, res: Re
     /** biome-ignore-end lint/style/useNamingConvention: Ok and Err here are coming from oxide.ts */
 }
 
-export function unwrapHTTP<T>(result: Result<T, Error>): T {
+export function unwrap<T>(result: Result<T, Error>): T {
     /** biome-ignore-start lint/style/useNamingConvention: Ok and Err here are coming from oxide.ts */
     return match(result, {
         Ok: (val) => val,
@@ -61,7 +61,7 @@ export function errorHandler(err: Error, _req: Request, res: Response, next: Nex
 
 export function getBody<T>(req: Request): T {
     // Add type guard
-    return unwrapHTTP(
+    return unwrap(
         Option(req.body)
             .map((val) => val as T)
             .okOr(new HttpError(HttpStatus.BadRequest, "missing body")),
@@ -69,7 +69,7 @@ export function getBody<T>(req: Request): T {
 }
 
 export function getReqUID(req: Request): string {
-    return unwrapHTTP(
+    return unwrap(
         Option(req.uid).okOr(
             new HttpError(HttpStatus.InternalError, "missing uid in request, this should never happen"),
         ),
@@ -77,7 +77,7 @@ export function getReqUID(req: Request): string {
 }
 
 export function getParam(req: Request, key: string): string {
-    return unwrapHTTP(
+    return unwrap(
         Option(req.params[key]).okOr(new HttpError(HttpStatus.BadRequest, `missing '${key}' from request`)),
     );
 }
