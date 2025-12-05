@@ -124,8 +124,11 @@ export class AddSongForm {
       constitution: this.constitution(),
     });
 
-    // Reset the form
+    // Reset the form and clear artists and sources
     this.songForm.reset();
-    // TODO : also need to reset the number of artists and sources
+    this.artists.clear();
+    this.sources.clear();
+    this.addArtist();
+    
   }
 }
