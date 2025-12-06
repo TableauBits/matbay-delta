@@ -27,7 +27,7 @@ export class AddSongForm {
   private httpRequests = inject(HttpRequests);
   private formBuilder = inject(FormBuilder);
 
-  constitution = input.required<number>()
+  constitution = input.required<number>();
 
   // Form
   songForm: FormGroup;
@@ -96,18 +96,17 @@ export class AddSongForm {
         ).at(0))
     );
 
-    // Create missing artists
+    // Create missing artists and get their ids
     const artistIds = await Promise.all(incompleteArtistIds.map(async (id, index) => {
       if (id !== undefined) return id;
-      // Create artist and get their id
       return (await this.httpRequests.authenticatedPostRequest<AddArtistRequestBody, Artist>('artist/add', { name: (this.songForm.value.artists as FormArtist[])[index].name })).id;
     }));
 
-    // Add the song
     // Check if the song already exists in db
     const songsQuery = await this.httpRequests.authenticatedGetRequest<number[]>(`song/search/${artistIds[0]}/${this.songForm.value.title}`)
+    let songID = songsQuery.at(0);  // Currently only use the first result, since only return an exact match with the song name and the primary artist id
 
-    let songID = songsQuery.at(0);
+    // If no id, create the song with additionnal infos (other contributing artists and sources) and get the id
     if (!songID) {
       songID = (await this.httpRequests.authenticatedPostRequest<AddSongRequestBody, Song>('song/add', {
         song: {
@@ -119,6 +118,7 @@ export class AddSongForm {
       })).id;
     }
 
+    // Add the song to the constitution
     this.httpRequests.authenticatedPostRequest<AddSongConstitutionRequestBody>('constitution/addSong', {
       song: songID,
       constitution: this.constitution(),

@@ -16,7 +16,7 @@ async function addSong(
     additionalArtists: [number, ArtistContribution][],
     sources: string[],
 ): Promise<Result<DB.Select.Song, Error>> {
-    const transactionResult = Result.safe(
+    return Result.safe(
         db.transaction(async (tx) => {
             // Insert new song in table
             const songData = unwrap(await createSong(song, tx));
@@ -34,8 +34,6 @@ async function addSong(
             return songData;
         }),
     );
-
-    return transactionResult;
 }
 
 async function createSong(song: DB.Insert.Song, tx?: Transaction): Promise<Result<DB.Select.Song, Error>> {
@@ -146,7 +144,6 @@ async function linkSongToArtists(
     });
     const operation = async () => await ctx.insert(songArtist).values(rows).returning();
 
-    // TODO : Return value necessary ?
     return await Result.safe(operation());
 }
 

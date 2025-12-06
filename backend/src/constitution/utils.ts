@@ -15,15 +15,13 @@ async function addUserToConstitution(uid: string, cstid: number): Promise<Result
             })
             .returning();
 
-    const insertResult = (await Result.safe(operation()))
+    return (await Result.safe(operation()))
         .andThen((users) => Option(users.at(0)).okOr(new Error("failed to add user participation in the database")))
         .map((user) => {
             // Update users who were listening to changes
             onUserJoinCallback(user);
             return {};
         });
-
-    return insertResult;
 }
 
 async function addSongToConstitution(constitution: number, song: number, user: string): Promise<Result<Unit, Error>> {
@@ -37,15 +35,13 @@ async function addSongToConstitution(constitution: number, song: number, user: s
             })
             .returning();
 
-    const insertResult = (await Result.safe(operation()))
+    return (await Result.safe(operation()))
         .andThen((songs) => Option(songs.at(0)).okOr(new Error("failed to insert song into database")))
         .map((song) => {
             // Update users who were listening to changes
             onSongAddCallback(song);
             return {};
         });
-
-    return insertResult;
 }
 
 async function isMember(uid: string, cstid: number): Promise<Result<boolean, Error>> {
@@ -65,15 +61,13 @@ async function removeUserFromConstitution(uid: string, cstid: number): Promise<R
             .where(and(eq(userConstitution.user, uid), eq(userConstitution.constitution, cstid)))
             .returning();
 
-    const removeResult = (await Result.safe(operation()))
+    return (await Result.safe(operation()))
         .andThen((users) => Option(users.at(0)).okOr(new Error("failed to remove user participation in the database")))
         .map((user) => {
             // Update users who were listening to changes
             onUserLeaveCallback(user);
             return {};
         });
-
-    return removeResult;
 }
 
 export { addSongToConstitution, addUserToConstitution, isMember, removeUserFromConstitution };
