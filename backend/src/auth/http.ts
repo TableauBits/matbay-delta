@@ -1,21 +1,21 @@
 import { type NextFunction, type Request, type Response, Router } from "express";
 import { Err, Ok, Option } from "oxide.ts";
 import { createUser, getUserFromAuth } from "../user/utils";
-import { HttpError, HttpStatus, sendResult, unwrapHTTP } from "../utils";
+import { HttpError, HttpStatus, sendResult, unwrap } from "../utils";
 import { tokenDevRouter, validateToken } from "./token";
 
 async function ensureAuthMiddleware(req: Request, _res: Response, next: NextFunction) {
-    const headerFetch = unwrapHTTP(
+    const headerFetch = unwrap(
         Option(req.header("delta-auth")).okOr(new HttpError(HttpStatus.Unauthorized, "no token found in headers")),
     );
 
-    const validation = unwrapHTTP(
+    const validation = unwrap(
         (await validateToken(headerFetch)).mapErr(
             (err) => new HttpError(HttpStatus.Unauthorized, `failed to authenticate: ${err.message}`),
         ),
     );
 
-    const authID = unwrapHTTP(
+    const authID = unwrap(
         Option(validation.sub).okOr(
             new HttpError(
                 HttpStatus.UnprocessableContent,
@@ -24,7 +24,7 @@ async function ensureAuthMiddleware(req: Request, _res: Response, next: NextFunc
         ),
     );
 
-    const user = unwrapHTTP(
+    const user = unwrap(
         (await getUserFromAuth(authID)).mapErr(
             (err) =>
                 new HttpError(
@@ -45,17 +45,17 @@ async function check(_req: Request, res: Response) {
 }
 
 async function login(req: Request, res: Response) {
-    const headerFetch = unwrapHTTP(
+    const headerFetch = unwrap(
         Option(req.header("delta-auth")).okOr(new HttpError(HttpStatus.Unauthorized, "no token found in headers")),
     );
 
-    const tokenPayload = unwrapHTTP(
+    const tokenPayload = unwrap(
         (await validateToken(headerFetch)).mapErr(
             (err) => new HttpError(HttpStatus.Unauthorized, `failed to authenticate: ${err.message}`),
         ),
     );
 
-    const authID = unwrapHTTP(
+    const authID = unwrap(
         Option(tokenPayload.sub).okOr(
             new HttpError(
                 HttpStatus.UnprocessableContent,
@@ -88,7 +88,7 @@ function crash(_req: Request, _res: Response) {
 }
 
 function crashHTTP(_req: Request, _res: Response) {
-    unwrapHTTP(Err(new HttpError(HttpStatus.BadRequest, "crash")));
+    unwrap(Err(new HttpError(HttpStatus.BadRequest, "crash")));
 }
 
 const authApiRouter = Router();

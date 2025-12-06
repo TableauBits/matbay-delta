@@ -9,7 +9,7 @@ import type {
 import { ensureAuthMiddleware } from "../auth/http";
 import { db } from "../db/http";
 import { constitutions } from "../db/schemas";
-import { getBody, getReqUID, HttpError, HttpStatus, sendResult, unwrapHTTP } from "../utils";
+import { getBody, getReqUID, HttpError, HttpStatus, sendResult, unwrap } from "../utils";
 import { addSongToConstitution, addUserToConstitution, removeUserFromConstitution } from "./utils";
 
 // GET ROUTES
@@ -68,7 +68,7 @@ async function create(req: Request, res: Response): Promise<void> {
         .returning();
 
     // Get the id of the created constitution
-    const cstid = unwrapHTTP(
+    const cstid = unwrap(
         Option(queryResult.at(0)?.id).okOr(
             new HttpError(HttpStatus.InternalError, "failed to create constitution. no id returned"),
         ),
@@ -88,7 +88,7 @@ async function join(req: Request, res: Response): Promise<void> {
     const body = getBody<JoinConstitutionRequestBody>(req);
     const uid = getReqUID(req);
 
-    const id = unwrapHTTP(
+    const id = unwrap(
         Option(body.id).okOr(new HttpError(HttpStatus.BadRequest, "missing constitution id from request")),
     );
 
@@ -104,7 +104,7 @@ async function leave(req: Request, res: Response): Promise<void> {
     const body = getBody<LeaveConstitutionRequestBody>(req);
     const uid = getReqUID(req);
 
-    const id = unwrapHTTP(
+    const id = unwrap(
         Option(body.id).okOr(new HttpError(HttpStatus.BadRequest, "missing constitution id from request")),
     );
 

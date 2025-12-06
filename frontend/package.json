@@ -19,6 +19,7 @@
     "@angular/router": "^20.3.9",
     "@auth0/auth0-angular": "^2.2.3",
     "@ngx-env/builder": "^20.1.1",
+    "parse-url": "^10.0.3",
     "rxjs": "~7.8.0",
     "socket.io-client": "^4.8.1",
     "tslib": "^2.3.0",

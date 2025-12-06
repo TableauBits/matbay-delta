@@ -41,6 +41,9 @@ server. <br>
     added by
     <img [src]="observers.user?.imageURL" width="25" height="25" alt="photo de profil de {{observers.user?.imageURL}}">
     {{observers.user?.displayName}}
+    @for(source of observers.song?.songSource; track $index) {
+      Link: {{source.platform}}:{{source.sourceID}}
+    }
   </p>
   }
 
