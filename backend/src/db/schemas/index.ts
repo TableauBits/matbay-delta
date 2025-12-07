@@ -6,5 +6,6 @@ export * from "./song";
 export * from "./songAlbum";
 export * from "./songArtist";
 export * from "./songConstitution";
+export * from "./songSource";
 export * from "./user";
 export * from "./userConstitution";

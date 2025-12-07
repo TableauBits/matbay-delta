@@ -4,21 +4,32 @@
     Title:
     <input formControlName="title" placeholder="Song title">
   </label>
-  <label>
-    URL:
-    <input formControlName="url" placeholder="Song URL">
-  </label>
+  <div formArrayName="sources">
+    <h4> Sources </h4>
+    <button (click)="addSource()">+ Add another source</button>
+    @for (sourceForm of sources.controls; track $index; let i = $index) {
+      <div [formGroupName]="i">
+        <div class="artist-inputs">
+          Source {{i+1}}
+          <div>
+            <label for="url-{{i}}">URL:</label>
+            <input id="url-{{i}}" formControlName="url" placeholder="Source URL">
+          </div>
+          <button (click)="removeSource(i)">Remove</button>
+        </div>
+      </div>
+    }
+  </div>
   <div formArrayName="artists">
     <h4>Artists</h4>
     <button (click)="addArtist()">+ Add another artist</button>
-    @for (artistForm of artists.controls; track $index; let i = $index) {
+    @for (artistForm of artists.controls; track artistForm; let i = $index) {
       <div [formGroupName]="i">
         <div class="artist-inputs">
-          Artist {{i}}
+          Artist {{i+1}}
           <div>
             <label for="name-{{i}}">Name:</label>
             <input id="name-{{i}}" formControlName="name" placeholder="Artist name">
-          
          
             <label for="role-{{i}}">Role:</label>
             <select id="role-{{i}}" formControlName="role">
