@@ -6,6 +6,8 @@ updates:
       - "/backend"
     schedule:
       interval: "monthly"
+    cooldown:
+      default-days: 7
     groups:
       angular:
         patterns:
