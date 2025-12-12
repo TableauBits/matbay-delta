@@ -18,11 +18,11 @@
     "dependencies": {
         "consola": "^3.4.2",
         "cors": "^2.8.5",
-        "dotenv": "^17.2.1",
+        "dotenv": "^17.2.3",
         "drizzle-orm": "^0.45.0",
         "express": "^5.2.1",
         "i": "^0.3.7",
-        "jsonwebtoken": "^9.0.2",
+        "jsonwebtoken": "^9.0.3",
         "jwks-rsa": "^3.2.0",
         "oxide.ts": "^1.1.0",
         "parse-url": "^10.0.3",
