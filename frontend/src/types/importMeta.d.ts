@@ -1,3 +1,3 @@
 interface ImportMeta {
-    readonly env: Record<string, string | undefined>;
+  readonly env: Record<string, string | undefined>;
 }

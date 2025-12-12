@@ -5,7 +5,7 @@ import { Component, inject, input } from '@angular/core';
 import { AddSongConstitutionRequestBody } from '../../../../../common/constitution';
 import { HttpRequests } from '../../services/http-requests';
 import { KNOWN_HOSTS } from '../../../../../common/source';
-import parseUrl from "parse-url";
+import parseUrl from 'parse-url';
 
 interface FormArtist {
   name: string;
@@ -20,7 +20,7 @@ interface FormSource {
   selector: 'app-add-song-form',
   imports: [ReactiveFormsModule],
   templateUrl: './add-song-form.html',
-  styleUrl: './add-song-form.scss'
+  styleUrl: './add-song-form.scss',
 })
 export class AddSongForm {
   // Service injections
@@ -34,9 +34,9 @@ export class AddSongForm {
 
   constructor() {
     this.songForm = this.formBuilder.group({
-      title: [undefined, Validators.required],  // TODO : max number of chars ?
+      title: [undefined, Validators.required], // TODO : max number of chars ?
       sources: this.formBuilder.array([]),
-      artists: this.formBuilder.array([this.createArtistFormGroup(ArtistContribution.MAIN)])
+      artists: this.formBuilder.array([this.createArtistFormGroup(ArtistContribution.MAIN)]),
     });
   }
 
@@ -51,14 +51,14 @@ export class AddSongForm {
   createArtistFormGroup(contribution?: ArtistContribution): FormGroup {
     return this.formBuilder.group({
       name: [undefined, Validators.required],
-      role: [contribution, Validators.required]
+      role: [contribution, Validators.required],
     });
   }
 
   createSourceFormGroup(): FormGroup {
     return this.formBuilder.group({
-      url: [undefined, Validators.required, this.isSourceValid]
-    })
+      url: [undefined, Validators.required, this.isSourceValid],
+    });
   }
 
   addSource(): void {
@@ -84,38 +84,49 @@ export class AddSongForm {
   async isSourceValid(control: AbstractControl): Promise<null | string> {
     const source = parseUrl(control.value, true);
 
-    return KNOWN_HOSTS.has(source.host) ? null : "Unknown source host";
+    return KNOWN_HOSTS.has(source.host) ? null : 'Unknown source host';
   }
 
   async submitForm(): Promise<void> {
     // Get the ids of already registered artists
     const incompleteArtistIds = await Promise.all(
-      (this.songForm.value.artists as FormArtist[])
-        .map(async artist => (
-          await this.httpRequests.authenticatedGetRequest<number[]>(`artist/search/${artist.name}`)
-        ).at(0))
+      (this.songForm.value.artists as FormArtist[]).map(async (artist) =>
+        (await this.httpRequests.authenticatedGetRequest<number[]>(`artist/search/${artist.name}`)).at(0),
+      ),
     );
 
     // Create missing artists and get their ids
-    const artistIds = await Promise.all(incompleteArtistIds.map(async (id, index) => {
-      if (id !== undefined) return id;
-      return (await this.httpRequests.authenticatedPostRequest<AddArtistRequestBody, Artist>('artist/add', { name: (this.songForm.value.artists as FormArtist[])[index].name })).id;
-    }));
+    const artistIds = await Promise.all(
+      incompleteArtistIds.map(async (id, index) => {
+        if (id !== undefined) return id;
+        return (
+          await this.httpRequests.authenticatedPostRequest<AddArtistRequestBody, Artist>('artist/add', {
+            name: (this.songForm.value.artists as FormArtist[])[index].name,
+          })
+        ).id;
+      }),
+    );
 
     // Check if the song already exists in db
-    const songsQuery = await this.httpRequests.authenticatedGetRequest<number[]>(`song/search/${artistIds[0]}/${this.songForm.value.title}`)
-    let songID = songsQuery.at(0);  // Currently only use the first result, since only return an exact match with the song name and the primary artist id
+    const songsQuery = await this.httpRequests.authenticatedGetRequest<number[]>(
+      `song/search/${artistIds[0]}/${this.songForm.value.title}`,
+    );
+    let songID = songsQuery.at(0); // Currently only use the first result, since only return an exact match with the song name and the primary artist id
 
     // If no id, create the song with additionnal infos (other contributing artists and sources) and get the id
     if (!songID) {
-      songID = (await this.httpRequests.authenticatedPostRequest<AddSongRequestBody, Song>('song/add', {
-        song: {
-          title: this.songForm.value.title,
-          primaryArtist: artistIds[0]
-        },
-        otherContributions: artistIds.slice(1).map((val, index) => [val, (this.songForm.value.artists as FormArtist[])[index + 1].role]),
-        sources: (this.songForm.value.sources as FormSource[]).map(source => source.url)
-      })).id;
+      songID = (
+        await this.httpRequests.authenticatedPostRequest<AddSongRequestBody, Song>('song/add', {
+          song: {
+            title: this.songForm.value.title,
+            primaryArtist: artistIds[0],
+          },
+          otherContributions: artistIds
+            .slice(1)
+            .map((val, index) => [val, (this.songForm.value.artists as FormArtist[])[index + 1].role]),
+          sources: (this.songForm.value.sources as FormSource[]).map((source) => source.url),
+        })
+      ).id;
     }
 
     // Add the song to the constitution
@@ -129,6 +140,5 @@ export class AddSongForm {
     this.artists.clear();
     this.sources.clear();
     this.addArtist();
-    
   }
 }

@@ -1,7 +1,19 @@
 import { CallbackFunction, WsRequests } from './ws-requests';
-import { Constitution, CreateConstitutionRequestBody, JoinConstitutionRequestBody, LeaveConstitutionRequestBody } from '../../../../common/constitution';
+import {
+  Constitution,
+  CreateConstitutionRequestBody,
+  JoinConstitutionRequestBody,
+  LeaveConstitutionRequestBody,
+} from '../../../../common/constitution';
 import { Injectable, OnDestroy, inject } from '@angular/core';
-import { WSCstSongAddMessage, WSCstSubscribeMessage, WSCstUnsubscribeMessage, WSCstUserJoinMessage, WSCstUserLeaveMessage, WebsocketEvents } from '../../../../common/websocket';
+import {
+  WSCstSongAddMessage,
+  WSCstSubscribeMessage,
+  WSCstUnsubscribeMessage,
+  WSCstUserJoinMessage,
+  WSCstUserLeaveMessage,
+  WebsocketEvents,
+} from '../../../../common/websocket';
 import { HttpRequests } from './http-requests';
 
 function sortByJoinDate(a: { joinDate: string }, b: { joinDate: string }): number {
@@ -15,7 +27,7 @@ function sortByAddDate(a: { addDate: string }, b: { addDate: string }): number {
 }
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class Constitutions implements OnDestroy {
   // Service injections
@@ -23,17 +35,14 @@ export class Constitutions implements OnDestroy {
   private wsRequests = inject(WsRequests);
 
   private constitutions = new Map<number, Constitution>();
-  private wsEvents = new Map<WebsocketEvents, CallbackFunction>;
+  private wsEvents = new Map<WebsocketEvents, CallbackFunction>();
 
   ngOnDestroy(): void {
     this.constitutions.forEach(async (_, key) => {
-      await this.wsRequests.emit<WSCstUnsubscribeMessage>(
-        WebsocketEvents.CST_UNSUBSCRIBE,
-        { constitution: key }
-      );
-    })
+      await this.wsRequests.emit<WSCstUnsubscribeMessage>(WebsocketEvents.CST_UNSUBSCRIBE, { constitution: key });
+    });
     this.wsEvents.forEach((value, key) => {
-      this.wsRequests.off(key, value)
+      this.wsRequests.off(key, value);
     });
   }
 
@@ -51,13 +60,12 @@ export class Constitutions implements OnDestroy {
   }
 
   private async serviceGetAllConstitutions(): Promise<void> {
-    this.httpRequests.authenticatedGetRequest<Constitution[]>("constitution/getAll").then(constitutions => {
+    this.httpRequests.authenticatedGetRequest<Constitution[]>('constitution/getAll').then((constitutions) => {
       constitutions.forEach(async (constitution) => {
         // Subscribe to the changes in the constitution
-        await this.wsRequests.emit<WSCstSubscribeMessage>(
-          WebsocketEvents.CST_SUBSCRIBE,
-          { constitution: constitution.id }
-        );
+        await this.wsRequests.emit<WSCstSubscribeMessage>(WebsocketEvents.CST_SUBSCRIBE, {
+          constitution: constitution.id,
+        });
 
         // Sort users by join date
         constitution.userConstitution.sort((a, b) => sortByJoinDate(a, b));
@@ -67,7 +75,7 @@ export class Constitutions implements OnDestroy {
 
         this.constitutions.set(constitution.id, constitution);
       });
-    })
+    });
   }
 
   getAll(): Constitution[] {
@@ -75,21 +83,27 @@ export class Constitutions implements OnDestroy {
   }
 
   create(name: string, description: string): void {
-    this.httpRequests.authenticatedPostRequest<CreateConstitutionRequestBody>('constitution/create', { name, description }).catch((error) => {
-      console.error("Failed to create constitution", error);
-    });
+    this.httpRequests
+      .authenticatedPostRequest<CreateConstitutionRequestBody>('constitution/create', { name, description })
+      .catch((error) => {
+        console.error('Failed to create constitution', error);
+      });
   }
 
   join(id: number): void {
-    this.httpRequests.authenticatedPostRequest<JoinConstitutionRequestBody>('constitution/join', { id }).catch((error) => {
-      console.error("Failed to join constitution", error);
-    });
+    this.httpRequests
+      .authenticatedPostRequest<JoinConstitutionRequestBody>('constitution/join', { id })
+      .catch((error) => {
+        console.error('Failed to join constitution', error);
+      });
   }
 
   leave(id: number): void {
-    this.httpRequests.authenticatedPostRequest<LeaveConstitutionRequestBody>('constitution/leave', { id }).catch((error) => {
-      console.error("Failed to leave constitution", error);
-    });
+    this.httpRequests
+      .authenticatedPostRequest<LeaveConstitutionRequestBody>('constitution/leave', { id })
+      .catch((error) => {
+        console.error('Failed to leave constitution', error);
+      });
   }
 
   // Websocket callback
@@ -110,7 +124,7 @@ export class Constitutions implements OnDestroy {
   onUserLeave(message: WSCstUserLeaveMessage): void {
     const constitution = this.constitutions.get(message.constitution);
     if (!constitution) return;
-    constitution.userConstitution = constitution.userConstitution.filter(uc => uc.user !== message.user);
+    constitution.userConstitution = constitution.userConstitution.filter((uc) => uc.user !== message.user);
     constitution.userConstitution.sort((a, b) => sortByJoinDate(a, b));
   }
 }

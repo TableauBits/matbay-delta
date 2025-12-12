@@ -10,14 +10,14 @@ import { CurrentUserForm } from './components/current-user-form/current-user-for
 import { DeltaAuth } from './services/delta-auth';
 import { Song } from '../../../common/song';
 import { Songs } from './services/songs';
-import { User } from '../../../common/user'
+import { User } from '../../../common/user';
 import { Users } from './services/users';
 
 @Component({
   selector: 'app-root',
   imports: [CommonModule, CurrentUserForm, ConstitutionForm, AddSongForm],
   templateUrl: './app.html',
-  styleUrl: './app.scss'
+  styleUrl: './app.scss',
 })
 export class App implements OnDestroy {
   // Service injections
@@ -40,15 +40,17 @@ export class App implements OnDestroy {
   constructor() {
     this.currentUserObs = this.users.getCurrentUser();
 
-    this.currentUserObs.then(userObs => {
+    this.currentUserObs.then((userObs) => {
       if (!userObs) return;
 
-      const subscription = userObs.subscribe(user => { this.currentUser = user; });
+      const subscription = userObs.subscribe((user) => {
+        this.currentUser = user;
+      });
       this.subscriptions.add(subscription);
     });
   }
 
-  getSongArtists(song: Song | null): {artist: number, contribution: ArtistContributionType}[] {
+  getSongArtists(song: Song | null): { artist: number; contribution: ArtistContributionType }[] {
     if (!song) return [];
     return song.songArtist;
   }

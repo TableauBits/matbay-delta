@@ -9,7 +9,7 @@ import { Users } from '../../services/users';
   selector: 'app-current-user-form',
   imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './current-user-form.html',
-  styleUrl: './current-user-form.scss'
+  styleUrl: './current-user-form.scss',
 })
 export class CurrentUserForm implements OnDestroy {
   // Service injections
@@ -32,7 +32,7 @@ export class CurrentUserForm implements OnDestroy {
     this.form = new FormGroup({
       displayName: new FormControl(''),
       description: new FormControl(''),
-      imageURL: new FormControl('')
+      imageURL: new FormControl(''),
     });
 
     // Populate the form with the current user data when available
@@ -40,11 +40,11 @@ export class CurrentUserForm implements OnDestroy {
       if (!userObs) return;
 
       // Subscribe to user observable to update form values
-      const subscription = userObs.subscribe(user => {
+      const subscription = userObs.subscribe((user) => {
         this.form.setValue({
           displayName: user.displayName,
           description: user.description,
-          imageURL: user.imageURL
+          imageURL: user.imageURL,
         });
       });
 
@@ -55,5 +55,4 @@ export class CurrentUserForm implements OnDestroy {
   onSubmit(): void {
     this.users.updateCurrentUserInfo(this.form.value);
   }
-
 }

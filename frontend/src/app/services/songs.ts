@@ -4,7 +4,7 @@ import { HttpRequests } from './http-requests';
 import { Song } from '../../../../common/song';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class Songs {
   private httpRequests = inject(HttpRequests);
@@ -16,20 +16,23 @@ export class Songs {
     // Check if we already have the requested song
     const song = this.songs.get(id);
     if (song) return song.asObservable();
-    
+
     // Else get data from the server
-    const newSong = new ReplaySubject<Song>(1)
+    const newSong = new ReplaySubject<Song>(1);
     this.songs.set(id, newSong);
 
     // Update the cache when the request is completed
     // Delete the entry in the map in case of an error
-    this.httpRequests.authenticatedGetRequest<Song>(`song/get/${id}`).then(song => {
-      newSong.next(song);
-    }).catch(error => {
-      console.log(`failed to get song ${id}`, error);
-      newSong.error(error);
-      this.songs.delete(id);
-    })
+    this.httpRequests
+      .authenticatedGetRequest<Song>(`song/get/${id}`)
+      .then((song) => {
+        newSong.next(song);
+      })
+      .catch((error) => {
+        console.log(`failed to get song ${id}`, error);
+        newSong.error(error);
+        this.songs.delete(id);
+      });
 
     return newSong.asObservable();
   }

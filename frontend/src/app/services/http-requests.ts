@@ -5,7 +5,7 @@ import { environment } from '../../environments/environment';
 import { lastValueFrom } from 'rxjs';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class HttpRequests {
   // Service injections
@@ -17,19 +17,16 @@ export class HttpRequests {
   async authenticatedGetRequest<Out>(endpoint: string): Promise<Out> {
     const token = await this.deltaAuth.getIdToken();
 
-    return await lastValueFrom(this.http.get<Out>(
-      `${this.url}/api/${endpoint}`,
-      { headers: { "delta-auth": token.__raw } }
-    ));
+    return await lastValueFrom(
+      this.http.get<Out>(`${this.url}/api/${endpoint}`, { headers: { 'delta-auth': token.__raw } }),
+    );
   }
 
   async authenticatedPostRequest<In, Out = unknown>(endpoint: string, body: In): Promise<Out> {
     const token = await this.deltaAuth.getIdToken();
 
-    return await lastValueFrom(this.http.post<Out>(
-      `${this.url}/api/${endpoint}`,
-      body,
-      { headers: { "delta-auth": token.__raw } }
-    ));
+    return await lastValueFrom(
+      this.http.post<Out>(`${this.url}/api/${endpoint}`, body, { headers: { 'delta-auth': token.__raw } }),
+    );
   }
 }
