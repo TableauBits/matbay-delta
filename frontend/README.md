@@ -6,8 +6,7 @@ This project was generated using [Angular CLI](https://github.com/angular/angula
 ## Usage
 
 ### Install dependencies
-
-```
+```bash
 bun install
 ```
 
@@ -19,17 +18,17 @@ The `src/environments` folder contains by default :
 * `environment.ts`, the release configuration, to deploy the application. This configuration use environment variables that can be set in a `.env` file at the root of the `frontend` folder. To be detected, each variable must start with the prefix `NG_APP`.
 
 ### Run app
-
-```
+```bash
 bun start
 ```
 
 To run the app in a production environment, you can add `--configuration production`. The default environment is the `development` environment.
 
 ### Linting code
-Linting handled by [Eslint](https://eslint.org).
-```
+Code linting and formatting are handled by [Eslint](https://eslint.org) and [Prettier](https://prettier.io/).
+```bash
 bun lint
+bun fix
 ```
 
 ## Additional Resources

@@ -8,7 +8,7 @@ import { io } from 'socket.io-client';
 export type CallbackFunction = (...args: any[]) => void;
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class WsRequests {
   private deltaAuth = inject(DeltaAuth);
@@ -22,8 +22,8 @@ export class WsRequests {
     this.socket.off(event, callback);
   }
 
-  async emit<T extends WSInMessage>(event: WebsocketEvents, data: Omit<T, "deltaAuth">): Promise<void> {
-    const token = await this.deltaAuth.getIdToken()
+  async emit<T extends WSInMessage>(event: WebsocketEvents, data: Omit<T, 'deltaAuth'>): Promise<void> {
+    const token = await this.deltaAuth.getIdToken();
     this.socket.emit(event, { ...data, deltaAuth: token.__raw });
   }
 }

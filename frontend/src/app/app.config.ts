@@ -8,15 +8,15 @@ import { routes } from './app.routes';
 export const appConfig: ApplicationConfig = {
   providers: [
     provideAuth0({
-      domain: environment.auth0.domain || "",
-      clientId: environment.auth0.client || "",
+      domain: environment.auth0.domain || '',
+      clientId: environment.auth0.client || '',
       authorizationParams: {
         redirect_uri: window.location.origin,
-      }
+      },
     }),
     provideBrowserGlobalErrorListeners(),
     provideHttpClient(),
     provideZoneChangeDetection({ eventCoalescing: true }),
-    provideRouter(routes)
-  ]
+    provideRouter(routes),
+  ],
 };
