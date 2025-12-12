@@ -13,3 +13,7 @@ updates:
         patterns:
           - "@angular*" 
           - "@ngx-env/builder"
+      eslint:
+        patterns:
+          - "@eslint/js"
+          - "eslint"
