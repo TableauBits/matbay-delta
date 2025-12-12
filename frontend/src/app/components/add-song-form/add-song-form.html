@@ -1,19 +1,19 @@
-<h3> Add a song </h3>
+<h3>Add a song</h3>
 <form [formGroup]="songForm" class="song-form">
   <label>
     Title:
-    <input formControlName="title" placeholder="Song title">
+    <input formControlName="title" placeholder="Song title" />
   </label>
   <div formArrayName="sources">
-    <h4> Sources </h4>
+    <h4>Sources</h4>
     <button (click)="addSource()">+ Add another source</button>
     @for (sourceForm of sources.controls; track $index; let i = $index) {
       <div [formGroupName]="i">
         <div class="artist-inputs">
-          Source {{i+1}}
+          Source {{ i + 1 }}
           <div>
-            <label for="url-{{i}}">URL:</label>
-            <input id="url-{{i}}" formControlName="url" placeholder="Source URL">
+            <label for="url-{{ i }}">URL:</label>
+            <input id="url-{{ i }}" formControlName="url" placeholder="Source URL" />
           </div>
           <button (click)="removeSource(i)">Remove</button>
         </div>
@@ -26,15 +26,15 @@
     @for (artistForm of artists.controls; track artistForm; let i = $index) {
       <div [formGroupName]="i">
         <div class="artist-inputs">
-          Artist {{i+1}}
+          Artist {{ i + 1 }}
           <div>
-            <label for="name-{{i}}">Name:</label>
-            <input id="name-{{i}}" formControlName="name" placeholder="Artist name">
-         
-            <label for="role-{{i}}">Role:</label>
-            <select id="role-{{i}}" formControlName="role">
+            <label for="name-{{ i }}">Name:</label>
+            <input id="name-{{ i }}" formControlName="name" placeholder="Artist name" />
+
+            <label for="role-{{ i }}">Role:</label>
+            <select id="role-{{ i }}" formControlName="role">
               @for (contribution of getContributions(); track $index) {
-                <option value="{{contribution}}"> {{contribution}} </option>
+                <option value="{{ contribution }}">{{ contribution }}</option>
               }
             </select>
           </div>
@@ -48,4 +48,3 @@
   </div>
 </form>
 <button [disabled]="!songForm.valid" (click)="submitForm()">Submit song</button>
-
