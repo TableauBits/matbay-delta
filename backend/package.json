@@ -20,7 +20,7 @@
         "cors": "^2.8.5",
         "dotenv": "^17.2.1",
         "drizzle-orm": "^0.45.0",
-        "express": "^5.1.0",
+        "express": "^5.2.1",
         "i": "^0.3.7",
         "jsonwebtoken": "^9.0.2",
         "jwks-rsa": "^3.2.0",
@@ -33,7 +33,7 @@
         "@biomejs/biome": "2.3.8",
         "@types/cors": "^2.8.19",
         "@types/dotenv": "^8.2.3",
-        "@types/express": "^5.0.5",
+        "@types/express": "^5.0.6",
         "@types/jsonwebtoken": "^9.0.10",
         "drizzle-kit": "^0.31.8"
     }
