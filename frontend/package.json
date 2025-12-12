@@ -11,6 +11,7 @@
     "fix": "ng lint --fix"
   },
   "private": true,
+  "type": "module",
   "dependencies": {
     "@angular/common": "^21.0.5",
     "@angular/compiler": "^21.0.5",

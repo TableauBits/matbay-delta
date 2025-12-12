@@ -1,11 +1,12 @@
-// @ts-check
-const eslint = require('@eslint/js');
-const tseslint = require('typescript-eslint');
-const angular = require('angular-eslint');
-const prettierPlugin = require('eslint-plugin-prettier');
-const prettierConfig = require('eslint-config-prettier');
+import eslint from '@eslint/js';
+import tseslint from 'typescript-eslint';
+import angular from 'angular-eslint';
+import prettierPlugin from 'eslint-plugin-prettier';
+import prettierConfig from 'eslint-config-prettier';
 
-module.exports = tseslint.config(
+import { defineConfig } from 'eslint/config';
+
+export default defineConfig([
   {
     files: ['**/*.ts'],
     extends: [
@@ -64,5 +65,5 @@ module.exports = tseslint.config(
       'prettier/prettier': 'error',
     },
   },
-);
+]);
 
