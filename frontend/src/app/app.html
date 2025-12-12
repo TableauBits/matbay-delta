@@ -16,6 +16,7 @@
       <hr />
       <p>Description : {{ constitution.description }}</p>
       <p>Owner: {{ (users.getUser(constitution.owner) | async)?.displayName }}</p>
+      <p>Number of songs: {{constitution.songConstitution.length}} / {{getMaxNSongs(constitution)}}</p>
       <h3>Participants</h3>
       @for (userConstitution of constitution.userConstitution; track $index) {
         <p>

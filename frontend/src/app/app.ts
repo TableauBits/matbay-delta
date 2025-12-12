@@ -12,6 +12,7 @@ import { Song } from '../../../common/song';
 import { Songs } from './services/songs';
 import { User } from '../../../common/user';
 import { Users } from './services/users';
+import { Constitution } from '../../../common/constitution';
 
 @Component({
   selector: 'app-root',
@@ -53,5 +54,9 @@ export class App implements OnDestroy {
   getSongArtists(song: Song | null): { artist: number; contribution: ArtistContributionType }[] {
     if (!song) return [];
     return song.songArtist;
+  }
+
+  getMaxNSongs(constitution: Constitution): number {
+    return constitution.nSongs * constitution.userConstitution.length;
   }
 }

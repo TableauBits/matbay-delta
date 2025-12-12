@@ -3,8 +3,7 @@ import { integer, sqliteTable, text } from "drizzle-orm/sqlite-core";
 import { songConstitution } from "./songConstitution";
 import { users } from "./user";
 import { userConstitution } from "./userConstitution";
-
-const MAX_SONGS_PER_USER_DEFAULT = 5;
+import { SONGS_PER_USER_DEFAULT } from "../../../../common/constitution";
 
 const constitutions = sqliteTable("constitutions", {
     id: integer("id").primaryKey(),
@@ -15,7 +14,7 @@ const constitutions = sqliteTable("constitutions", {
     name: text().notNull(),
     description: text().notNull(),
     owner: text().references(() => users.id),
-    nSongs: integer().default(MAX_SONGS_PER_USER_DEFAULT).notNull(),
+    nSongs: integer().default(SONGS_PER_USER_DEFAULT).notNull(),
 });
 
 const constitutionsRelations = relations(constitutions, ({ many }) => ({

@@ -57,6 +57,7 @@ async function create(req: Request, res: Response): Promise<void> {
     const uid = getReqUID(req);
     const body = getBody<CreateConstitutionRequestBody>(req);
 
+    // TODO : Move the creation logic to ./utils.ts ?
     // Create the constitution
     const queryResult = await db
         .insert(constitutions)
@@ -64,6 +65,7 @@ async function create(req: Request, res: Response): Promise<void> {
             name: body.name,
             description: body.description,
             owner: req.uid,
+            nSongs: body.nSongs
         })
         .returning();
 
