@@ -4,6 +4,8 @@ import { songConstitution } from "./songConstitution";
 import { users } from "./user";
 import { userConstitution } from "./userConstitution";
 
+const MAX_SONGS_PER_USER_DEFAULT = 5;
+
 const constitutions = sqliteTable("constitutions", {
     id: integer("id").primaryKey(),
     creationDate: text()
@@ -13,6 +15,7 @@ const constitutions = sqliteTable("constitutions", {
     name: text().notNull(),
     description: text().notNull(),
     owner: text().references(() => users.id),
+    nSongs: integer().default(MAX_SONGS_PER_USER_DEFAULT).notNull(),
 });
 
 const constitutionsRelations = relations(constitutions, ({ many }) => ({

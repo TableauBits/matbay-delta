@@ -16,6 +16,7 @@ interface Constitution {
   description: string;
   owner: string;
   creationDate: string;
+  nSongs: number;
   userConstitution: UserConstitution[];
   songConstitution: SongConstitution[];
 }
