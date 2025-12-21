@@ -1,0 +1,21 @@
+name: Check Migrations
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  check_migrations:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Set up Bun
+        uses: oven-sh/setup-bun@v2
+      - name: Check if new migrations can be generated
+        run: |
+          cd backend
+          bun install
+          bun x drizzle-kit generate
+          git diff --exit-code drizzle
