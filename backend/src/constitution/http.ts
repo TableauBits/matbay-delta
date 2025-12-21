@@ -63,7 +63,7 @@ async function create(req: Request, res: Response): Promise<void> {
         .values({
             name: body.name,
             description: body.description,
-            owner: req.uid,
+            owner: uid,
         })
         .returning();
 

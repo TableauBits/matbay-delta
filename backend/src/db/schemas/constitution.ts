@@ -12,7 +12,7 @@ const constitutions = sqliteTable("constitutions", {
 
     name: text().notNull(),
     description: text().notNull(),
-    owner: text().references(() => users.id),
+    owner: text().notNull().references(() => users.id),
 });
 
 const constitutionsRelations = relations(constitutions, ({ many }) => ({
