@@ -36,12 +36,22 @@ export function sendResult<T, E extends HttpError>(result: Result<T, E>, res: Re
     /** biome-ignore-end lint/style/useNamingConvention: Ok and Err here are coming from oxide.ts */
 }
 
-export function unwrap<T>(result: Result<T, Error>): T {
+// Allow unwrapping either a `Result`, or an `Option` with a provided error message.
+export function unwrap<T>(result: Result<T, Error>): T;
+export function unwrap<T>(result: Option<T>, errorMessage: string): T;
+export function unwrap<T>(value: Result<T, Error> | Option<T>, errorMessage?: string): T {
     /** biome-ignore-start lint/style/useNamingConvention: Ok and Err here are coming from oxide.ts */
-    return match(result, {
+    return match(value, {
+        // Error
         Ok: (val) => val,
         Err: (err) => {
             throw err;
+        },
+
+        // Option
+        Some: (val) => val,
+        None: () => {
+            throw new Error(errorMessage);
         },
     });
     /** biome-ignore-end lint/style/useNamingConvention: Ok and Err here are coming from oxide.ts */
@@ -60,7 +70,7 @@ export function errorHandler(err: Error, _req: Request, res: Response, next: Nex
 }
 
 export function getBody<T>(req: Request): T {
-    // Add type guard
+    // TODO: Add type guard
     return unwrap(
         Option(req.body)
             .map((val) => val as T)
