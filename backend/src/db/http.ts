@@ -1,6 +1,6 @@
 import { Database } from "bun:sqlite";
 import consola from "consola";
-import { sql, type Logger } from "drizzle-orm";
+import { type Logger, sql } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/bun-sqlite";
 import { migrate } from "drizzle-orm/bun-sqlite/migrator";
 import { type Request, type Response, Router } from "express";

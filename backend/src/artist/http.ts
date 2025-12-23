@@ -6,7 +6,7 @@ import { createArtist, getArtist, getArtistsIDFromName } from "./utils";
 
 // GET ROUTES
 async function get(req: Request, res: Response): Promise<void> {
-    const id = parseInt(getParam(req, "id"));
+    const id = parseInt(getParam(req, "id"), 10);
 
     const artist = (await getArtist(id)).mapErr(
         (err) => new HttpError(HttpStatus.NotFound, `failed to get artist info from id: ${err}`),
