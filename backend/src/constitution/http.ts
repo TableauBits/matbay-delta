@@ -1,5 +1,5 @@
 import { type Request, type Response, Router } from "express";
-import { Ok, Option } from "oxide.ts";
+import { Err, Ok, Option } from "oxide.ts";
 import type {
     AddSongConstitutionRequestBody,
     CreateConstitutionRequestBody,
@@ -10,7 +10,7 @@ import { ensureAuthMiddleware } from "../auth/http";
 import { db } from "../db/http";
 import { constitutions } from "../db/schemas";
 import { getBody, getReqUID, HttpError, HttpStatus, sendResult, unwrap } from "../utils";
-import { addSongToConstitution, addUserToConstitution, removeUserFromConstitution } from "./utils";
+import { addSongToConstitution, addUserToConstitution, countSongsOfUser, getDBConstitution, isMember, removeUserFromConstitution } from "./utils";
 
 // GET ROUTES
 async function getAll(_: Request, res: Response): Promise<void> {
@@ -41,6 +41,45 @@ async function addSong(req: Request, res: Response): Promise<void> {
     const uid = getReqUID(req);
     const participation = getBody<AddSongConstitutionRequestBody>(req);
 
+    // Check if the user is a member of the constitution
+    const isMemberOfCst = unwrap(
+        (await isMember(uid, participation.constitution)).mapErr(
+            (err) => new HttpError(HttpStatus.InternalError, `failed to verify if user is member of constitution: ${err.message}`)
+        )
+    );
+    if (!isMemberOfCst) {
+        sendResult(
+            Err(new HttpError(HttpStatus.Unauthorized, `user '${uid}' is not a member of constitution '${participation.constitution}'`)),
+            res,
+        );
+        return;
+    }
+
+    // Check if the user already added the maximum number of songs to the constitution
+    const constitution = unwrap(
+        (await getDBConstitution(participation.constitution)).mapErr(
+            (err) => new HttpError(HttpStatus.InternalError, `failed to get constitution '${participation.constitution}' ${err.message}`),
+        )
+    );
+    const userSongsCount = unwrap(
+        (await countSongsOfUser(participation.constitution, uid)).mapErr(
+            (err) => new HttpError(HttpStatus.InternalError, `failed to count songs of user '${uid}' in constitution '${participation.constitution}' ${err.message}`),
+        )
+    );
+    if (userSongsCount >= constitution.nSongs) {
+        sendResult(
+            Err(
+                new HttpError(
+                    HttpStatus.Unauthorized,
+                    `user '${uid}' already added the maximum number of songs (${constitution.nSongs}) to constitution '${participation.constitution}'`,
+                ),
+            ),
+            res,
+        );
+        return;
+    }
+
+    // Add a song to the constitution
     const result = (await addSongToConstitution(participation.constitution, participation.song, uid)).mapErr(
         (err) =>
             new HttpError(
