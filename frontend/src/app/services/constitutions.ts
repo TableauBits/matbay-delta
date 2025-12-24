@@ -82,9 +82,9 @@ export class Constitutions implements OnDestroy {
     return Array.from(this.constitutions.values());
   }
 
-  create(name: string, description: string): void {
+  create(name: string, description: string, nSongs: number): void {
     this.httpRequests
-      .authenticatedPostRequest<CreateConstitutionRequestBody>('constitution/create', { name, description })
+      .authenticatedPostRequest<CreateConstitutionRequestBody>('constitution/create', { name, description, nSongs })
       .catch((error) => {
         console.error('Failed to create constitution', error);
       });
