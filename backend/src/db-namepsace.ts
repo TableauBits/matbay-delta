@@ -1,3 +1,4 @@
+import type { db } from "./db/http";
 import type {
     artists,
     constitutions,
@@ -31,4 +32,6 @@ export namespace DB {
         export type User = typeof users.$inferSelect;
         export type UserConstitution = typeof userConstitution.$inferSelect;
     }
+
+    export type Transaction = Parameters<Parameters<(typeof db)["transaction"]>[0]>[0];
 }
