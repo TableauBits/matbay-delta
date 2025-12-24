@@ -32,7 +32,7 @@ export class ConstitutionForm {
     this.constitutions.create(
       this.form.value.name ?? '',
       this.form.value.description ?? '',
-      this.form.value.nSongs ?? SONGS_PER_USER_DEFAULT
+      this.form.value.nSongs ?? SONGS_PER_USER_DEFAULT,
     );
 
     // Clean form

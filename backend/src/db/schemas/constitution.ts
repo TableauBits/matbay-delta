@@ -1,9 +1,9 @@
 import { relations } from "drizzle-orm";
 import { integer, sqliteTable, text } from "drizzle-orm/sqlite-core";
+import { SONGS_PER_USER_DEFAULT } from "../../../../common/constitution";
 import { songConstitution } from "./songConstitution";
 import { users } from "./user";
 import { userConstitution } from "./userConstitution";
-import { SONGS_PER_USER_DEFAULT } from "../../../../common/constitution";
 
 const constitutions = sqliteTable("constitutions", {
     id: integer("id").primaryKey(),

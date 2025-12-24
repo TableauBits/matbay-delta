@@ -9,7 +9,6 @@ const songConstitution = sqliteTable(
     {
         id: integer("id").primaryKey(),
 
-        // url: text().notNull(),
         song: integer()
             .notNull()
             .references(() => songs.id),

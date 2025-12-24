@@ -10,7 +10,14 @@ import { ensureAuthMiddleware } from "../auth/http";
 import { db } from "../db/http";
 import { constitutions } from "../db/schemas";
 import { getBody, getReqUID, HttpError, HttpStatus, sendResult, unwrap } from "../utils";
-import { addSongToConstitution, addUserToConstitution, countSongsOfUser, getDBConstitution, isMember, removeUserFromConstitution } from "./utils";
+import {
+    addSongToConstitution,
+    addUserToConstitution,
+    countSongsOfUser,
+    getDBConstitution,
+    isMember,
+    removeUserFromConstitution,
+} from "./utils";
 
 // GET ROUTES
 async function getAll(_: Request, res: Response): Promise<void> {
@@ -44,12 +51,21 @@ async function addSong(req: Request, res: Response): Promise<void> {
     // Check if the user is a member of the constitution
     const isMemberOfCst = unwrap(
         (await isMember(uid, participation.constitution)).mapErr(
-            (err) => new HttpError(HttpStatus.InternalError, `failed to verify if user is member of constitution: ${err.message}`)
-        )
+            (err) =>
+                new HttpError(
+                    HttpStatus.InternalError,
+                    `failed to verify if user is member of constitution: ${err.message}`,
+                ),
+        ),
     );
     if (!isMemberOfCst) {
         sendResult(
-            Err(new HttpError(HttpStatus.Unauthorized, `user '${uid}' is not a member of constitution '${participation.constitution}'`)),
+            Err(
+                new HttpError(
+                    HttpStatus.Unauthorized,
+                    `user '${uid}' is not a member of constitution '${participation.constitution}'`,
+                ),
+            ),
             res,
         );
         return;
@@ -58,13 +74,21 @@ async function addSong(req: Request, res: Response): Promise<void> {
     // Check if the user already added the maximum number of songs to the constitution
     const constitution = unwrap(
         (await getDBConstitution(participation.constitution)).mapErr(
-            (err) => new HttpError(HttpStatus.InternalError, `failed to get constitution '${participation.constitution}' ${err.message}`),
-        )
+            (err) =>
+                new HttpError(
+                    HttpStatus.InternalError,
+                    `failed to get constitution '${participation.constitution}' ${err.message}`,
+                ),
+        ),
     );
     const userSongsCount = unwrap(
         (await countSongsOfUser(participation.constitution, uid)).mapErr(
-            (err) => new HttpError(HttpStatus.InternalError, `failed to count songs of user '${uid}' in constitution '${participation.constitution}' ${err.message}`),
-        )
+            (err) =>
+                new HttpError(
+                    HttpStatus.InternalError,
+                    `failed to count songs of user '${uid}' in constitution '${participation.constitution}' ${err.message}`,
+                ),
+        ),
     );
     if (userSongsCount >= constitution.nSongs) {
         sendResult(
@@ -104,7 +128,7 @@ async function create(req: Request, res: Response): Promise<void> {
             name: body.name,
             description: body.description,
             owner: req.uid,
-            nSongs: body.nSongs
+            nSongs: body.nSongs,
         })
         .returning();
 

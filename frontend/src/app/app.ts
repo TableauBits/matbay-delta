@@ -4,6 +4,7 @@ import { AddSongForm } from './components/add-song-form/add-song-form';
 import { ArtistContributionType } from '../../../common/artist';
 import { Artists } from './services/artists';
 import { CommonModule } from '@angular/common';
+import { Constitution } from '../../../common/constitution';
 import { ConstitutionForm } from './components/constitution-form/constitution-form';
 import { Constitutions } from './services/constitutions';
 import { CurrentUserForm } from './components/current-user-form/current-user-form';
@@ -12,7 +13,6 @@ import { Song } from '../../../common/song';
 import { Songs } from './services/songs';
 import { User } from '../../../common/user';
 import { Users } from './services/users';
-import { Constitution } from '../../../common/constitution';
 
 @Component({
   selector: 'app-root',
