@@ -9,6 +9,7 @@ import { defineConfig } from 'eslint/config';
 export default defineConfig([
   {
     files: ['**/*.ts'],
+    ignores: ['update_version.ts'],
     extends: [
       eslint.configs.recommended,
       ...tseslint.configs.recommended,
