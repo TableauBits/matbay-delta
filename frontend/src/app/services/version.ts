@@ -6,7 +6,8 @@ import { Injectable } from '@angular/core';
 })
 export class Version {
   get major(): number {
-    return parseInt(version.split('.')[0] ?? '-1', 10);
+    const prefixMajor = version.split('.')[0];
+    return parseInt(prefixMajor.substring(1), 10);
   }
 
   get minor(): number {
