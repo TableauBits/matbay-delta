@@ -27,8 +27,10 @@ async function addSong(
             unwrap(await linkSongToArtists(songData.id, artistLinks, tx));
 
             // Creates sources of the song
-            unwrap(await createSources(songData.id, sources, tx));
-
+            if (sources.length !== 0) {
+                unwrap(await createSources(songData.id, sources, tx));
+            }
+            
             return songData;
         }),
     );
