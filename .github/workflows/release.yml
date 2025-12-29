@@ -15,6 +15,7 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
       - name: Get flyctl
         uses: superfly/flyctl-actions/setup-flyctl@master
       - name: Deploy backend
@@ -24,6 +25,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          # Necessary to have access to tags needed when building the frontend
+          fetch-depth: 0
       - uses: oven-sh/setup-bun@v2
       - run: |
             cd frontend
