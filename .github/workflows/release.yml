@@ -15,7 +15,6 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-        with:
       - name: Get flyctl
         uses: superfly/flyctl-actions/setup-flyctl@master
       - name: Deploy backend
