@@ -1,20 +1,20 @@
-import { Injectable } from '@angular/core';
 import { buildDate, commitHash, version } from '../../environments/version';
+import { Injectable } from '@angular/core';
 
 @Injectable({
   providedIn: 'root',
 })
 export class Version {
   get major(): number {
-    return parseInt(version.split('.')[0] ?? "-1", 10);
+    return parseInt(version.split('.')[0] ?? '-1', 10);
   }
 
   get minor(): number {
-    return parseInt(version.split('.')[1] ?? "-1", 10);
+    return parseInt(version.split('.')[1] ?? '-1', 10);
   }
 
   get patch(): number {
-    const patchSuffix = version.split('.')[2] ?? "-1";
+    const patchSuffix = version.split('.')[2] ?? '-1';
     return parseInt(patchSuffix.split('-')[0], 10);
   }
 
