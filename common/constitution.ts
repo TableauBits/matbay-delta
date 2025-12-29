@@ -1,3 +1,6 @@
+// Const
+const SONGS_PER_USER_DEFAULT = 5;
+
 // Types
 interface UserConstitution {
   user: string;
@@ -16,6 +19,7 @@ interface Constitution {
   description: string;
   owner: string;
   creationDate: string;
+  nSongs: number;
   userConstitution: UserConstitution[];
   songConstitution: SongConstitution[];
 }
@@ -24,6 +28,7 @@ interface Constitution {
 interface CreateConstitutionRequestBody {
   name: string;
   description: string;
+  nSongs: number;
 }
 
 interface JoinConstitutionRequestBody {
@@ -39,12 +44,13 @@ interface AddSongConstitutionRequestBody {
   constitution: number;
 }
 
-export type { 
-  Constitution,
-  UserConstitution,
-  SongConstitution,
-  AddSongConstitutionRequestBody,
-  CreateConstitutionRequestBody,
-  JoinConstitutionRequestBody,
-  LeaveConstitutionRequestBody
+export { 
+  type Constitution,
+  type UserConstitution,
+  type SongConstitution,
+  type AddSongConstitutionRequestBody,
+  type CreateConstitutionRequestBody,
+  type JoinConstitutionRequestBody,
+  type LeaveConstitutionRequestBody,
+  SONGS_PER_USER_DEFAULT
 };

@@ -4,6 +4,7 @@ import { AddSongForm } from './components/add-song-form/add-song-form';
 import { ArtistContributionType } from '../../../common/artist';
 import { Artists } from './services/artists';
 import { CommonModule } from '@angular/common';
+import { Constitution } from '../../../common/constitution';
 import { ConstitutionForm } from './components/constitution-form/constitution-form';
 import { Constitutions } from './services/constitutions';
 import { CurrentUserForm } from './components/current-user-form/current-user-form';
@@ -53,5 +54,13 @@ export class App implements OnDestroy {
   getSongArtists(song: Song | null): { artist: number; contribution: ArtistContributionType }[] {
     if (!song) return [];
     return song.songArtist;
+  }
+
+  getMaxNSongs(constitution: Constitution): number {
+    return constitution.nSongs * constitution.userConstitution.length;
+  }
+
+  getCurrentUserSongCount(constitution: Constitution): number {
+    return constitution.songConstitution.filter((s) => s.user === this.currentUser?.id).length;
   }
 }

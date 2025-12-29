@@ -1,4 +1,4 @@
-import { and, eq } from "drizzle-orm";
+import { and, count, eq } from "drizzle-orm";
 import { Option, Result } from "oxide.ts";
 import type { Unit } from "../../../common/utils.ts";
 import { db } from "../db/http.ts";
@@ -63,6 +63,26 @@ async function addSongToConstitution(constitution: number, song: number, user: s
         });
 }
 
+async function getDBConstitution(id: number): Promise<Result<DB.Select.Constitution, Error>> {
+    const operation = async () => await db.select().from(constitutions).where(eq(constitutions.id, id));
+
+    return (await Result.safe(operation())).andThen((val) =>
+        Option(val.at(0)).okOr(new Error(`No constitution with id: ${id}`)),
+    );
+}
+
+async function countSongsOfUser(cstid: number, uid: string): Promise<Result<number, Error>> {
+    const operation = async () =>
+        await db
+            .select({ count: count() })
+            .from(songConstitution)
+            .where(and(eq(songConstitution.user, uid), eq(songConstitution.constitution, cstid)));
+
+    return (await Result.safe(operation()))
+        .andThen((counts) => Option(counts.at(0)).okOr(new Error(`failed to count songs of user ${uid}`)))
+        .map((c) => c.count);
+}
+
 async function isMember(uid: string, cstid: number): Promise<Result<boolean, Error>> {
     const operation = async () =>
         await db
@@ -89,4 +109,12 @@ async function removeUserFromConstitution(uid: string, cstid: number): Promise<R
         });
 }
 
-export { addSongToConstitution, addUserToConstitution, createConstitution, isMember, removeUserFromConstitution };
+export {
+    addSongToConstitution,
+    addUserToConstitution,
+    countSongsOfUser,
+    createConstitution,
+    isMember,
+    getDBConstitution,
+    removeUserFromConstitution,
+};

@@ -16,6 +16,7 @@
       <hr />
       <p>Description : {{ constitution.description }}</p>
       <p>Owner: {{ (users.getUser(constitution.owner) | async)?.displayName }}</p>
+      <p>Number of songs: {{ constitution.songConstitution.length }} / {{ getMaxNSongs(constitution) }}</p>
       <h3>Participants</h3>
       @for (userConstitution of constitution.userConstitution; track $index) {
         <p>
@@ -59,7 +60,11 @@
       @if (constitution.songConstitution.length === 0) {
         No song.
       }
-      <app-add-song-form [constitution]="constitution.id"></app-add-song-form>
+      @if (getCurrentUserSongCount(constitution) >= constitution.nSongs) {
+        You have added all your songs
+      } @else {
+        <app-add-song-form [constitution]="constitution.id"></app-add-song-form>
+      }
       <div>
         <button (click)="constitutions.join(constitution.id)">Join constitution</button>
         <button (click)="constitutions.leave(constitution.id)">Leave constitution</button>

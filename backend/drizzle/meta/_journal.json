@@ -92,6 +92,13 @@
       "when": 1766348589490,
       "tag": "0012_green_grim_reaper",
       "breakpoints": true
+    },
+    {
+      "idx": 13,
+      "version": "6",
+      "when": 1767041612572,
+      "tag": "0013_first_ultimo",
+      "breakpoints": true
     }
   ]
 }

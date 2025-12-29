@@ -9,6 +9,10 @@
       Description:
       <input formControlName="description" placeholder="Description" />
     </label>
+    <label>
+      Number of songs per user:
+      <input formControlName="nSongs" placeholder="Number of songs per user" />
+    </label>
   </form>
-  <button (click)="onSubmit()">Create a constitution</button>
+  <button [disabled]="!form.valid" (click)="onSubmit()">Create a constitution</button>
 </div>
