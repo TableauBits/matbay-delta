@@ -1,7 +1,7 @@
 {
   "version": "6",
   "dialect": "sqlite",
-  "id": "c124dbc1-36c2-45b0-9b6f-e6ae39c909c8",
+  "id": "9fc6ba5f-2f32-48d9-bc6f-b9fd042f662c",
   "prevId": "59e9a196-8a70-4313-8b6b-5b1ec913b4f4",
   "tables": {
     "albums": {
@@ -168,16 +168,8 @@
           "name": "owner",
           "type": "text",
           "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
-        "nSongs": {
-          "name": "nSongs",
-          "type": "integer",
-          "primaryKey": false,
           "notNull": true,
-          "autoincrement": false,
-          "default": 5
+          "autoincrement": false
         }
       },
       "indexes": {},

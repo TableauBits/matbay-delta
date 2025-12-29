@@ -9,8 +9,6 @@ import { songArtist, songSource, songs } from "../db/schemas";
 import type { DB } from "../db-namepsace";
 import { unwrap } from "../utils";
 
-type Transaction = Parameters<Parameters<(typeof db)["transaction"]>[0]>[0];
-
 async function addSong(
     song: DB.Insert.Song,
     additionalArtists: [number, ArtistContribution][],
@@ -36,7 +34,7 @@ async function addSong(
     );
 }
 
-async function createSong(song: DB.Insert.Song, tx?: Transaction): Promise<Result<DB.Select.Song, Error>> {
+async function createSong(song: DB.Insert.Song, tx?: DB.Transaction): Promise<Result<DB.Select.Song, Error>> {
     const ctx = tx ? tx : db;
     const operation = async () => await ctx.insert(songs).values(song).returning();
 
@@ -108,7 +106,7 @@ function getSourceInfo(source: parseUrl.ParsedUrl, host: SourceHost) {
 async function createSources(
     song: number,
     sources: string[],
-    tx?: Transaction,
+    tx?: DB.Transaction,
 ): Promise<Result<DB.Select.SongSource[], Error>> {
     const ctx = tx ? tx : db;
 
@@ -136,7 +134,7 @@ async function createSources(
 async function linkSongToArtists(
     song: number,
     artists: [number, ArtistContribution][],
-    tx?: Transaction,
+    tx?: DB.Transaction,
 ): Promise<Result<DB.Select.SongArtist[], Error>> {
     const ctx = tx ? tx : db;
     const rows = artists.map(([artist, contribution]) => {

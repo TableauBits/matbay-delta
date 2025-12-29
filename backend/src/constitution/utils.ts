@@ -4,11 +4,29 @@ import type { Unit } from "../../../common/utils.ts";
 import { db } from "../db/http.ts";
 import { constitutions, songConstitution, userConstitution } from "../db/schemas/index.ts";
 import type { DB } from "../db-namepsace.ts";
+import { unwrap } from "../utils.ts";
 import { onSongAddCallback, onUserJoinCallback, onUserLeaveCallback } from "./ws.ts";
 
-async function addUserToConstitution(uid: string, cstid: number): Promise<Result<Unit, Error>> {
+async function createConstitution(cstInfos: DB.Insert.Constitution): Promise<Result<DB.Select.Constitution, Error>> {
+    return Result.safe(
+        db.transaction(async (tx) => {
+            // Create the constitution
+            const cstCreateOp = async () => await tx.insert(constitutions).values(cstInfos).returning();
+            const creationResult = unwrap(await Result.safe(cstCreateOp()));
+            const cst = unwrap(Option(creationResult.at(0)), "failed to create constitution in database");
+
+            // Add the user as a participant of the constitution
+            unwrap(await addUserToConstitution(cst.owner, cst.id, tx));
+
+            return cst;
+        }),
+    );
+}
+
+async function addUserToConstitution(uid: string, cstid: number, tx?: DB.Transaction): Promise<Result<Unit, Error>> {
+    const ctx = tx ? tx : db;
     const operation = async () =>
-        await db
+        await ctx
             .insert(userConstitution)
             .values({
                 user: uid,
@@ -95,6 +113,7 @@ export {
     addSongToConstitution,
     addUserToConstitution,
     countSongsOfUser,
+    createConstitution,
     isMember,
     getDBConstitution,
     removeUserFromConstitution,

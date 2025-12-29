@@ -10,10 +10,10 @@ const jwksUri = Option(process.env["JWKS_URI"]).expect(
 );
 consola.info(`JWK will be fetched from ${jwksUri}`);
 
-const intendedAudience = Option(process.env["JWT_AUD"]).expect(
-    "environment variable JWT_AUD not found but is mandatory, check `.env.template`",
-);
-consola.info(`JWK audience will be checked against ${intendedAudience}`);
+const intendedAudiences = Option(process.env["JWT_AUD"])
+    .expect("environment variable JWT_AUD not found but is mandatory, check `.env.template`")
+    .split(";");
+consola.info(`JWK audience will be checked against ${intendedAudiences} (that's ${intendedAudiences.length} value(s))`);
 
 var keyring = new JwksClient({
     jwksUri: jwksUri,
@@ -38,7 +38,14 @@ async function validateToken(token: string): Promise<Result<JwtPayload, Error>> 
     if (typeof decoded.payload === "string") {
         return Err(Error("unknown payload format"));
     }
-    if (decoded.payload.aud !== intendedAudience) {
+
+    const aud = decoded.payload.aud;
+    if (
+        // It should be a string in virtually all cases, so we want to short-circuit by checking this first
+        (typeof aud === "string" && !intendedAudiences.includes(aud)) ||
+        !decoded.payload.aud ||
+        (Array.isArray(aud) && !aud.some((el) => intendedAudiences.includes(el)))
+    ) {
         return Err(Error("audience does not match the expected value"));
     }
 

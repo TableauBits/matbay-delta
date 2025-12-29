@@ -1,4 +1,4 @@
-name: Validate PR
+name: Validate code to be merged
 
 on:
   pull_request:
@@ -6,7 +6,8 @@ on:
       - main
 
 jobs:
-  build:
+  check_lint_format:
+    name: Check linter and formatter
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -24,3 +25,18 @@ jobs:
           bun install
           bun lint
           bun run build --configuration template
+
+  check_migrations:
+    name: Check migrations
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Set up Bun
+        uses: oven-sh/setup-bun@v2
+      - name: Check if new migrations can be generated
+        run: |
+          cd backend
+          bun install
+          bun x drizzle-kit generate
+          git diff --exit-code drizzle

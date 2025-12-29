@@ -1,4 +1,4 @@
-name: Deploy changes with release
+name: Deploy changes on release
 
 on:
   release:
@@ -10,7 +10,7 @@ env:
 
 jobs:
   deploy_backend:
-    name: deploy backend to Fly.io
+    name: Deploy backend to Fly.io
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -20,7 +20,7 @@ jobs:
       - name: Deploy backend
         run: flyctl deploy
   deploy_frontend:
-    name: deploy frontend to firebase hosting
+    name: Deploy frontend to firebase hosting
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4

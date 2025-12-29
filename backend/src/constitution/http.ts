@@ -8,13 +8,13 @@ import type {
 } from "../../../common/constitution";
 import { ensureAuthMiddleware } from "../auth/http";
 import { db } from "../db/http";
-import { constitutions } from "../db/schemas";
 import { getBody, getReqUID, HttpError, HttpStatus, sendResult, unwrap } from "../utils";
 import {
     addSongToConstitution,
     addUserToConstitution,
     countSongsOfUser,
     getDBConstitution,
+    createConstitution,
     isMember,
     removeUserFromConstitution,
 } from "./utils";
@@ -120,33 +120,16 @@ async function create(req: Request, res: Response): Promise<void> {
     const uid = getReqUID(req);
     const body = getBody<CreateConstitutionRequestBody>(req);
 
-    // TODO : Move the creation logic to ./utils.ts ?
-    // Create the constitution
-    const queryResult = await db
-        .insert(constitutions)
-        .values({
+    const creationResult = (
+        await createConstitution({
             name: body.name,
             description: body.description,
-            owner: req.uid,
+            owner: uid,
             nSongs: body.nSongs,
         })
-        .returning();
+    ).mapErr((err) => new HttpError(HttpStatus.InternalError, `failed to create constitution: ${err}`));
 
-    // Get the id of the created constitution
-    const cstid = unwrap(
-        Option(queryResult.at(0)?.id).okOr(
-            new HttpError(HttpStatus.InternalError, "failed to create constitution. no id returned"),
-        ),
-    );
-
-    // Add the user as a participant of the constitution
-    // TODO : This should be done in a transaction ?
-    sendResult(
-        (await addUserToConstitution(uid, cstid)).mapErr(
-            (err) => new HttpError(HttpStatus.UnprocessableContent, `failed to join constitution ${err}`),
-        ),
-        res,
-    );
+    sendResult(creationResult, res);
 }
 
 async function join(req: Request, res: Response): Promise<void> {
