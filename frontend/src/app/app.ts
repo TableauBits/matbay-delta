@@ -12,6 +12,7 @@ import { Song } from '../../../common/song';
 import { Songs } from './services/songs';
 import { User } from '../../../common/user';
 import { Users } from './services/users';
+import { Version } from './services/version';
 
 @Component({
   selector: 'app-root',
@@ -26,6 +27,7 @@ export class App implements OnDestroy {
   songs = inject(Songs);
   users = inject(Users);
   artists = inject(Artists);
+  version = inject(Version);
 
   // Observable of the current user data
   private currentUserObs: Promise<Observable<User> | undefined>;
