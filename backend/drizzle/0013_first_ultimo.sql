@@ -1,0 +1,1 @@
+ALTER TABLE `constitutions` ADD `nSongs` integer DEFAULT 5 NOT NULL;
