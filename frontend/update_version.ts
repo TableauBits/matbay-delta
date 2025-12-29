@@ -1,5 +1,5 @@
-import { execSync } from 'child_process'
-import { writeFileSync } from 'fs'
+import { execSync } from 'child_process';
+import { writeFileSync } from 'fs';
 
 const version = execSync('git describe --tags --abbrev=0').toString().trim();
 const commitHash = execSync('git rev-parse --short HEAD').toString().trim();
