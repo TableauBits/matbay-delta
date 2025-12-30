@@ -62,7 +62,8 @@ export class App implements OnDestroy {
     return constitution.nSongs * constitution.userConstitution.length;
   }
 
-  getCurrentUserSongCount(constitution: Constitution): number {
-    return constitution.songConstitution.filter((s) => s.user === this.currentUser?.id).length;
+  getUserSongCount(constitution: Constitution, uid: string | undefined): number {
+    if (!uid) return 0;
+    return constitution.songConstitution.filter((s) => s.user === uid).length;
   }
 }

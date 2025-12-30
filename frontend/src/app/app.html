@@ -24,6 +24,7 @@
           @if (users.getUser(userConstitution.user) | async; as user) {
             <img [src]="user.imageURL" width="25" height="25" alt="photo de profil de {{ user.imageURL }}" />
             {{ user.displayName }}
+            ({{ getUserSongCount(constitution, user.id) }} / {{ constitution.nSongs }} songs)
           }
         </p>
       }
@@ -60,7 +61,7 @@
       @if (constitution.songConstitution.length === 0) {
         No song.
       }
-      @if (getCurrentUserSongCount(constitution) >= constitution.nSongs) {
+      @if (getUserSongCount(constitution, currentUser?.id) >= constitution.nSongs) {
         You have added all your songs
       } @else {
         <app-add-song-form [constitution]="constitution.id"></app-add-song-form>
