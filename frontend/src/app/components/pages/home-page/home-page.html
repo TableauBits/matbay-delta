@@ -66,7 +66,6 @@ Hello {{ currentUser?.displayName }} ({{ currentUser?.username }}), you have bee
         <app-add-song-form [constitution]="constitution.id"></app-add-song-form>
       }
       <div>
-        <button (click)="constitutions.join(constitution.id)">Join constitution</button>
         <button (click)="constitutions.leave(constitution.id)">Leave constitution</button>
       </div>
     </div>

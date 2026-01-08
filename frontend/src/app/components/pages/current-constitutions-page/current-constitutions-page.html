@@ -1,0 +1,16 @@
+<h1> Current constitutions </h1>
+@for (constitution of constitutions.getAll(); track $index) {
+  <div>
+    <h2>{{ $index }} - {{ constitution.name }} (id : {{ constitution.id }})</h2>
+      <hr />
+      <p>Description : {{ constitution.description }}</p>
+      @if (users.getUser(constitution.owner) | async; as owner) {
+         <p>Owner: <img [src]="owner.imageURL" width="25" height="25" alt="photo de profil de {{ owner.imageURL }}" /> {{ owner.displayName}}</p>
+      }
+      @if(isParticipant(constitution)) {
+        <button>See constitution</button>
+      } @else {
+        <button (click)="constitutions.join(constitution.id)">Join constitution</button>
+      }
+  </div>
+}

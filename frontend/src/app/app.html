@@ -1,6 +1,11 @@
 <main>
   @if (deltaAuth.isAuthenticated() | async) {
-    <router-outlet></router-outlet>
+      <nav>
+        <a routerLink="/">Home</a>
+        |
+        <a routerLink="/current-constitutions">Current Constitutions</a>
+      </nav>
+    <router-outlet/>
     <button (click)="deltaAuth.logout()">Log out</button>
   } @else {
   Please log in with your TableauBits account to access the app. <br />
