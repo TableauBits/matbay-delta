@@ -11,7 +11,7 @@ export class Artists {
 
   private artists = new Map<number, ReplaySubject<Artist>>();
 
-  getArtist(id: number): Observable<Artist> {
+  get(id: number): Observable<Artist> {
     // Check if we already have the requested artist
     const artist = this.artists.get(id);
     if (artist) return artist.asObservable();

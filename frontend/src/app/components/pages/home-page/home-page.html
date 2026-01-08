@@ -36,11 +36,11 @@ Hello {{ currentUser?.displayName }} ({{ currentUser?.username }}), you have bee
           };
           as observers
         ) {
-          @if (observers.song && artists.getArtist(observers.song.primaryArtist) | async; as artist) {
+          @if (observers.song && artists.get(observers.song.primaryArtist) | async; as artist) {
             <p>
               Song {{ $index + 1 }} : {{ observers.song?.title }} (id: {{ observers.song?.id }}) from
               @for (songArtist of getSongArtists(observers.song); track $index) {
-                {{ (artists.getArtist(songArtist.artist) | async)?.name }} (as {{ songArtist.contribution }})
+                {{ (artists.get(songArtist.artist) | async)?.name }} (as {{ songArtist.contribution }})
               }
               added by
               <img

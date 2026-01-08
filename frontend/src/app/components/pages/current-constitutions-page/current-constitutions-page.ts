@@ -6,6 +6,7 @@ import { Constitution } from '../../../../../../common/constitution';
 import { DeltaAuth } from '../../../services/delta-auth';
 import { Observable, Subscription } from 'rxjs';
 import { User } from '../../../../../../common/user';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-current-constitutions-page',
@@ -18,6 +19,7 @@ export class CurrentConstitutionsPage {
   constitutions = inject(Constitutions);
   deltaAuth = inject(DeltaAuth);
   users = inject(Users);
+  router = inject(Router);
 
   // Observable of the current user data
   private currentUserObs: Promise<Observable<User> | undefined>;
@@ -40,5 +42,14 @@ export class CurrentConstitutionsPage {
   isParticipant(constitution: Constitution): boolean {
     if (!this.currentUser) return false;
     return constitution.userConstitution.map(u => u.user).includes(this.currentUser.id);
+  }
+
+  joinConstitution(constitutionID: number): void {
+    this.constitutions.join(constitutionID);
+    this.redirectToConstitutionPage(constitutionID);
+  }
+
+  redirectToConstitutionPage(constitutionID: number): void {
+    this.router.navigate(['/constitutions', constitutionID]);
   }
 }
