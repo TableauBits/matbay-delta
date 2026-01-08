@@ -12,7 +12,7 @@ export class Songs {
   // Cache of song data to avoid redundant requests
   private songs = new Map<number, ReplaySubject<Song>>();
 
-  getSong(id: number): Observable<Song> {
+  get(id: number): Observable<Song> {
     // Check if we already have the requested song
     const song = this.songs.get(id);
     if (song) return song.asObservable();

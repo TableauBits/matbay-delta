@@ -14,13 +14,13 @@ Hello {{ currentUser?.displayName }} ({{ currentUser?.username }}), you have bee
       <h3>{{ $index }} - {{ constitution.name }} (id : {{ constitution.id }})</h3>
       <hr />
       <p>Description : {{ constitution.description }}</p>
-      <p>Owner: {{ (users.getUser(constitution.owner) | async)?.displayName }}</p>
+      <p>Owner: {{ (users.get(constitution.owner) | async)?.displayName }}</p>
       <p>Number of songs: {{ constitution.songConstitution.length }} / {{ getMaxNSongs(constitution) }}</p>
       <h3>Participants</h3>
       @for (userConstitution of constitution.userConstitution; track $index) {
         <p>
           Participant {{ $index + 1 }} :
-          @if (users.getUser(userConstitution.user) | async; as user) {
+          @if (users.get(userConstitution.user) | async; as user) {
             <img [src]="user.imageURL" width="25" height="25" alt="photo de profil de {{ user.imageURL }}" />
             {{ user.displayName }}
             ({{ getUserSongCount(constitution, user.id) }} / {{ constitution.nSongs }} songs)
@@ -31,8 +31,8 @@ Hello {{ currentUser?.displayName }} ({{ currentUser?.username }}), you have bee
       @for (songConstitution of constitution.songConstitution; track $index) {
         @if (
           {
-            song: songs.getSong(songConstitution.song) | async,
-            user: users.getUser(songConstitution.user) | async,
+            song: songs.get(songConstitution.song) | async,
+            user: users.get(songConstitution.user) | async,
           };
           as observers
         ) {
