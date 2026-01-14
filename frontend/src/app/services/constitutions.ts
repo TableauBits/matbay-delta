@@ -77,6 +77,9 @@ export class Constitutions implements OnDestroy {
       });
     });
   }
+  get(id: number): Constitution | undefined {
+    return this.constitutions.get(id);
+  }
 
   getAll(): Constitution[] {
     return Array.from(this.constitutions.values());
@@ -107,21 +110,21 @@ export class Constitutions implements OnDestroy {
   }
 
   // Websocket callback
-  onSongAdd(message: WSCstSongAddMessage): void {
+  private onSongAdd(message: WSCstSongAddMessage): void {
     const constitution = this.constitutions.get(message.constitution);
     if (!constitution) return;
     constitution.songConstitution.push(message.songConstitution);
     constitution.songConstitution.sort((a, b) => sortByAddDate(a, b));
   }
 
-  onUserJoin(message: WSCstUserJoinMessage): void {
+  private onUserJoin(message: WSCstUserJoinMessage): void {
     const constitution = this.constitutions.get(message.constitution);
     if (!constitution) return;
     constitution.userConstitution.push(message.userConstitution);
     constitution.userConstitution.sort((a, b) => sortByJoinDate(a, b));
   }
 
-  onUserLeave(message: WSCstUserLeaveMessage): void {
+  private onUserLeave(message: WSCstUserLeaveMessage): void {
     const constitution = this.constitutions.get(message.constitution);
     if (!constitution) return;
     constitution.userConstitution = constitution.userConstitution.filter((uc) => uc.user !== message.user);
