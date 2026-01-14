@@ -5,7 +5,7 @@
   <p>Owner: {{ (users.get(constitution.owner) | async)?.displayName }}</p>
   <p>Number of songs: {{ constitution.songConstitution.length }} / {{ getMaxNSongs(constitution) }}</p>
   <h3>Participants</h3>
-      @for (userConstitution of constitution.userConstitution; track $index) {
+      @for (userConstitution of getUsers(); track $index) {
         <p>
           Participant {{ $index + 1 }} :
           @if (users.get(userConstitution.user) | async; as user) {
@@ -16,7 +16,7 @@
         </p>
       }
     <h3>Songs</h3>
-      @for (songConstitution of constitution.songConstitution; track $index) {
+      @for (songConstitution of getSongs(); track $index) {
         @if (
           {
             song: songs.get(songConstitution.song) | async,

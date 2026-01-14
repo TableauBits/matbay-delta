@@ -16,15 +16,6 @@ import {
 } from '../../../../common/websocket';
 import { HttpRequests } from './http-requests';
 
-function sortByJoinDate(a: { joinDate: string }, b: { joinDate: string }): number {
-  if (a.joinDate === b.joinDate) return 0;
-  return a.joinDate < b.joinDate ? -1 : 1;
-}
-
-function sortByAddDate(a: { addDate: string }, b: { addDate: string }): number {
-  if (a.addDate === b.addDate) return 0;
-  return a.addDate < b.addDate ? -1 : 1;
-}
 
 @Injectable({
   providedIn: 'root',
@@ -66,17 +57,11 @@ export class Constitutions implements OnDestroy {
         await this.wsRequests.emit<WSCstSubscribeMessage>(WebsocketEvents.CST_SUBSCRIBE, {
           constitution: constitution.id,
         });
-
-        // Sort users by join date
-        constitution.userConstitution.sort((a, b) => sortByJoinDate(a, b));
-
-        // Sort songs by add date
-        constitution.songConstitution.sort((a, b) => sortByAddDate(a, b));
-
         this.constitutions.set(constitution.id, constitution);
       });
     });
   }
+  
   get(id: number): Constitution | undefined {
     return this.constitutions.get(id);
   }
@@ -114,20 +99,17 @@ export class Constitutions implements OnDestroy {
     const constitution = this.constitutions.get(message.constitution);
     if (!constitution) return;
     constitution.songConstitution.push(message.songConstitution);
-    constitution.songConstitution.sort((a, b) => sortByAddDate(a, b));
   }
 
   private onUserJoin(message: WSCstUserJoinMessage): void {
     const constitution = this.constitutions.get(message.constitution);
     if (!constitution) return;
     constitution.userConstitution.push(message.userConstitution);
-    constitution.userConstitution.sort((a, b) => sortByJoinDate(a, b));
   }
 
   private onUserLeave(message: WSCstUserLeaveMessage): void {
     const constitution = this.constitutions.get(message.constitution);
     if (!constitution) return;
     constitution.userConstitution = constitution.userConstitution.filter((uc) => uc.user !== message.user);
-    constitution.userConstitution.sort((a, b) => sortByJoinDate(a, b));
   }
 }

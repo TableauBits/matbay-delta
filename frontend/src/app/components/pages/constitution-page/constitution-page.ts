@@ -1,7 +1,7 @@
-import { Component, inject, OnDestroy, signal } from '@angular/core';
+import { Component, inject, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Constitutions } from '../../../services/constitutions';
-import { Constitution } from '../../../../../../common/constitution';
+import { Constitution, SongConstitution, UserConstitution } from '../../../../../../common/constitution';
 import { AsyncPipe } from '@angular/common';
 import { Users } from '../../../services/users';
 import { Songs } from '../../../services/songs';
@@ -11,6 +11,16 @@ import { ArtistContributionType } from '../../../../../../common/artist';
 import { Observable, Subscription } from 'rxjs';
 import { AddSongForm } from '../../add-song-form/add-song-form';
 import { User } from '../../../../../../common/user';
+
+function sortByJoinDate(a: { joinDate: string }, b: { joinDate: string }): number {
+  if (a.joinDate === b.joinDate) return 0;
+  return a.joinDate < b.joinDate ? -1 : 1;
+}
+
+function sortByAddDate(a: { addDate: string }, b: { addDate: string }): number {
+  if (a.addDate === b.addDate) return 0;
+  return a.addDate < b.addDate ? -1 : 1;
+}
 
 @Component({
   selector: 'app-constitution-page',
@@ -26,8 +36,6 @@ export class ConstitutionPage implements OnDestroy {
   users = inject(Users);
   songs = inject(Songs);
 
-  // routeConstitutionID = signal(-1);
-
   constitution: Constitution | undefined;
 
   // Observable of the current user data
@@ -41,17 +49,14 @@ export class ConstitutionPage implements OnDestroy {
 
   constructor() {
     this.activatedRoute.params.subscribe((params) => {
-      // this.routeConstitutionID.set(params['id']);
       // TODO : handle undefined constitution
-      // TODO : convert the param id to number safely
-      this.constitution = this.constitutions.get(Number(params['id']));
+      const cstId = parseInt(params['id'], 10);
+      this.constitution = this.constitutions.get(cstId);
     });
 
     this.currentUserObs = this.users.getCurrentUser();
-
     this.currentUserObs.then((userObs) => {
       if (!userObs) return;
-
       const subscription = userObs.subscribe((user) => {
         this.currentUser = user;
       });
@@ -71,5 +76,25 @@ export class ConstitutionPage implements OnDestroy {
   getUserSongCount(constitution: Constitution, uid: string | undefined): number {
     if (!uid) return 0;
     return constitution.songConstitution.filter((s) => s.user === uid).length;
+  }
+
+  getUsers(): UserConstitution[] {
+    if (!this.constitution) return [];
+
+    // Sort users by join date
+    const users = this.constitution.userConstitution;
+    users.sort((a, b) => sortByJoinDate(a, b));
+
+    return users;
+  }
+
+  getSongs(): SongConstitution[] {
+    if (!this.constitution) return [];
+
+    // Sort songs by add date
+    const songs = this.constitution.songConstitution;
+    songs.sort((a, b) => sortByAddDate(a, b));
+
+    return songs;
   }
 }
