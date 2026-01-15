@@ -1,7 +1,7 @@
-import { Routes } from '@angular/router';
+import { ConstitutionPage } from './components/pages/constitution-page/constitution-page';
 import { CurrentConstitutionsPage } from './components/pages/current-constitutions-page/current-constitutions-page';
 import { HomePage } from './components/pages/home-page/home-page';
-import { ConstitutionPage } from './components/pages/constitution-page/constitution-page';
+import { Routes } from '@angular/router';
 
 export const routes: Routes = [
   {
@@ -15,5 +15,5 @@ export const routes: Routes = [
   {
     path: 'current-constitutions',
     component: CurrentConstitutionsPage,
-  }
+  },
 ];

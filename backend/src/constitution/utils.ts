@@ -1,12 +1,12 @@
 import { and, count, eq } from "drizzle-orm";
 import { Option, Result } from "oxide.ts";
+import type { Constitution } from "../../../common/constitution.ts";
 import type { Unit } from "../../../common/utils.ts";
 import { db } from "../db/http.ts";
 import { constitutions, songConstitution, userConstitution } from "../db/schemas/index.ts";
 import type { DB } from "../db-namepsace.ts";
 import { unwrap } from "../utils.ts";
 import { onSongAddCallback, onUserJoinCallback, onUserLeaveCallback } from "./ws.ts";
-import type { Constitution } from "../../../common/constitution.ts";
 
 async function createConstitution(cstInfos: DB.Insert.Constitution): Promise<Result<DB.Select.Constitution, Error>> {
     return Result.safe(
@@ -88,15 +88,16 @@ async function getConstitution(id: number): Promise<Result<Constitution, Error>>
             },
         });
 
-    return (await Result.safe(operation())).andThen((val) => Option(val.at(0)).okOr(new Error(`No constitution with id: ${id}`)));
+    return (await Result.safe(operation())).andThen((val) =>
+        Option(val.at(0)).okOr(new Error(`No constitution with id: ${id}`)),
+    );
 }
 
 async function getCurrentConstitutionsIDs(): Promise<Result<number[], Error>> {
     // TODO : Should only returns the constitutions that the user should have access. Currently returns all ids.
-    const operation = async () => await db.select({id: constitutions.id}).from(constitutions)
+    const operation = async () => await db.select({ id: constitutions.id }).from(constitutions);
 
-    return (await Result.safe(operation()))
-        .map((constitutions) => constitutions.map((cst) => cst.id));
+    return (await Result.safe(operation())).map((constitutions) => constitutions.map((cst) => cst.id));
 }
 
 async function getDBConstitution(id: number): Promise<Result<DB.Select.Constitution, Error>> {

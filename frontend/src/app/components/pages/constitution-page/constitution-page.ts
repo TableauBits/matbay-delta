@@ -1,17 +1,17 @@
-import { Component, inject, OnDestroy } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import { Constitutions } from '../../../services/constitutions';
+import { Component, OnDestroy, inject } from '@angular/core';
 import { Constitution, SongConstitution, UserConstitution } from '../../../../../../common/constitution';
-import { AsyncPipe } from '@angular/common';
-import { Users } from '../../../services/users';
-import { Songs } from '../../../services/songs';
-import { Artists } from '../../../services/artists';
-import { Song } from '../../../../../../common/song';
-import { ArtistContributionType } from '../../../../../../common/artist';
 import { Observable, Subscription } from 'rxjs';
+import { ActivatedRoute } from '@angular/router';
 import { AddSongForm } from '../../add-song-form/add-song-form';
-import { User } from '../../../../../../common/user';
+import { ArtistContributionType } from '../../../../../../common/artist';
+import { Artists } from '../../../services/artists';
+import { AsyncPipe } from '@angular/common';
+import { Constitutions } from '../../../services/constitutions';
 import { HttpErrorResponse } from '@angular/common/http';
+import { Song } from '../../../../../../common/song';
+import { Songs } from '../../../services/songs';
+import { User } from '../../../../../../common/user';
+import { Users } from '../../../services/users';
 
 function sortByJoinDate(a: { joinDate: string }, b: { joinDate: string }): number {
   if (a.joinDate === b.joinDate) return 0;
@@ -59,8 +59,12 @@ export class ConstitutionPage implements OnDestroy {
 
       this.constitutionObs = this.constitutions.get(cstId);
       const subscription = this.constitutionObs.subscribe({
-        next: (data) => { this.constitution = data; },
-        error: (err) => { this.constitutionError = err; },
+        next: (data) => {
+          this.constitution = data;
+        },
+        error: (err) => {
+          this.constitutionError = err;
+        },
       });
       this.subscriptions.add(subscription);
     });

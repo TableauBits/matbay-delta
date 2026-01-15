@@ -1,8 +1,9 @@
 <h1>Welcome to MATBay Δ</h1>
 
-Hello {{ currentUser?.displayName }} ({{ currentUser?.username }}), you have been authenticated by Auth0 and the Δ server. <br />
+Hello {{ currentUser?.displayName }} ({{ currentUser?.username }}), you have been authenticated by Auth0 and the Δ
+server. <br />
 <img [src]="currentUser?.imageURL" width="250" height="250" alt="photo de profil de {{ currentUser?.imageURL }}" />
-  "{{ currentUser?.description }}"
+"{{ currentUser?.description }}"
 
 <app-current-user-form></app-current-user-form>
 <hr />

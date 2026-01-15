@@ -1,3 +1,4 @@
+import { BehaviorSubject, Observable } from 'rxjs';
 import { CallbackFunction, WsRequests } from './ws-requests';
 import {
   Constitution,
@@ -15,7 +16,6 @@ import {
   WebsocketEvents,
 } from '../../../../common/websocket';
 import { HttpRequests } from './http-requests';
-import { BehaviorSubject, Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -57,7 +57,8 @@ export class Constitutions implements OnDestroy {
     const newConstitution = new BehaviorSubject<Constitution | undefined>(undefined);
     this.constitutions.set(id, newConstitution);
 
-    this.httpRequests.authenticatedGetRequest<Constitution>(`constitution/get/${id}`)
+    this.httpRequests
+      .authenticatedGetRequest<Constitution>(`constitution/get/${id}`)
       .then(async (constitution) => {
         // Subscribe to the changes of the constitution
         await this.wsRequests.emit<WSCstSubscribeMessage>(WebsocketEvents.CST_SUBSCRIBE, {
@@ -65,7 +66,8 @@ export class Constitutions implements OnDestroy {
         });
         // Emit changes
         newConstitution.next(constitution);
-      }).catch((error) => {
+      })
+      .catch((error) => {
         newConstitution.error(error);
       });
     return newConstitution.asObservable();
@@ -113,7 +115,9 @@ export class Constitutions implements OnDestroy {
   private onUserLeave(message: WSCstUserLeaveMessage): void {
     const constitution = this.constitutions.get(message.constitution);
     if (!constitution) return;
-    constitution.value!.userConstitution = constitution.value!.userConstitution.filter((uc) => uc.user !== message.user);
+    constitution.value!.userConstitution = constitution.value!.userConstitution.filter(
+      (uc) => uc.user !== message.user,
+    );
     constitution.next(constitution.value);
   }
 }

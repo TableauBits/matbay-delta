@@ -12,12 +12,12 @@ import {
     addSongToConstitution,
     addUserToConstitution,
     countSongsOfUser,
-    getDBConstitution,
     createConstitution,
-    isMember,
-    removeUserFromConstitution,
     getConstitution,
     getCurrentConstitutionsIDs,
+    getDBConstitution,
+    isMember,
+    removeUserFromConstitution,
 } from "./utils";
 
 // GET ROUTES
@@ -25,12 +25,16 @@ async function get(req: Request, res: Response): Promise<void> {
     // TODO : Validate that the user have the permissions to read the constitution info ?
     const id = parseInt(getParam(req, "id"), 10);
 
-    const constitution = (await getConstitution(id)).mapErr((err) => new HttpError(HttpStatus.NotFound, `failed to get constitution info from id: ${err}`));
+    const constitution = (await getConstitution(id)).mapErr(
+        (err) => new HttpError(HttpStatus.NotFound, `failed to get constitution info from id: ${err}`),
+    );
     sendResult(constitution, res);
 }
 
 async function getCurrentIDs(_: Request, res: Response): Promise<void> {
-    const ids = (await getCurrentConstitutionsIDs()).mapErr((err => new HttpError(HttpStatus.InternalError, `failed to get current constitutions IDs: ${err}`)));
+    const ids = (await getCurrentConstitutionsIDs()).mapErr(
+        (err) => new HttpError(HttpStatus.InternalError, `failed to get current constitutions IDs: ${err}`),
+    );
     sendResult(ids, res);
 }
 

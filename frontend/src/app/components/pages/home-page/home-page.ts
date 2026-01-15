@@ -1,9 +1,9 @@
-import { Component, inject, OnDestroy } from '@angular/core';
-import { User } from '../../../../../../common/user';
+import { Component, OnDestroy, inject } from '@angular/core';
 import { Observable, Subscription } from 'rxjs';
-import { Users } from '../../../services/users';
-import { CurrentUserForm } from '../../current-user-form/current-user-form';
 import { ConstitutionForm } from '../../constitution-form/constitution-form';
+import { CurrentUserForm } from '../../current-user-form/current-user-form';
+import { User } from '../../../../../../common/user';
+import { Users } from '../../../services/users';
 
 @Component({
   selector: 'app-home-page',

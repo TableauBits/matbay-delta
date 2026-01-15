@@ -1,8 +1,8 @@
 import { Component, inject } from '@angular/core';
+import { RouterLink, RouterOutlet } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { DeltaAuth } from './services/delta-auth';
 import { Version } from './services/version';
-import { RouterLink, RouterOutlet } from '@angular/router';
 
 @Component({
   selector: 'app-root',

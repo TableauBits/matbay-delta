@@ -1,12 +1,12 @@
 import { Component, inject } from '@angular/core';
-import { Constitutions } from '../../../services/constitutions';
-import { Users } from '../../../services/users';
+import { Observable, Subscription } from 'rxjs';
 import { AsyncPipe } from '@angular/common';
 import { Constitution } from '../../../../../../common/constitution';
-import { Observable, Subscription } from 'rxjs';
-import { User } from '../../../../../../common/user';
-import { Router } from '@angular/router';
+import { Constitutions } from '../../../services/constitutions';
 import { HttpRequests } from '../../../services/http-requests';
+import { Router } from '@angular/router';
+import { User } from '../../../../../../common/user';
+import { Users } from '../../../services/users';
 
 @Component({
   selector: 'app-current-constitutions-page',
@@ -30,12 +30,10 @@ export class CurrentConstitutionsPage {
 
   constructor() {
     // Fetch the current constitutions IDs
-    this.httpRequests
-      .authenticatedGetRequest<number[]>('constitution/getCurrentIDs')
-      .then((ids) => {
-        this.currentConstitutions = ids;
-      });
-    
+    this.httpRequests.authenticatedGetRequest<number[]>('constitution/getCurrentIDs').then((ids) => {
+      this.currentConstitutions = ids;
+    });
+
     // Get the current user info
     this.currentUserObs = this.users.getCurrentUser();
     this.currentUserObs.then((userObs) => {
@@ -49,7 +47,7 @@ export class CurrentConstitutionsPage {
 
   isParticipant(constitution: Constitution): boolean {
     if (!this.currentUser) return false;
-    return constitution.userConstitution.map(u => u.user).includes(this.currentUser.id);
+    return constitution.userConstitution.map((u) => u.user).includes(this.currentUser.id);
   }
 
   joinConstitution(constitutionID: number): void {
