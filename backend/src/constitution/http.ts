@@ -1,5 +1,5 @@
 import { type Request, type Response, Router } from "express";
-import { Err, Ok, Option } from "oxide.ts";
+import { Err, Option } from "oxide.ts";
 import type {
     AddSongConstitutionRequestBody,
     CreateConstitutionRequestBody,
@@ -7,8 +7,7 @@ import type {
     LeaveConstitutionRequestBody,
 } from "../../../common/constitution";
 import { ensureAuthMiddleware } from "../auth/http";
-import { db } from "../db/http";
-import { getBody, getReqUID, HttpError, HttpStatus, sendResult, unwrap } from "../utils";
+import { getBody, getParam, getReqUID, HttpError, HttpStatus, sendResult, unwrap } from "../utils";
 import {
     addSongToConstitution,
     addUserToConstitution,
@@ -17,30 +16,22 @@ import {
     createConstitution,
     isMember,
     removeUserFromConstitution,
+    getConstitution,
+    getCurrentConstitutionsIDs,
 } from "./utils";
 
 // GET ROUTES
-async function getAll(_: Request, res: Response): Promise<void> {
-    // Get all constitutions with the list of participants
-    const allConstitutions = await db.query.constitutions.findMany({
-        with: {
-            userConstitution: {
-                columns: {
-                    user: true,
-                    joinDate: true,
-                },
-            },
-            songConstitution: {
-                columns: {
-                    song: true,
-                    user: true,
-                    addDate: true,
-                },
-            },
-        },
-    });
+async function get(req: Request, res: Response): Promise<void> {
+    // TODO : Validate that the user have the permissions to read the constitution info ?
+    const id = parseInt(getParam(req, "id"), 10);
 
-    sendResult(Ok(allConstitutions), res);
+    const constitution = (await getConstitution(id)).mapErr((err) => new HttpError(HttpStatus.NotFound, `failed to get constitution info from id: ${err}`));
+    sendResult(constitution, res);
+}
+
+async function getCurrentIDs(_: Request, res: Response): Promise<void> {
+    const ids = (await getCurrentConstitutionsIDs()).mapErr((err => new HttpError(HttpStatus.InternalError, `failed to get current constitutions IDs: ${err}`)));
+    sendResult(ids, res);
 }
 
 // POST ROUTES
@@ -164,7 +155,8 @@ async function leave(req: Request, res: Response): Promise<void> {
 
 const constitutionApiRouter = Router();
 
-constitutionApiRouter.get("/getAll", ensureAuthMiddleware, getAll); // Debug route ?
+constitutionApiRouter.get("/getCurrentIDs", ensureAuthMiddleware, getCurrentIDs);
+constitutionApiRouter.get("/get/:id", ensureAuthMiddleware, get);
 
 constitutionApiRouter.post("/addSong", ensureAuthMiddleware, addSong);
 constitutionApiRouter.post("/create", ensureAuthMiddleware, create);

@@ -1,5 +1,9 @@
+@if (constitutionError) {
+  <p>Error loading constitution : "{{ constitutionError.error }}".</p>
+} @else {
+
 @if(constitution) {
-  <h1>Constitution {{ constitution.name }} (id : {{ constitution.id }})</h1>
+  <h1> {{ constitution.name }} (id : {{ constitution.id }})</h1>
   <hr />
   <p>Description : {{ constitution.description }}</p>
   <p>Owner: {{ (users.get(constitution.owner) | async)?.displayName }}</p>
@@ -58,4 +62,5 @@
       </div>
 } @else {
   <p>Loading constitution...</p>
+}
 }

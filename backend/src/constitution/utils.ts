@@ -6,6 +6,7 @@ import { constitutions, songConstitution, userConstitution } from "../db/schemas
 import type { DB } from "../db-namepsace.ts";
 import { unwrap } from "../utils.ts";
 import { onSongAddCallback, onUserJoinCallback, onUserLeaveCallback } from "./ws.ts";
+import type { Constitution } from "../../../common/constitution.ts";
 
 async function createConstitution(cstInfos: DB.Insert.Constitution): Promise<Result<DB.Select.Constitution, Error>> {
     return Result.safe(
@@ -63,6 +64,41 @@ async function addSongToConstitution(constitution: number, song: number, user: s
         });
 }
 
+async function getConstitution(id: number): Promise<Result<Constitution, Error>> {
+    // Get the constitution with :
+    // - The list of songs in the constitution
+    // - The list of users participating
+    const operation = async () =>
+        await db.query.constitutions.findMany({
+            where: eq(constitutions.id, id),
+            with: {
+                userConstitution: {
+                    columns: {
+                        user: true,
+                        joinDate: true,
+                    },
+                },
+                songConstitution: {
+                    columns: {
+                        song: true,
+                        user: true,
+                        addDate: true,
+                    },
+                },
+            },
+        });
+
+    return (await Result.safe(operation())).andThen((val) => Option(val.at(0)).okOr(new Error(`No constitution with id: ${id}`)));
+}
+
+async function getCurrentConstitutionsIDs(): Promise<Result<number[], Error>> {
+    // TODO : Should only returns the constitutions that the user should have access. Currently returns all ids.
+    const operation = async () => await db.select({id: constitutions.id}).from(constitutions)
+
+    return (await Result.safe(operation()))
+        .map((constitutions) => constitutions.map((cst) => cst.id));
+}
+
 async function getDBConstitution(id: number): Promise<Result<DB.Select.Constitution, Error>> {
     const operation = async () => await db.select().from(constitutions).where(eq(constitutions.id, id));
 
@@ -115,6 +151,8 @@ export {
     countSongsOfUser,
     createConstitution,
     isMember,
+    getConstitution,
+    getCurrentConstitutionsIDs,
     getDBConstitution,
     removeUserFromConstitution,
 };

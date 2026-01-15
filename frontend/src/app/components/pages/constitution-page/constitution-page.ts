@@ -11,6 +11,7 @@ import { ArtistContributionType } from '../../../../../../common/artist';
 import { Observable, Subscription } from 'rxjs';
 import { AddSongForm } from '../../add-song-form/add-song-form';
 import { User } from '../../../../../../common/user';
+import { HttpErrorResponse } from '@angular/common/http';
 
 function sortByJoinDate(a: { joinDate: string }, b: { joinDate: string }): number {
   if (a.joinDate === b.joinDate) return 0;
@@ -30,17 +31,21 @@ function sortByAddDate(a: { addDate: string }, b: { addDate: string }): number {
 })
 export class ConstitutionPage implements OnDestroy {
   // Service injections
-  artists = inject(Artists);
   private activatedRoute = inject(ActivatedRoute);
+  artists = inject(Artists);
   constitutions = inject(Constitutions);
   users = inject(Users);
   songs = inject(Songs);
 
+  private subscriptions: Subscription = new Subscription();
+
+  // Observable of the constitution data
+  private constitutionObs: Observable<Constitution | undefined> | undefined;
   constitution: Constitution | undefined;
+  constitutionError: HttpErrorResponse | undefined;
 
   // Observable of the current user data
   private currentUserObs: Promise<Observable<User> | undefined>;
-  private subscriptions: Subscription = new Subscription();
   currentUser: User | undefined;
 
   ngOnDestroy(): void {
@@ -48,12 +53,19 @@ export class ConstitutionPage implements OnDestroy {
   }
 
   constructor() {
+    // Get the constitution from the route
     this.activatedRoute.params.subscribe((params) => {
-      // TODO : handle undefined constitution
       const cstId = parseInt(params['id'], 10);
-      this.constitution = this.constitutions.get(cstId);
+
+      this.constitutionObs = this.constitutions.get(cstId);
+      const subscription = this.constitutionObs.subscribe({
+        next: (data) => { this.constitution = data; },
+        error: (err) => { this.constitutionError = err; },
+      });
+      this.subscriptions.add(subscription);
     });
 
+    // Get the current user info
     this.currentUserObs = this.users.getCurrentUser();
     this.currentUserObs.then((userObs) => {
       if (!userObs) return;
