@@ -1,3 +1,4 @@
+import { BehaviorSubject, Observable } from 'rxjs';
 import { CallbackFunction, WsRequests } from './ws-requests';
 import {
   Constitution,
@@ -16,16 +17,6 @@ import {
 } from '../../../../common/websocket';
 import { HttpRequests } from './http-requests';
 
-function sortByJoinDate(a: { joinDate: string }, b: { joinDate: string }): number {
-  if (a.joinDate === b.joinDate) return 0;
-  return a.joinDate < b.joinDate ? -1 : 1;
-}
-
-function sortByAddDate(a: { addDate: string }, b: { addDate: string }): number {
-  if (a.addDate === b.addDate) return 0;
-  return a.addDate < b.addDate ? -1 : 1;
-}
-
 @Injectable({
   providedIn: 'root',
 })
@@ -34,7 +25,8 @@ export class Constitutions implements OnDestroy {
   private httpRequests = inject(HttpRequests);
   private wsRequests = inject(WsRequests);
 
-  private constitutions = new Map<number, Constitution>();
+  private constitutions = new Map<number, BehaviorSubject<Constitution | undefined>>();
+
   private wsEvents = new Map<WebsocketEvents, CallbackFunction>();
 
   ngOnDestroy(): void {
@@ -47,9 +39,6 @@ export class Constitutions implements OnDestroy {
   }
 
   constructor() {
-    // Initialize the service by fetching all constitutions
-    this.serviceGetAllConstitutions();
-
     // Initialize the list of events to react with websockets
     this.wsEvents = new Map()
       .set(WebsocketEvents.CST_SONG_ADD, this.onSongAdd.bind(this))
@@ -59,27 +48,29 @@ export class Constitutions implements OnDestroy {
     this.wsEvents.forEach((value, key) => this.wsRequests.on(key, value));
   }
 
-  private async serviceGetAllConstitutions(): Promise<void> {
-    this.httpRequests.authenticatedGetRequest<Constitution[]>('constitution/getAll').then((constitutions) => {
-      constitutions.forEach(async (constitution) => {
-        // Subscribe to the changes in the constitution
+  get(id: number): Observable<Constitution | undefined> {
+    // Check if we already have the requested constitution
+    const constitution = this.constitutions.get(id);
+    if (constitution) return constitution.asObservable();
+
+    // Else request data from backend
+    const newConstitution = new BehaviorSubject<Constitution | undefined>(undefined);
+    this.constitutions.set(id, newConstitution);
+
+    this.httpRequests
+      .authenticatedGetRequest<Constitution>(`constitution/get/${id}`)
+      .then(async (constitution) => {
+        // Subscribe to the changes of the constitution
         await this.wsRequests.emit<WSCstSubscribeMessage>(WebsocketEvents.CST_SUBSCRIBE, {
           constitution: constitution.id,
         });
-
-        // Sort users by join date
-        constitution.userConstitution.sort((a, b) => sortByJoinDate(a, b));
-
-        // Sort songs by add date
-        constitution.songConstitution.sort((a, b) => sortByAddDate(a, b));
-
-        this.constitutions.set(constitution.id, constitution);
+        // Emit changes
+        newConstitution.next(constitution);
+      })
+      .catch((error) => {
+        newConstitution.error(error);
       });
-    });
-  }
-
-  getAll(): Constitution[] {
-    return Array.from(this.constitutions.values());
+    return newConstitution.asObservable();
   }
 
   create(name: string, description: string, nSongs: number): void {
@@ -107,24 +98,26 @@ export class Constitutions implements OnDestroy {
   }
 
   // Websocket callback
-  onSongAdd(message: WSCstSongAddMessage): void {
+  private onSongAdd(message: WSCstSongAddMessage): void {
     const constitution = this.constitutions.get(message.constitution);
     if (!constitution) return;
-    constitution.songConstitution.push(message.songConstitution);
-    constitution.songConstitution.sort((a, b) => sortByAddDate(a, b));
+    constitution.value?.songConstitution.push(message.songConstitution);
+    constitution.next(constitution.value);
   }
 
-  onUserJoin(message: WSCstUserJoinMessage): void {
+  private onUserJoin(message: WSCstUserJoinMessage): void {
     const constitution = this.constitutions.get(message.constitution);
     if (!constitution) return;
-    constitution.userConstitution.push(message.userConstitution);
-    constitution.userConstitution.sort((a, b) => sortByJoinDate(a, b));
+    constitution.value?.userConstitution.push(message.userConstitution);
+    constitution.next(constitution.value);
   }
 
-  onUserLeave(message: WSCstUserLeaveMessage): void {
+  private onUserLeave(message: WSCstUserLeaveMessage): void {
     const constitution = this.constitutions.get(message.constitution);
     if (!constitution) return;
-    constitution.userConstitution = constitution.userConstitution.filter((uc) => uc.user !== message.user);
-    constitution.userConstitution.sort((a, b) => sortByJoinDate(a, b));
+    constitution.value!.userConstitution = constitution.value!.userConstitution.filter(
+      (uc) => uc.user !== message.user,
+    );
+    constitution.next(constitution.value);
   }
 }

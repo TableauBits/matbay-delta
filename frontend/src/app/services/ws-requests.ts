@@ -4,8 +4,7 @@ import { DeltaAuth } from './delta-auth';
 import { environment } from '../../environments/environment';
 import { io } from 'socket.io-client';
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export type CallbackFunction = (...args: any[]) => void;
+export type CallbackFunction = (...args: unknown[]) => void;
 
 @Injectable({
   providedIn: 'root',

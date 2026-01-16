@@ -15,7 +15,7 @@ export class Users {
   // Cache of user data to avoid redundant requests
   private users = new Map<string, ReplaySubject<User>>();
 
-  getUser(uid: string | null): Observable<User> | undefined {
+  get(uid: string | null): Observable<User> | undefined {
     if (!uid) return undefined;
 
     // Check if we already have the requested user
@@ -42,7 +42,7 @@ export class Users {
 
   async getCurrentUser(): Promise<Observable<User> | undefined> {
     const uid = await this.deltaAuth.getUid();
-    return this.getUser(uid);
+    return this.get(uid);
   }
 
   async updateCurrentUserInfo(userInfo: UserUpdateRequestBody): Promise<void> {

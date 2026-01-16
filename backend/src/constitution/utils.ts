@@ -1,5 +1,6 @@
 import { and, count, eq } from "drizzle-orm";
 import { Option, Result } from "oxide.ts";
+import type { Constitution } from "../../../common/constitution.ts";
 import type { Unit } from "../../../common/utils.ts";
 import { db } from "../db/http.ts";
 import { constitutions, songConstitution, userConstitution } from "../db/schemas/index.ts";
@@ -63,6 +64,42 @@ async function addSongToConstitution(constitution: number, song: number, user: s
         });
 }
 
+async function getConstitution(id: number): Promise<Result<Constitution, Error>> {
+    // Get the constitution with :
+    // - The list of songs in the constitution
+    // - The list of users participating
+    const operation = async () =>
+        await db.query.constitutions.findMany({
+            where: eq(constitutions.id, id),
+            with: {
+                userConstitution: {
+                    columns: {
+                        user: true,
+                        joinDate: true,
+                    },
+                },
+                songConstitution: {
+                    columns: {
+                        song: true,
+                        user: true,
+                        addDate: true,
+                    },
+                },
+            },
+        });
+
+    return (await Result.safe(operation())).andThen((val) =>
+        Option(val.at(0)).okOr(new Error(`No constitution with id: ${id}`)),
+    );
+}
+
+async function getCurrentConstitutionsIDs(): Promise<Result<number[], Error>> {
+    // TODO : Should only returns the constitutions that the user should have access. Currently returns all ids.
+    const operation = async () => await db.select({ id: constitutions.id }).from(constitutions);
+
+    return (await Result.safe(operation())).map((constitutions) => constitutions.map((cst) => cst.id));
+}
+
 async function getDBConstitution(id: number): Promise<Result<DB.Select.Constitution, Error>> {
     const operation = async () => await db.select().from(constitutions).where(eq(constitutions.id, id));
 
@@ -115,6 +152,8 @@ export {
     countSongsOfUser,
     createConstitution,
     isMember,
+    getConstitution,
+    getCurrentConstitutionsIDs,
     getDBConstitution,
     removeUserFromConstitution,
 };
