@@ -12,6 +12,7 @@ import { Song } from '../../../../../../common/song';
 import { Songs } from '../../../services/songs';
 import { User } from '../../../../../../common/user';
 import { Users } from '../../../services/users';
+import { Sources } from '../../../services/sources';
 
 function sortByJoinDate(a: { joinDate: string }, b: { joinDate: string }): number {
   if (a.joinDate === b.joinDate) return 0;
@@ -36,6 +37,7 @@ export class ConstitutionPage implements OnDestroy {
   constitutions = inject(Constitutions);
   users = inject(Users);
   songs = inject(Songs);
+  sources = inject(Sources);
 
   private subscriptions: Subscription = new Subscription();
 
