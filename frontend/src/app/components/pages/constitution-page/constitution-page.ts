@@ -2,7 +2,7 @@ import { Component, OnDestroy, inject } from '@angular/core';
 import { Constitution, SongConstitution, UserConstitution } from '../../../../../../common/constitution';
 import { Observable, Subscription } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
-import { AddSongForm } from '../../add-song-form/add-song-form';
+import { AddSongForm } from './add-song-form/add-song-form';
 import { ArtistContributionType } from '../../../../../../common/artist';
 import { Artists } from '../../../services/artists';
 import { AsyncPipe } from '@angular/common';
