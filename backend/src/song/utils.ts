@@ -3,7 +3,7 @@ import { Err, Option, Result } from "oxide.ts";
 import parseUrl from "parse-url";
 import { ArtistContribution } from "../../../common/artist";
 import type { Song } from "../../../common/song";
-import { KNOWN_HOSTS, SourceHost, SourcePlatform, type Source } from "../../../common/source";
+import { KNOWN_HOSTS, type Source, SourceHost, SourcePlatform } from "../../../common/source";
 import { db } from "../db/http";
 import { songArtist, songSource, songs } from "../db/schemas";
 import type { DB } from "../db-namepsace";
