@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { Observable, ReplaySubject } from 'rxjs';
-import { HttpRequests } from './http-requests';
+import { HttpRequests } from './requests/http-requests';
 import { Song } from '../../../../common/song';
 
 @Injectable({

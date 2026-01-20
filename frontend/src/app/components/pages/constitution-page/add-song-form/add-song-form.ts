@@ -3,7 +3,7 @@ import { AddArtistRequestBody, Artist, ArtistContribution } from '../../../../..
 import { AddSongRequestBody, Song } from '../../../../../../../common/song';
 import { Component, inject, input } from '@angular/core';
 import { AddSongConstitutionRequestBody } from '../../../../../../../common/constitution';
-import { HttpRequests } from '../../../../services/http-requests';
+import { HttpRequests } from '../../../../services/requests/http-requests';
 import { KNOWN_HOSTS } from '../../../../../../../common/source';
 import parseUrl from 'parse-url';
 

@@ -2,7 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { Observable, ReplaySubject } from 'rxjs';
 import { User, UserUpdateRequestBody } from '../../../../common/user';
 import { DeltaAuth } from './delta-auth';
-import { HttpRequests } from './http-requests';
+import { HttpRequests } from './requests/http-requests';
 
 @Injectable({
   providedIn: 'root',
