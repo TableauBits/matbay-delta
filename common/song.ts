@@ -1,5 +1,5 @@
 import type { ArtistContribution, ArtistContributionType } from "./artist";
-import type { SourcePlatformType } from "./source";
+import type { Source } from "./source";
 
 // Type
 interface Song {
@@ -8,7 +8,7 @@ interface Song {
   title: string;
   primaryArtist: number;
   songArtist: { artist: number, contribution: ArtistContributionType }[];
-  songSource: { sourceID: string, platform: SourcePlatformType }[];
+  songSource: Source[];
 }
 
 // Requests

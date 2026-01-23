@@ -1,5 +1,5 @@
 import { BehaviorSubject, Observable } from 'rxjs';
-import { CallbackFunction, WsRequests } from './ws-requests';
+import { CallbackFunction, WsRequests } from './requests/ws-requests';
 import {
   Constitution,
   CreateConstitutionRequestBody,
@@ -15,7 +15,7 @@ import {
   WSCstUserLeaveMessage,
   WebsocketEvents,
 } from '../../../../common/websocket';
-import { HttpRequests } from './http-requests';
+import { HttpRequests } from './requests/http-requests';
 
 @Injectable({
   providedIn: 'root',

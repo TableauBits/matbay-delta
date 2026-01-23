@@ -3,7 +3,7 @@ import { Observable, Subscription } from 'rxjs';
 import { AsyncPipe } from '@angular/common';
 import { Constitution } from '../../../../../../common/constitution';
 import { Constitutions } from '../../../services/constitutions';
-import { HttpRequests } from '../../../services/http-requests';
+import { HttpRequests } from '../../../services/requests/http-requests';
 import { Router } from '@angular/router';
 import { User } from '../../../../../../common/user';
 import { Users } from '../../../services/users';

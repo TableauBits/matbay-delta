@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
-import { WSInMessage, WebsocketEvents } from '../../../../common/websocket';
-import { DeltaAuth } from './delta-auth';
-import { environment } from '../../environments/environment';
+import { WSInMessage, WebsocketEvents } from '../../../../../common/websocket';
+import { DeltaAuth } from '../delta-auth';
+import { environment } from '../../../environments/environment';
 import { io } from 'socket.io-client';
 
 export type CallbackFunction = (...args: unknown[]) => void;

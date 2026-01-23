@@ -2,7 +2,7 @@ import { Component, OnDestroy, inject } from '@angular/core';
 import { Constitution, SongConstitution, UserConstitution } from '../../../../../../common/constitution';
 import { Observable, Subscription } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
-import { AddSongForm } from '../../add-song-form/add-song-form';
+import { AddSongForm } from './add-song-form/add-song-form';
 import { ArtistContributionType } from '../../../../../../common/artist';
 import { Artists } from '../../../services/artists';
 import { AsyncPipe } from '@angular/common';
@@ -10,6 +10,7 @@ import { Constitutions } from '../../../services/constitutions';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Song } from '../../../../../../common/song';
 import { Songs } from '../../../services/songs';
+import { Sources } from '../../../services/sources';
 import { User } from '../../../../../../common/user';
 import { Users } from '../../../services/users';
 
@@ -36,6 +37,7 @@ export class ConstitutionPage implements OnDestroy {
   constitutions = inject(Constitutions);
   users = inject(Users);
   songs = inject(Songs);
+  sources = inject(Sources);
 
   private subscriptions: Subscription = new Subscription();
 

@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
-import { DeltaAuth } from './delta-auth';
+import { DeltaAuth } from '../delta-auth';
 import { HttpClient } from '@angular/common/http';
-import { environment } from '../../environments/environment';
+import { environment } from '../../../environments/environment';
 import { lastValueFrom } from 'rxjs';
 
 @Injectable({
