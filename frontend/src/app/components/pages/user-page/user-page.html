@@ -1,3 +1,15 @@
-<p>user-page works!</p>
-
-<app-current-user-form></app-current-user-form>
+@if (userError) {
+  <p>Error loading user : "{{ userError.error }}".</p>
+} @else if (user) {
+  <h2> {{ user.displayName }} (@{{ user.username }})
+  </h2>
+  <img [src]="user.imageURL" width="250" height="250" alt="Profile picture of {{ user.displayName }}" />
+  <p>Description: {{user.description}}</p>
+  <p>Joined on: {{ user.joinDate }}</p>
+  
+  @if (isCurrentUser) {
+    <app-current-user-form></app-current-user-form>
+  }
+} @else {
+  <p>Loading user...</p>
+}

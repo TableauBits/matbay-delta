@@ -15,9 +15,7 @@ export class Users {
   // Cache of user data to avoid redundant requests
   private users = new Map<string, ReplaySubject<User>>();
 
-  get(uid: string | null): Observable<User> | undefined {
-    if (!uid) return undefined;
-
+  get(uid: string): Observable<User> {
     // Check if we already have the requested user
     const user = this.users.get(uid);
     if (user) return user.asObservable();
@@ -32,9 +30,7 @@ export class Users {
         newUser.next(user);
       })
       .catch((error) => {
-        console.error('failed to get user', error);
         newUser.error(error);
-        this.users.delete(uid);
       });
 
     return newUser.asObservable();
