@@ -4,6 +4,8 @@
       <a routerLink="/">Home</a>
       |
       <a routerLink="/current-constitutions">Current Constitutions</a>
+      |
+      <a (click)="redirectToProfile()">Profile</a>
     </nav>
     <router-outlet />
     <button (click)="deltaAuth.logout()">Log out</button>

@@ -1,5 +1,5 @@
 import { Component, inject } from '@angular/core';
-import { RouterLink, RouterOutlet } from '@angular/router';
+import { Router, RouterLink, RouterOutlet } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { DeltaAuth } from './services/delta-auth';
 import { Version } from './services/version';
@@ -13,5 +13,12 @@ import { Version } from './services/version';
 export class App {
   // Service injections
   deltaAuth = inject(DeltaAuth);
+  private router = inject(Router);
   version = inject(Version);
+
+  redirectToProfile(): void {
+    this.deltaAuth.getUid().then((uid) => {
+      this.router.navigate(['/users', uid]);
+    });
+  }
 }
