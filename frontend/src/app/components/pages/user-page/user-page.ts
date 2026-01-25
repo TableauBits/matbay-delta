@@ -1,8 +1,9 @@
 import { Component } from '@angular/core';
+import { CurrentUserForm } from './current-user-form/current-user-form';
 
 @Component({
   selector: 'app-user-page',
-  imports: [],
+  imports: [CurrentUserForm],
   templateUrl: './user-page.html',
   styleUrl: './user-page.scss',
 })
