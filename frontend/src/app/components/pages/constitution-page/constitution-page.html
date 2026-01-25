@@ -1,67 +1,66 @@
 @if (constitutionError) {
   <p>Error loading constitution : "{{ constitutionError.error }}".</p>
 } @else if (constitution) {
-
-    <h1>{{ constitution.name }} (id : {{ constitution.id }})</h1>
-    <hr />
-    <p>Description : {{ constitution.description }}</p>
-    <p>Owner: {{ (users.get(constitution.owner) | async)?.displayName }}</p>
-    <p>Number of songs: {{ constitution.songConstitution.length }} / {{ getMaxNSongs(constitution) }}</p>
-    <h3>Participants</h3>
-    @for (userConstitution of getUsers(); track $index) {
-      <p>
-        Participant {{ $index + 1 }} :
-        @if (users.get(userConstitution.user) | async; as user) {
-          <img [src]="user.imageURL" width="25" height="25" alt="photo de profil de {{ user.imageURL }}" />
-          {{ user.displayName }}
-          ({{ getUserSongCount(constitution, user.id) }} / {{ constitution.nSongs }} songs)
+  <h1>{{ constitution.name }} (id : {{ constitution.id }})</h1>
+  <hr />
+  <p>Description : {{ constitution.description }}</p>
+  <p>Owner: {{ (users.get(constitution.owner) | async)?.displayName }}</p>
+  <p>Number of songs: {{ constitution.songConstitution.length }} / {{ getMaxNSongs(constitution) }}</p>
+  <h3>Participants</h3>
+  @for (userConstitution of getUsers(); track $index) {
+    <p>
+      Participant {{ $index + 1 }} :
+      @if (users.get(userConstitution.user) | async; as user) {
+        <img [src]="user.imageURL" width="25" height="25" alt="photo de profil de {{ user.imageURL }}" />
+        {{ user.displayName }}
+        ({{ getUserSongCount(constitution, user.id) }} / {{ constitution.nSongs }} songs)
+      }
+    </p>
+  }
+  <h3>Songs</h3>
+  @for (songConstitution of getSongs(); track $index) {
+    @if (
+      {
+        song: songs.get(songConstitution.song) | async,
+        user: users.get(songConstitution.user) | async,
+      };
+      as observers
+    ) {
+      @if (observers.song && artists.get(observers.song.primaryArtist) | async; as artist) {
+        Song {{ $index + 1 }} : {{ observers.song?.title }} (id: {{ observers.song?.id }}) from
+        @for (songArtist of getSongArtists(observers.song); track $index) {
+          {{ (artists.get(songArtist.artist) | async)?.name }} (as {{ songArtist.contribution }})
         }
-      </p>
-    }
-    <h3>Songs</h3>
-    @for (songConstitution of getSongs(); track $index) {
-      @if (
-        {
-          song: songs.get(songConstitution.song) | async,
-          user: users.get(songConstitution.user) | async,
-        };
-        as observers
-      ) {
-        @if (observers.song && artists.get(observers.song.primaryArtist) | async; as artist) {
-          Song {{ $index + 1 }} : {{ observers.song?.title }} (id: {{ observers.song?.id }}) from
-          @for (songArtist of getSongArtists(observers.song); track $index) {
-            {{ (artists.get(songArtist.artist) | async)?.name }} (as {{ songArtist.contribution }})
+        added by
+        <img
+          [src]="observers.user?.imageURL"
+          width="25"
+          height="25"
+          alt="photo de profil de {{ observers.user?.imageURL }}"
+        />
+        {{ observers.user?.displayName }}
+        <ul>
+          @for (source of observers.song?.songSource; track $index) {
+            <li>
+              Link:
+              <a [href]="sources.generateURL(source)" target="_blank">{{ source.platform }}:{{ source.sourceID }}</a>
+            </li>
           }
-          added by
-          <img
-            [src]="observers.user?.imageURL"
-            width="25"
-            height="25"
-            alt="photo de profil de {{ observers.user?.imageURL }}"
-          />
-          {{ observers.user?.displayName }}
-          <ul>
-            @for (source of observers.song?.songSource; track $index) {
-              <li>
-                Link:
-                <a [href]="sources.generateURL(source)" target="_blank">{{ source.platform }}:{{ source.sourceID }}</a>
-              </li>
-            }
-          </ul>
-        }
+        </ul>
       }
     }
-    @if (constitution.songConstitution.length === 0) {
-      No song.
-    }
-    @if (getUserSongCount(constitution, currentUser?.id) >= constitution.nSongs) {
-      You have added all your songs
-    } @else {
-      <app-add-song-form [constitution]="constitution.id"></app-add-song-form>
-    }
-    <div>
-      <button (click)="constitutions.leave(constitution.id)">Leave constitution</button>
-    </div>
-  } @else {
-    <p>Loading constitution...</p>
   }
+  @if (constitution.songConstitution.length === 0) {
+    No song.
+  }
+  @if (getUserSongCount(constitution, currentUser?.id) >= constitution.nSongs) {
+    You have added all your songs
+  } @else {
+    <app-add-song-form [constitution]="constitution.id"></app-add-song-form>
+  }
+  <div>
+    <button (click)="constitutions.leave(constitution.id)">Leave constitution</button>
+  </div>
+} @else {
+  <p>Loading constitution...</p>
+}
