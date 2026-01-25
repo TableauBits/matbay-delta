@@ -43,7 +43,6 @@ export class UserPage {
           this.user = data
         },
         error: (err) => {
-          console.log("wesh ?")
           this.userError = err;
         }
       });
