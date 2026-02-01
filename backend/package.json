@@ -23,7 +23,7 @@
         "express": "^5.2.1",
         "i": "^0.3.7",
         "jsonwebtoken": "^9.0.3",
-        "jwks-rsa": "^3.2.0",
+        "jwks-rsa": "^3.2.2",
         "oxide.ts": "^1.1.0",
         "parse-url": "^10.0.3",
         "socket.io": "^4.8.3",
