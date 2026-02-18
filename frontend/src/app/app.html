@@ -1,9 +1,11 @@
 <main>
   @if (deltaAuth.isAuthenticated() | async) {
     <nav>
-      <a routerLink="/">Home</a>
+      <button routerLink="/">Home</button>
       |
-      <a routerLink="/current-constitutions">Current Constitutions</a>
+      <button routerLink="/current-constitutions">Current Constitutions</button>
+      |
+      <button (click)="redirectToProfile()">Profile</button>
     </nav>
     <router-outlet />
     <button (click)="deltaAuth.logout()">Log out</button>

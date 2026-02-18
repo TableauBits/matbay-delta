@@ -23,7 +23,7 @@ export class DeltaAuth {
     });
   }
 
-  onConnect(claims: IdToken): void {
+  private onConnect(claims: IdToken): void {
     const serverURL = `${environment.server.httpProtocol}${environment.server.domain}`;
     this.http
       .get(`${serverURL}/api/auth/login`, {
@@ -40,7 +40,7 @@ export class DeltaAuth {
       });
   }
 
-  succesfullLoginResponse(claims: IdToken, response: string): void {
+  private succesfullLoginResponse(claims: IdToken, response: string): void {
     this.idToken$.next(claims);
     this.uid$.next(response);
     this.isAuthenticated$.next(true);

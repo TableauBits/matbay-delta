@@ -2,8 +2,8 @@ import { Component, OnDestroy, inject } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { Observable, Subscription } from 'rxjs';
 import { CommonModule } from '@angular/common';
-import { User } from '../../../../../common/user';
-import { Users } from '../../services/users';
+import { User } from '../../../../../../../common/user';
+import { Users } from '../../../../services/users';
 
 @Component({
   selector: 'app-current-user-form',
