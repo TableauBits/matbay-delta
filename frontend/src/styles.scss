@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Madimi+One&family=Rubik:ital,wght@0,300..900;1,300..900&display=swap");
+@import url('https://fonts.googleapis.com/css2?family=Madimi+One&family=Rubik:ital,wght@0,300..900;1,300..900&display=swap');
 
 $primary: #673ab7;
 $primary-dark: #393346;
@@ -14,26 +14,13 @@ $rose: #ef547b;
 $orange: #f75748;
 $yellow: #fed057;
 
-$radial-colorful-gradient: linear-gradient(
-    0deg,
-    rgba(255, 255, 255, 0.2) 0%,
-    rgba(255, 255, 255, 0.2) 100%
-  ),
-  radial-gradient(
-    797.62% 50% at 50% 50%,
-    $primary 0%,
-    $pink 34.5%,
-    $orange 67%,
-    $yellow 100%
-  );
+$radial-colorful-gradient:
+  linear-gradient(0deg, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.2) 100%),
+  radial-gradient(797.62% 50% at 50% 50%, $primary 0%, $pink 34.5%, $orange 67%, $yellow 100%);
 
-$stroke-radial: radial-gradient(
-  50% 50% at 50% 50%,
-  rgba(255, 255, 255, 0.5) 10%,
-  rgba(153, 153, 153, 0) 100%
-);
+$stroke-radial: radial-gradient(50% 50% at 50% 50%, rgba(255, 255, 255, 0.5) 10%, rgba(153, 153, 153, 0) 100%);
 
-$font-family-base: "Rubik", sans-serif;
+$font-family-base: 'Rubik', sans-serif;
 
 :root {
   font-family: $font-family-base;
@@ -57,13 +44,7 @@ h2 {
 }
 
 .colorful-text {
-  background: radial-gradient(
-    50% 50% at 50% 50%,
-    $primary 0%,
-    $pink 48%,
-    $orange 83%,
-    $yellow 100%
-  );
+  background: radial-gradient(50% 50% at 50% 50%, $primary 0%, $pink 48%, $orange 83%, $yellow 100%);
   mix-blend-mode: plus-lighter;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -71,7 +52,7 @@ h2 {
 }
 
 .madimi-one {
-  font-family: "Madimi One";
+  font-family: 'Madimi One';
   font-size: 115%;
 }
 
@@ -120,8 +101,9 @@ form {
     gap: 1em;
   }
 
-  input[type="text"],
-  input[type="password"],
+  input[type='text'],
+  input[type='password'],
+  input[type='number'],
   textarea {
     border: 1px solid $secondary;
     border-radius: 4px;
@@ -141,4 +123,15 @@ hr {
   flex-shrink: 0;
   border: 0;
   background: $stroke-radial;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1em;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  border-radius: 2rem;
+  margin: 2rem;
+  padding: 1rem;
 }

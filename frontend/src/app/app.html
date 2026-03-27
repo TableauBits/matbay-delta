@@ -2,9 +2,7 @@
   @if (deltaAuth.isAuthenticated() | async) {
     <nav>
       <button routerLink="/">Home</button>
-      |
       <button routerLink="/current-constitutions">Current Constitutions</button>
-      |
       <button (click)="redirectToProfile()">Profile</button>
     </nav>
     <router-outlet />
