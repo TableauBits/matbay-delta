@@ -1,4 +1,4 @@
-name: Check that the PR name contains a DELTA-issue ID.
+name: Ensure that the github PR is conformant
 
 on:
   pull_request:
@@ -10,6 +10,7 @@ on:
 
 jobs:
   check_commit_has_issue:
+    name: Check that the PR name contains a DELTA-issue ID
     if: (! startsWith(github.head_ref, 'dependabot/')) && (github.event.type == 'opened' || github.event.changes.title.from)
     runs-on: ubuntu-latest
     steps:

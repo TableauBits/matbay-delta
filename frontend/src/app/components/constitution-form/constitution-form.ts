@@ -1,29 +1,39 @@
 import { Component, inject } from '@angular/core';
-import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Constitutions } from '../../services/constitutions';
+import { SONGS_PER_USER_DEFAULT } from '../../../../../common/constitution';
 
 @Component({
   selector: 'app-constitution-form',
   imports: [ReactiveFormsModule],
   templateUrl: './constitution-form.html',
-  styleUrl: './constitution-form.scss'
+  styleUrl: './constitution-form.scss',
 })
 export class ConstitutionForm {
   // Service injections
   private constitutions = inject(Constitutions);
 
-  form: FormGroup;
+  form: FormGroup<{
+    name: FormControl<string>;
+    description: FormControl<string>;
+    nSongs: FormControl<number>;
+  }>;
 
   constructor() {
     this.form = new FormGroup({
-      name: new FormControl(''),
-      description: new FormControl('')
+      name: new FormControl('', { nonNullable: true, validators: [Validators.required] }),
+      description: new FormControl('', { nonNullable: true, validators: [Validators.required] }),
+      nSongs: new FormControl(SONGS_PER_USER_DEFAULT, { nonNullable: true, validators: [Validators.required] }),
     });
   }
 
   onSubmit(): void {
     // Send data
-    this.constitutions.create(this.form.value);
+    this.constitutions.create(
+      this.form.value.name ?? '',
+      this.form.value.description ?? '',
+      this.form.value.nSongs ?? SONGS_PER_USER_DEFAULT,
+    );
 
     // Clean form
     this.form.reset();

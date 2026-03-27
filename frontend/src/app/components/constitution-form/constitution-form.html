@@ -3,20 +3,16 @@
   <form [formGroup]="form">
     <label>
       Display Name:
-      <input
-        type="text"
-        formControlName="name"
-        placeholder="Constitution name"
-      />
+      <input formControlName="name" placeholder="Constitution name" />
     </label>
     <label>
       Description:
-      <input
-        type="text"
-        formControlName="description"
-        placeholder="Description"
-      />
+      <input formControlName="description" placeholder="Description" />
+    </label>
+    <label>
+      Number of songs per user:
+      <input formControlName="nSongs" placeholder="Number of songs per user" />
     </label>
   </form>
-  <button (click)="onSubmit()">Create a constitution</button>
+  <button [disabled]="!form.valid" (click)="onSubmit()">Create a constitution</button>
 </div>

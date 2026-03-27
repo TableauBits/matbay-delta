@@ -1,14 +1,13 @@
 import { Injectable, inject } from '@angular/core';
-import { WSInMessage, WebsocketEvents } from '../../../../common/websocket';
-import { DeltaAuth } from './delta-auth';
-import { environment } from '../../environments/environment';
+import { WSInMessage, WebsocketEvents } from '../../../../../common/websocket';
+import { DeltaAuth } from '../delta-auth';
+import { environment } from '../../../environments/environment';
 import { io } from 'socket.io-client';
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export type CallbackFunction = (...args: any[]) => void;
+export type CallbackFunction = (...args: unknown[]) => void;
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class WsRequests {
   private deltaAuth = inject(DeltaAuth);
@@ -22,8 +21,8 @@ export class WsRequests {
     this.socket.off(event, callback);
   }
 
-  async emit<T extends WSInMessage>(event: WebsocketEvents, data: Omit<T, "deltaAuth">): Promise<void> {
-    const token = await this.deltaAuth.getIdToken()
+  async emit<T extends WSInMessage>(event: WebsocketEvents, data: Omit<T, 'deltaAuth'>): Promise<void> {
+    const token = await this.deltaAuth.getIdToken();
     this.socket.emit(event, { ...data, deltaAuth: token.__raw });
   }
 }

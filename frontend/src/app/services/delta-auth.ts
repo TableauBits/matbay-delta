@@ -5,7 +5,7 @@ import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environments/environment';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class DeltaAuth {
   private idToken$: ReplaySubject<IdToken> = new ReplaySubject<IdToken>(1);
@@ -23,23 +23,24 @@ export class DeltaAuth {
     });
   }
 
-  onConnect(claims: IdToken): void {
+  private onConnect(claims: IdToken): void {
     const serverURL = `${environment.server.httpProtocol}${environment.server.domain}`;
-    this.http.get(`${serverURL}/api/auth/login`, {
-      headers: {
-        "delta-auth": claims.__raw
-      },
-      responseType: "text"
-    })
+    this.http
+      .get(`${serverURL}/api/auth/login`, {
+        headers: {
+          'delta-auth': claims.__raw,
+        },
+        responseType: 'text',
+      })
       .subscribe({
         next: (response) => {
-          this.succesfullLoginResponse(claims, response)
+          this.succesfullLoginResponse(claims, response);
         },
-        error: (error) => console.error(error)
+        error: (error) => console.error(error),
       });
   }
 
-  succesfullLoginResponse(claims: IdToken, response: string): void {
+  private succesfullLoginResponse(claims: IdToken, response: string): void {
     this.idToken$.next(claims);
     this.uid$.next(response);
     this.isAuthenticated$.next(true);

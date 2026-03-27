@@ -57,6 +57,48 @@
       "when": 1758812297566,
       "tag": "0007_brown_squadron_supreme",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "6",
+      "when": 1763135887745,
+      "tag": "0008_strange_harrier",
+      "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "6",
+      "when": 1763324385954,
+      "tag": "0009_easy_absorbing_man",
+      "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "6",
+      "when": 1763693975817,
+      "tag": "0010_smiling_tiger_shark",
+      "breakpoints": true
+    },
+    {
+      "idx": 11,
+      "version": "6",
+      "when": 1764097270070,
+      "tag": "0011_productive_queen_noir",
+      "breakpoints": true
+    },
+    {
+      "idx": 12,
+      "version": "6",
+      "when": 1766348589490,
+      "tag": "0012_green_grim_reaper",
+      "breakpoints": true
+    },
+    {
+      "idx": 13,
+      "version": "6",
+      "when": 1767041612572,
+      "tag": "0013_first_ultimo",
+      "breakpoints": true
     }
   ]
 }
