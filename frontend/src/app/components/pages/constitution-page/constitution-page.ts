@@ -13,6 +13,7 @@ import { Songs } from '../../../services/songs';
 import { Sources } from '../../../services/sources';
 import { User } from '../../../../../../common/user';
 import { Users } from '../../../services/users';
+import { RedirectToUserProfile } from "../../utils/redirect-to-user-profile/redirect-to-user-profile";
 
 function sortByJoinDate(a: { joinDate: string }, b: { joinDate: string }): number {
   if (a.joinDate === b.joinDate) return 0;
@@ -26,7 +27,7 @@ function sortByAddDate(a: { addDate: string }, b: { addDate: string }): number {
 
 @Component({
   selector: 'app-constitution-page',
-  imports: [AsyncPipe, AddSongForm],
+  imports: [AsyncPipe, AddSongForm, RedirectToUserProfile, RedirectToUserProfile],
   templateUrl: './constitution-page.html',
   styleUrl: './constitution-page.scss',
 })

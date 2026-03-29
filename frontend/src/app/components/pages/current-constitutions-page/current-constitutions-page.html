@@ -7,10 +7,10 @@
       <p>Description : {{ constitution.description }}</p>
       @if (users.get(constitution.owner) | async; as owner) {
         <p>
-          Owner: <img [src]="owner.imageURL" width="25" height="25" alt="photo de profil de {{ owner.imageURL }}" />
-          {{ owner.displayName }}
+          Owner: <app-redirect-to-user-profile [user]="owner" />
         </p>
       }
+      <p> Created: {{ constitution.creationDate }}</p>
       @if (isParticipant(constitution)) {
         <button (click)="redirectToConstitutionPage(constitution.id)">See constitution</button>
       } @else {

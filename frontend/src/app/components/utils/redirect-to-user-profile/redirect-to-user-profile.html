@@ -1,0 +1,10 @@
+@if(user(); as user) {
+<span (click)="redirectToUserPage(user.id)">
+  <img [src]="user.imageURL" [width]="imgWidth()" [height]="imgHeight()"
+    alt="photo de profil de {{ user.displayName }}" />
+  {{ user.displayName }}
+</span>
+}
+@else {
+User is undefined.
+}
