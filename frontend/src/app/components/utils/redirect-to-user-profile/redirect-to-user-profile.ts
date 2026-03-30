@@ -1,6 +1,6 @@
 import { Component, inject, input } from '@angular/core';
-import { User } from '../../../../../../common/user';
 import { Router } from '@angular/router';
+import { User } from '../../../../../../common/user';
 
 @Component({
   selector: 'app-redirect-to-user-profile',

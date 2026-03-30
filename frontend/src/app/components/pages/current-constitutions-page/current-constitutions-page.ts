@@ -4,10 +4,10 @@ import { AsyncPipe } from '@angular/common';
 import { Constitution } from '../../../../../../common/constitution';
 import { Constitutions } from '../../../services/constitutions';
 import { HttpRequests } from '../../../services/requests/http-requests';
+import { RedirectToUserProfile } from '../../utils/redirect-to-user-profile/redirect-to-user-profile';
 import { Router } from '@angular/router';
 import { User } from '../../../../../../common/user';
 import { Users } from '../../../services/users';
-import { RedirectToUserProfile } from '../../utils/redirect-to-user-profile/redirect-to-user-profile';
 
 @Component({
   selector: 'app-current-constitutions-page',

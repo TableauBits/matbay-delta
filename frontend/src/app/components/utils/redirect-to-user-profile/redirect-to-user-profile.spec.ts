@@ -8,9 +8,8 @@ describe('RedirectToUserProfile', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [RedirectToUserProfile]
-    })
-    .compileComponents();
+      imports: [RedirectToUserProfile],
+    }).compileComponents();
 
     fixture = TestBed.createComponent(RedirectToUserProfile);
     component = fixture.componentInstance;

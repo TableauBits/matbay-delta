@@ -8,12 +8,12 @@ import { Artists } from '../../../services/artists';
 import { AsyncPipe } from '@angular/common';
 import { Constitutions } from '../../../services/constitutions';
 import { HttpErrorResponse } from '@angular/common/http';
+import { RedirectToUserProfile } from '../../utils/redirect-to-user-profile/redirect-to-user-profile';
 import { Song } from '../../../../../../common/song';
 import { Songs } from '../../../services/songs';
 import { Sources } from '../../../services/sources';
 import { User } from '../../../../../../common/user';
 import { Users } from '../../../services/users';
-import { RedirectToUserProfile } from "../../utils/redirect-to-user-profile/redirect-to-user-profile";
 
 function sortByJoinDate(a: { joinDate: string }, b: { joinDate: string }): number {
   if (a.joinDate === b.joinDate) return 0;
