@@ -27,7 +27,7 @@ function sortByAddDate(a: { addDate: string }, b: { addDate: string }): number {
 
 @Component({
   selector: 'app-constitution-page',
-  imports: [AsyncPipe, AddSongForm, RedirectToUserProfile, RedirectToUserProfile],
+  imports: [AsyncPipe, AddSongForm, RedirectToUserProfile],
   templateUrl: './constitution-page.html',
   styleUrl: './constitution-page.scss',
 })
