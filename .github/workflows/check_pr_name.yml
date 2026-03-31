@@ -1,12 +1,15 @@
 name: Ensure that the github PR is conformant
 
 on:
-  pull_request:
-    branches:
-      - main
+  pull_request_target:
     types:
       - opened
       - edited
+      - reopened
+      - synchronize
+
+permissions:
+  pull-requests: read
 
 jobs:
   check_commit_has_issue:
@@ -14,10 +17,21 @@ jobs:
     if: (! startsWith(github.head_ref, 'dependabot/')) && (github.event.type == 'opened' || github.event.changes.title.from)
     runs-on: ubuntu-latest
     steps:
-      - run: |
-          title="${{ github.event.pull_request.title }}"
-          if ! echo $title | grep -E ".* \(((DELTA-[0-9]+)|hotfix)\)$"
-          then
-            echo "PR title doesn't contain a DELTA-issue ID (please add hotfix if no issue is applicable)";
-            exit 1;
+      - name: Check PR title for Jira ticket
+        env:
+          PR_TITLE: ${{ github.event.pull_request.title }}
+        run: |
+          echo "PR title: $PR_TITLE"
+
+          if echo "$PR_TITLE" | grep -qi 'hotfix'; then
+            echo "[ignored] PR title contains 'hotfix'"
+            exit 0
+          fi
+
+          # Otherwise require a Jira ticket like DELTA-123
+          if echo "$PR_TITLE" | grep -Eq '(^|[^A-Z0-9])DELTA-[0-9]+([^0-9]|$)'; then
+            echo "Jira ticket found in PR title"
+          else
+            echo "PR title must include a Jira ticket like DELTA-123, unless it contains 'hotfix'"
+            exit 1
           fi
