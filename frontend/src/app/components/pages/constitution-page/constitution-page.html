@@ -4,7 +4,7 @@
   <h1>{{ constitution.name }} (id : {{ constitution.id }})</h1>
   <hr />
   <p>Description : {{ constitution.description }}</p>
-  <p>Owner: {{ (users.get(constitution.owner) | async)?.displayName }}</p>
+  <p>Owner: <app-redirect-to-user-profile [user]="users.get(constitution.owner) | async" /></p>
   <p>Number of songs: {{ constitution.songConstitution.length }} / {{ getMaxNSongs(constitution) }}</p>
   <h3>Participants</h3>
   @for (userConstitution of getUsers(); track $index) {
