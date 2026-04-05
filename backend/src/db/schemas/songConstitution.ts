@@ -25,7 +25,7 @@ const songConstitution = sqliteTable(
     (t) => [unique().on(t.song, t.user, t.constitution)],
 );
 
-/// A row in songConstitution table only references one song and one constitution
+// A row in songConstitution table only references one song and one constitution
 const songConstitutionRelation = relations(songConstitution, ({ one }) => ({
     song: one(songs, { fields: [songConstitution.song], references: [songs.id] }),
     user: one(users, { fields: [songConstitution.user], references: [users.id] }),

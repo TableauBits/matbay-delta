@@ -2,6 +2,7 @@ export * from "./album";
 export * from "./artist";
 export * from "./artistAlbum";
 export * from "./constitution";
+export * from "./favorite";
 export * from "./song";
 export * from "./songAlbum";
 export * from "./songArtist";
