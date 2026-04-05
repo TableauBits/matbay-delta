@@ -10,7 +10,8 @@
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "lint": "ng lint",
-    "fix": "ng lint --fix"
+    "fix": "ng lint --fix",
+    "ci": "bun lint"
   },
   "private": true,
   "type": "module",

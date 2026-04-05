@@ -20,12 +20,12 @@ jobs:
         run: |
           cd backend
           bun install
-          bun ci
+          bun run ci
       - name: Validate frontend code
         run: |
           cd frontend
           bun install
-          bun lint
+          bun run ci
           bun run build --configuration template
 
   check_migrations:
