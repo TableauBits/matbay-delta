@@ -11,8 +11,7 @@
     <p>
       Participant {{ $index + 1 }} :
       @if (users.get(userConstitution.user) | async; as user) {
-        <img [src]="user.imageURL" width="25" height="25" alt="photo de profil de {{ user.imageURL }}" />
-        {{ user.displayName }}
+        <app-redirect-to-user-profile [user]="user" />
         ({{ getUserSongCount(constitution, user.id) }} / {{ constitution.nSongs }} songs)
       }
     </p>
@@ -32,13 +31,7 @@
           {{ (artists.get(songArtist.artist) | async)?.name }} (as {{ songArtist.contribution }})
         }
         added by
-        <img
-          [src]="observers.user?.imageURL"
-          width="25"
-          height="25"
-          alt="photo de profil de {{ observers.user?.imageURL }}"
-        />
-        {{ observers.user?.displayName }}
+        <app-redirect-to-user-profile [user]="observers.user" />
         <ul>
           @for (source of observers.song?.songSource; track $index) {
             <li>
