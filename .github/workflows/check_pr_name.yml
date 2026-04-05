@@ -14,7 +14,7 @@ permissions:
 jobs:
   check_commit_has_issue:
     name: Check that the PR name contains a DELTA-issue ID
-    if: (! startsWith(github.head_ref, 'dependabot/')) && (github.event.type == 'opened' || github.event.changes.title.from)
+    if: (! startsWith(github.head_ref, 'dependabot/'))
     runs-on: ubuntu-latest
     steps:
       - name: Check PR title for Jira ticket
