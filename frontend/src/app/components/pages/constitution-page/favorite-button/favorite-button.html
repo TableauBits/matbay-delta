@@ -1,0 +1,5 @@
+@if(isFavorite()) {
+<button (click)="removeFavorite()" title="Click to remove from favorites"> is favorite </button>
+} @else {
+<button (click)="addFavorite()" title="Click to add to favorites"> is not favorite </button>
+}
