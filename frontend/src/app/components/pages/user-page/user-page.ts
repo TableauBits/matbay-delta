@@ -23,7 +23,7 @@ export class UserPage implements OnDestroy {
 
   // Observable of the user data
   private userObs: Observable<User> | undefined;
-  private userId = '';
+  private userHandle = '';
   user: User | undefined;
   userError: HttpErrorResponse | undefined;
   isCurrentUser = false;
@@ -35,8 +35,8 @@ export class UserPage implements OnDestroy {
   constructor() {
     // Get the user from the route
     this.activatedRoute.params.subscribe((params) => {
-      this.userId = params['id'];
-      this.userObs = this.users.get(this.userId);
+      this.userHandle = params['handle'];
+      this.userObs = this.users.get(this.userHandle);
 
       const subscription = this.userObs.subscribe({
         next: (data) => {
