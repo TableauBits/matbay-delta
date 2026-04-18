@@ -1,5 +1,5 @@
 @if (user(); as user) {
-  <span (click)="redirectToUserPage(user.id)" (keydown.enter)="redirectToUserPage(user.id)" tabindex="0">
+  <span (click)="redirectToUserPage(user.handle)" (keydown.enter)="redirectToUserPage(user.handle)" tabindex="0">
     @if (showName()) {
       {{ user.displayName }}
     }

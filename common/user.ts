@@ -1,7 +1,7 @@
 interface User {
   id: string,
   authID: string,
-  username: string,
+  handle: string,
   displayName: string,
   imageURL: string,
   joinDate: string,

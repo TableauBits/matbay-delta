@@ -74,7 +74,7 @@ async function login(req: Request, res: Response) {
         id: "",
         authID,
         displayName: tokenPayload["nickname"] ?? "New User",
-        username: tokenPayload["name"] ?? authID,
+        handle: tokenPayload["name"] ?? authID,
         description: "",
         imageURL: tokenPayload["picture"] ?? "",
         joinDate: new Date().toISOString(),
