@@ -74,6 +74,10 @@ button,
   backdrop-filter: blur(25px);
   background-color: transparent;
 
+  border: 1px solid rgba($text, 0.5);
+  border-bottom-color: rgba($text, 0.2);
+  border-right-color: rgba($text, 0.2);
+
   cursor: pointer;
 
   &.colorful-border {
@@ -105,7 +109,7 @@ form {
   input[type='password'],
   input[type='number'],
   textarea {
-    border: 1px solid $secondary;
+    border: 1px solid $primary-dark;
     border-radius: 4px;
     padding: 0.5em;
     background-color: $surface;
