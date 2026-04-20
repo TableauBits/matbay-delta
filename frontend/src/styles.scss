@@ -33,6 +33,33 @@ body {
   flex-direction: column;
   align-items: center;
   margin: 0;
+
+  // For now just uses a static image, but we can use svgs for more dynamic backgrounds in the future
+  background-image: url(./app/assets/frame.png);
+  background-repeat: no-repeat;
+  background-position: top center;
+  background-size: cover;
+
+  height: 100vh;
+}
+
+body > * {
+  height: 100%;
+}
+
+main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-around;
+  height: 100%;
+}
+
+footer {
+  margin-top: auto;
+  color: rgba($text, 0.3);
+  font-size: 0.75rem;
+  text-align: center;
 }
 
 h1 {
