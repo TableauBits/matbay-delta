@@ -27,10 +27,11 @@ bun watch
 ### Linting and formatting code
 Code linting and formatting are handled by [biome](https://biomejs.dev/).
 ```bash
-bun lint
-bun format
+bun run lint
+bun run format
+bun run check --write # To fix imports order
 # Or both at once
-bun ci
+bun run ci
 ```
 
 ### Database

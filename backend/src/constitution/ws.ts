@@ -72,4 +72,4 @@ function onSongAddCallback(addInfo: DB.Select.SongConstitution): void {
     io.to(`${WebsocketEvents.CST_SONG_ADD}:${addInfo.constitution}`).emit(WebsocketEvents.CST_SONG_ADD, message);
 }
 
-export { attachWSListeners, onUserJoinCallback, onUserLeaveCallback, onSongAddCallback };
+export { attachWSListeners, onSongAddCallback, onUserJoinCallback, onUserLeaveCallback };

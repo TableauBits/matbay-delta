@@ -151,9 +151,9 @@ export {
     addUserToConstitution,
     countSongsOfUser,
     createConstitution,
-    isMember,
     getConstitution,
     getCurrentConstitutionsIDs,
     getDBConstitution,
+    isMember,
     removeUserFromConstitution,
 };
