@@ -1,10 +1,18 @@
+@use '../../../../styles.scss' as *;
+
 span {
   &:hover {
     cursor: pointer;
   }
+  height: 100%;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
 img {
   height: 100%;
   width: auto;
+  border-radius: 50%;
+  outline: 1px solid rgba($text, 0.4);
 }
