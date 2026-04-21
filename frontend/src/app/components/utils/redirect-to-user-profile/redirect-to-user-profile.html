@@ -2,11 +2,13 @@
   <span (click)="redirectToUserPage(user.id)" (keydown.enter)="redirectToUserPage(user.id)" tabindex="0">
     <img
       [src]="user.imageURL"
-      [width]="imgWidth()"
-      [height]="imgHeight()"
-      alt="photo de profil de {{ user.displayName }}"
+      [attr.width]="imgWidth() ?? null"
+      [attr.height]="imgHeight() ?? null"
+      [alt]="'Profil de ' + user.displayName"
     />
-    {{ user.displayName }}
+    @if (showName()) {
+      {{ user.displayName }}
+    }
   </span>
 } @else {
   User is undefined.
