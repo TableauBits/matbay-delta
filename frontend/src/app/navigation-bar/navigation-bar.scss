@@ -1,0 +1,57 @@
+@use '../../styles.scss' as *;
+
+nav {
+  display: flex;
+  justify-content: center;
+  height: 75px;
+  width: max(60vw, 600px);
+  gap: 0;
+
+  button {
+    font-size: 18px;
+    margin-left: 0;
+    margin-right: 0;
+  }
+  .madimi-one {
+    font-size: 32px;
+  }
+  a {
+    font-size: 16px;
+    text-decoration: none;
+    color: rgba($text, 0.9);
+    font-weight: 300;
+    transition: color 0.1s ease;
+    letter-spacing: 5%;
+
+    &:hover {
+      color: $text;
+      text-shadow: 0 0 5px rgba($text, 0.3);
+    }
+
+    &:not([routerLink]):not([href]) {
+      color: rgba($text, 0.7);
+      &:hover {
+        color: rgba($text, 0.7);
+        text-shadow: none;
+      }
+    }
+  }
+
+  .main-links {
+    font-weight: 600;
+  }
+
+  div.middle-nav {
+    margin-left: 0;
+    margin-right: 0;
+    padding: 0.5rem 1.5rem;
+    display: flex;
+    gap: 1.5rem;
+    align-items: center;
+    flex-grow: 1;
+
+    a:last-child {
+      margin-left: auto;
+    }
+  }
+}
