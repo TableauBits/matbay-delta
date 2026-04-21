@@ -6,7 +6,7 @@
       <hr />
       <p>Description : {{ constitution.description }}</p>
       @if (users.get(constitution.owner) | async; as owner) {
-        <p>Owner: <app-redirect-to-user-profile [user]="owner" [imgHeight]="25" /></p>
+        <p>Owner: <app-redirect-to-user-profile [user]="owner" /></p>
       }
       <p>Created: {{ constitution.creationDate }}</p>
       @if (isParticipant(constitution)) {
