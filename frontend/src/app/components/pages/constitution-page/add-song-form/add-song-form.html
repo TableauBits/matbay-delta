@@ -2,7 +2,7 @@
 <form [formGroup]="songForm" class="song-form">
   <label>
     Title:
-    <input formControlName="title" placeholder="Song title" />
+    <input formControlName="title" placeholder="Song title" type="text" />
   </label>
   <div formArrayName="sources">
     <h4>Sources</h4>
@@ -13,7 +13,7 @@
           Source {{ i + 1 }}
           <div>
             <label for="url-{{ i }}">URL:</label>
-            <input id="url-{{ i }}" formControlName="url" placeholder="Source URL" />
+            <input type="text" id="url-{{ i }}" formControlName="url" placeholder="Source URL" />
           </div>
           <button (click)="removeSource(i)">Remove</button>
         </div>
@@ -29,7 +29,7 @@
           Artist {{ i + 1 }}
           <div>
             <label for="name-{{ i }}">Name:</label>
-            <input id="name-{{ i }}" formControlName="name" placeholder="Artist name" />
+            <input type="text" id="name-{{ i }}" formControlName="name" placeholder="Artist name" />
 
             <label for="role-{{ i }}">Role:</label>
             <select id="role-{{ i }}" formControlName="role">

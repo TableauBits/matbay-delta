@@ -3,15 +3,15 @@
   <form [formGroup]="form">
     <label>
       Display Name:
-      <input formControlName="displayName" placeholder="Display Name" />
+      <input formControlName="displayName" placeholder="Display Name" type="text" />
     </label>
     <label>
       Description:
-      <input formControlName="description" placeholder="Description" />
+      <input formControlName="description" placeholder="Description" type="text" />
     </label>
     <label>
       Image URL:
-      <input formControlName="imageURL" placeholder="Image URL" />
+      <input formControlName="imageURL" placeholder="Image URL" type="text" />
     </label>
   </form>
   <button (click)="onSubmit()">Update your infos</button>

@@ -2,9 +2,7 @@
   @if (deltaAuth.isAuthenticated() | async) {
     <nav>
       <button routerLink="/">Home</button>
-      |
       <button routerLink="/current-constitutions">Current Constitutions</button>
-      |
       <button (click)="redirectToProfile()">Profile</button>
     </nav>
     <router-outlet />
@@ -13,5 +11,5 @@
     Please log in with your TableauBits account to access the app. <br />
     <button (click)="deltaAuth.login()">Log in</button>
   }
+  <footer>version: {{ version.fullString() }}</footer>
 </main>
-<footer>version: {{ version.fullString() }}</footer>
