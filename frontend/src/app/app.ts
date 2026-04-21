@@ -1,8 +1,8 @@
-import { CommonModule } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { Router, RouterOutlet } from '@angular/router';
-import { NavigationBar } from './navigation-bar/navigation-bar';
+import { CommonModule } from '@angular/common';
 import { DeltaAuth } from './services/delta-auth';
+import { NavigationBar } from './navigation-bar/navigation-bar';
 import { Version } from './services/version';
 
 @Component({

@@ -1,20 +1,29 @@
-import { Component, inject } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { DeltaAuth } from '../services/delta-auth';
+import { RedirectToUserProfile } from '../components/utils/redirect-to-user-profile/redirect-to-user-profile';
 
 @Component({
   selector: 'app-navigation-bar',
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, RouterLink, RedirectToUserProfile],
   templateUrl: './navigation-bar.html',
   styleUrl: './navigation-bar.scss',
 })
-export class NavigationBar {
+export class NavigationBar implements OnInit {
   deltaAuth = inject(DeltaAuth);
   private readonly router = inject(Router);
+  uid: string | undefined;
+
+  ngOnInit(): void {
+    this.deltaAuth.getUid().then((uid) => {
+      this.uid = uid;
+    });
+  }
 
   redirectToProfile(): void {
     this.deltaAuth.getUid().then((uid) => {
+      this.uid = uid;
       this.router.navigate(['/users', uid]);
     });
   }

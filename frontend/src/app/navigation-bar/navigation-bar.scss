@@ -12,14 +12,16 @@ nav {
     margin-left: 0;
     margin-right: 0;
   }
+
   .madimi-one {
     font-size: 32px;
   }
+
   a {
     font-size: 16px;
     text-decoration: none;
     color: rgba($text, 0.9);
-    font-weight: 300;
+    font-weight: 400;
     transition: color 0.1s ease;
     letter-spacing: 5%;
 
@@ -29,9 +31,9 @@ nav {
     }
 
     &:not([routerLink]):not([href]) {
-      color: rgba($text, 0.7);
+      color: rgba($text, 0.5);
       &:hover {
-        color: rgba($text, 0.7);
+        color: rgba($text, 0.5);
         text-shadow: none;
       }
     }

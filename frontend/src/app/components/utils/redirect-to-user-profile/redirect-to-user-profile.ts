@@ -12,6 +12,7 @@ export class RedirectToUserProfile {
   user = input<User | null>();
   imgWidth = input<number>(25);
   imgHeight = input<number>(25);
+  showName = input<boolean>(true);
 
   private router = inject(Router);
 

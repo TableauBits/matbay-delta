@@ -32,5 +32,7 @@
     <a>About</a>
     <a href="" (click)="deltaAuth.logout(); $event.preventDefault()">Log out</a>
   </div>
-  <button class="colorful-border main-links" (click)="redirectToProfile()">Profile</button>
+  <button class="colorful-border main-links" (click)="redirectToProfile()">
+    Profile <app-redirect-to-user-profile [user]="user"></app-redirect-to-user-profile>
+  </button>
 </nav>
