@@ -1,26 +1,6 @@
 <h3>Add a song</h3>
 <form [formGroup]="songForm" class="song-form">
   <div class="form-section">
-    <h4>Song</h4>
-    <app-autocomplete-textbox
-      label="Title"
-      placeholder="Type a song title..."
-      [searchFn]="searchSongs.bind($any(this))"
-      (resultSelected)="onSongSelected($event)"
-    ></app-autocomplete-textbox>
-    @if (selectedSong) {
-      <div class="selection-info">
-        {{ selectedSong.name }}
-        @if (selectedSong.id === -1) {
-          <span class="tag tag-new">new</span>
-        } @else {
-          <span class="tag tag-existing">existing (id:{{ selectedSong.id }})</span>
-        }
-      </div>
-    }
-  </div>
-
-  <div class="form-section">
     <h4>Artists</h4>
     <div class="artist-add-row">
       <app-autocomplete-textbox
@@ -54,6 +34,26 @@
           </li>
         }
       </ul>
+    }
+  </div>
+
+  <div class="form-section">
+    <h4>Song</h4>
+    <app-autocomplete-textbox
+      label="Title"
+      placeholder="Type a song title..."
+      [searchFn]="searchSongs.bind($any(this))"
+      (resultSelected)="onSongSelected($event)"
+    ></app-autocomplete-textbox>
+    @if (selectedSong) {
+      <div class="selection-info">
+        {{ selectedSong.name }}
+        @if (selectedSong.id === -1) {
+          <span class="tag tag-new">new</span>
+        } @else {
+          <span class="tag tag-existing">existing (id:{{ selectedSong.id }})</span>
+        }
+      </div>
     }
   </div>
 
