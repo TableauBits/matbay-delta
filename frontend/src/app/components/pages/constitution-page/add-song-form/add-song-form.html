@@ -1,50 +1,73 @@
 <h3>Add a song</h3>
 <form [formGroup]="songForm" class="song-form">
-  <label>
-    Title:
-    <input formControlName="title" placeholder="Song title" type="text" />
-  </label>
-  <div formArrayName="sources">
-    <h4>Sources</h4>
-    <button (click)="addSource()">+ Add another source</button>
-    @for (sourceForm of sources.controls; track $index; let i = $index) {
-      <div [formGroupName]="i">
-        <div class="artist-inputs">
-          Source {{ i + 1 }}
-          <div>
-            <label for="url-{{ i }}">URL:</label>
-            <input type="text" id="url-{{ i }}" formControlName="url" placeholder="Source URL" />
-          </div>
-          <button (click)="removeSource(i)">Remove</button>
-        </div>
-      </div>
-    }
-  </div>
-  <div formArrayName="artists">
-    <h4>Artists</h4>
-    <button (click)="addArtist()">+ Add another artist</button>
-    @for (artistForm of artists.controls; track artistForm; let i = $index) {
-      <div [formGroupName]="i">
-        <div class="artist-inputs">
-          Artist {{ i + 1 }}
-          <div>
-            <label for="name-{{ i }}">Name:</label>
-            <input type="text" id="name-{{ i }}" formControlName="name" placeholder="Artist name" />
-
-            <label for="role-{{ i }}">Role:</label>
-            <select id="role-{{ i }}" formControlName="role">
-              @for (contribution of getContributions(); track $index) {
-                <option value="{{ contribution }}">{{ contribution }}</option>
-              }
-            </select>
-          </div>
-        </div>
-        <!-- You need to have at least one artist per song, so you can't remove the first artist -->
-        @if (i !== 0) {
-          <button (click)="removeArtist(i)">Remove</button>
+  <div class="form-section">
+    <h4>Song</h4>
+    <app-autocomplete-textbox
+      label="Title"
+      placeholder="Type a song title..."
+      [searchFn]="searchSongs.bind($any(this))"
+      (resultSelected)="onSongSelected($event)"
+    ></app-autocomplete-textbox>
+    @if (selectedSong) {
+      <div class="selection-info">
+        {{ selectedSong.name }}
+        @if (selectedSong.id === -1) {
+          <span class="tag tag-new">new</span>
+        } @else {
+          <span class="tag tag-existing">existing (id:{{ selectedSong.id }})</span>
         }
       </div>
     }
   </div>
+
+  <div class="form-section">
+    <h4>Artists</h4>
+    <div class="artist-add-row">
+      <app-autocomplete-textbox
+        #artistAutocomplete
+        label="Add an artist"
+        placeholder="Type an artist name..."
+        [searchFn]="searchArtists.bind($any(this))"
+        (resultSelected)="onArtistSelected($event)"
+      ></app-autocomplete-textbox>
+      <div class="role-select-wrapper">
+        <label for="artist-role">Role</label>
+        <select id="artist-role" [(ngModel)]="nextArtistRole" [ngModelOptions]="{ standalone: true }">
+          @for (contribution of getContributions(); track $index) {
+            <option [value]="contribution">{{ contribution }}</option>
+          }
+        </select>
+      </div>
+    </div>
+    @if (pendingArtists.length > 0) {
+      <ul class="pending-artists">
+        @for (artist of pendingArtists; track $index; let i = $index) {
+          <li class="pending-artist">
+            <span class="pending-artist-name">{{ artist.name }}</span>
+            <span class="tag role-tag">{{ artist.role }}</span>
+            @if (artist.isNew) {
+              <span class="tag tag-new">new</span>
+            } @else {
+              <span class="tag tag-existing">existing (id:{{ artist.id }})</span>
+            }
+            <button class="btn-remove" (click)="removePendingArtist(i)">x</button>
+          </li>
+        }
+      </ul>
+    }
+  </div>
+
+  <div class="form-section">
+    <h4>Sources</h4>
+    <button (click)="addSource()">+ Add source</button>
+    <div formArrayName="sources">
+      @for (sourceForm of sources.controls; track $index; let i = $index) {
+        <div [formGroupName]="i" class="source-row">
+          <input type="text" formControlName="url" placeholder="Source URL" />
+          <button class="btn-remove" (click)="removeSource(i)">x</button>
+        </div>
+      }
+    </div>
+  </div>
 </form>
-<button [disabled]="!songForm.valid" (click)="submitForm()">Submit song</button>
+<button [disabled]="!canSubmit" (click)="submitForm()">Submit song</button>

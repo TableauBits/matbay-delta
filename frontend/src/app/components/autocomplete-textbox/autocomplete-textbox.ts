@@ -106,6 +106,14 @@ export class AutocompleteTextbox implements OnDestroy {
     }
   }
 
+  reset(): void {
+    this.searchControl.setValue('');
+    this.results = [];
+    this.isDropdownOpen = false;
+    this.activeIndex = -1;
+    this.isLoading = false;
+  }
+
   selectItem(index: number): void {
     const query = this.searchControl.value.trim();
     if (index === 0) {
