@@ -1,3 +1,4 @@
+import { AutocompleteTestPage } from './components/pages/autocomplete-test-page/autocomplete-test-page';
 import { ConstitutionPage } from './components/pages/constitution-page/constitution-page';
 import { CurrentConstitutionsPage } from './components/pages/current-constitutions-page/current-constitutions-page';
 import { HomePage } from './components/pages/home-page/home-page';
@@ -8,6 +9,10 @@ export const routes: Routes = [
   {
     path: '',
     component: HomePage,
+  },
+  {
+    path: 'autocomplete-test',
+    component: AutocompleteTestPage,
   },
   {
     path: 'constitutions/:id',

@@ -1,0 +1,103 @@
+@use '../../../styles.scss' as *;
+
+.autocomplete-container {
+  position: relative;
+  width: 100%;
+}
+
+.autocomplete-label {
+  display: block;
+  margin-bottom: 0.25em;
+  font-weight: 500;
+}
+
+.autocomplete-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.autocomplete-input {
+  width: 100%;
+  box-sizing: border-box;
+  padding-right: 2.5em;
+}
+
+.spinner {
+  position: absolute;
+  right: 0.75em;
+  width: 1.2em;
+  height: 1.2em;
+  border: 2px solid rgba($text, 0.2);
+  border-top-color: $primary;
+  border-radius: 50%;
+  animation: spin 0.6s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.autocomplete-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  max-height: 250px;
+  overflow-y: auto;
+  background-color: $surface;
+  border: 1px solid $primary-dark;
+  border-top: none;
+  border-radius: 0 0 4px 4px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.autocomplete-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5em 0.75em;
+  cursor: pointer;
+  gap: 0.75em;
+
+  &:hover,
+  &.active {
+    background-color: rgba($primary, 0.15);
+  }
+}
+
+.item-text {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.verbatim-text {
+  font-style: italic;
+  opacity: 0.8;
+}
+
+.badge {
+  flex-shrink: 0;
+  font-size: 0.75rem;
+  padding: 0.15em 0.5em;
+  border-radius: 1em;
+  white-space: nowrap;
+}
+
+.badge-new {
+  background-color: $primary;
+  color: $text;
+}
+
+.badge-existing {
+  background-color: rgba($text, 0.1);
+  color: $secondary-dark;
+}
