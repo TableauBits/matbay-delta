@@ -86,12 +86,19 @@ async function searchSong(title: string, aid: number): Promise<Result<number[], 
     return Result.safe(operation());
 }
 
-async function searchSongsByTitle(query: string): Promise<Result<DB.Select.Song[], Error>> {
-    const operation = async () =>
-        await db
+async function searchSongsByTitle(query: string, artistId?: number): Promise<Result<DB.Select.Song[], Error>> {
+    const operation = async () => {
+        if (artistId !== undefined) {
+            return await db
+                .select()
+                .from(songs)
+                .where(and(like(songs.title, `%${query}%`), eq(songs.primaryArtist, artistId)));
+        }
+        return await db
             .select()
             .from(songs)
             .where(like(songs.title, `%${query}%`));
+    };
 
     return Result.safe(operation());
 }

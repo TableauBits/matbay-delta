@@ -17,7 +17,8 @@ export class AutocompleteTestPage {
   selectedArtist: AutocompleteResult | null = null;
 
   searchSongs(query: string): Promise<AutocompleteResult[]> {
-    return this.songs.search(query);
+    const artistId = this.selectedArtist && this.selectedArtist.id !== -1 ? this.selectedArtist.id : undefined;
+    return this.songs.search(query, artistId);
   }
 
   searchArtists(query: string): Promise<AutocompleteResult[]> {
@@ -30,5 +31,6 @@ export class AutocompleteTestPage {
 
   onArtistSelected(result: AutocompleteResult | null): void {
     this.selectedArtist = result;
+    this.selectedSong = null;
   }
 }

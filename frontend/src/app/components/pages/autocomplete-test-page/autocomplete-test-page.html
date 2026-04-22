@@ -2,28 +2,6 @@
   <h2>Autocomplete Textbox Test</h2>
 
   <div class="test-section">
-    <h3>Song Title</h3>
-    <app-autocomplete-textbox
-      label="Search for a song"
-      placeholder="Type a song title..."
-      [searchFn]="searchSongs.bind($any(this))"
-      (resultSelected)="onSongSelected($event)"
-    ></app-autocomplete-textbox>
-    @if (selectedSong) {
-      <div class="selection-info">
-        Selected: {{ selectedSong.name }}
-        @if (selectedSong.id === -1) {
-          <span class="badge-new-inline">(new)</span>
-        } @else {
-          <span class="badge-existing-inline">(id:{{ selectedSong.id }})</span>
-        }
-      </div>
-    }
-  </div>
-
-  <hr />
-
-  <div class="test-section">
     <h3>Artist Name</h3>
     <app-autocomplete-textbox
       label="Search for an artist"
@@ -38,6 +16,28 @@
           <span class="badge-new-inline">(new)</span>
         } @else {
           <span class="badge-existing-inline">(id:{{ selectedArtist.id }})</span>
+        }
+      </div>
+    }
+  </div>
+
+  <hr />
+
+  <div class="test-section">
+    <h3>Song Title</h3>
+    <app-autocomplete-textbox
+      label="Search for a song"
+      placeholder="Type a song title..."
+      [searchFn]="searchSongs.bind($any(this))"
+      (resultSelected)="onSongSelected($event)"
+    ></app-autocomplete-textbox>
+    @if (selectedSong) {
+      <div class="selection-info">
+        Selected: {{ selectedSong.name }}
+        @if (selectedSong.id === -1) {
+          <span class="badge-new-inline">(new)</span>
+        } @else {
+          <span class="badge-existing-inline">(id:{{ selectedSong.id }})</span>
         }
       </div>
     }
