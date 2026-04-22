@@ -1,4 +1,3 @@
-import { AutocompleteTestPage } from './components/pages/autocomplete-test-page/autocomplete-test-page';
 import { ConstitutionPage } from './components/pages/constitution-page/constitution-page';
 import { CreateConstitutionPage } from './components/pages/create-constitution-page/create-constitution-page';
 import { CurrentConstitutionsPage } from './components/pages/current-constitutions-page/current-constitutions-page';
@@ -14,11 +13,7 @@ const routes: Routes = [
     component: HomePage,
     title: 'Matbay Δ',
   },
-  {
-    path: 'autocomplete-test',
-    component: AutocompleteTestPage,
-  },
-  {
+{
     path: 'constitutions/:id',
     component: ConstitutionPage,
   },
