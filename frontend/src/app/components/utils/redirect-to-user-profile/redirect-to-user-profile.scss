@@ -1,5 +1,25 @@
+@use '../../../../styles.scss' as *;
+
 span {
   &:hover {
     cursor: pointer;
+    background-color: rgba($text, 0.1);
   }
+
+  height: 100%;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+
+  transition: all 0.2s ease;
+  border-radius: 1em;
+  padding: 0.25em;
+  margin: -0.25em 0;
+}
+
+img {
+  height: 100%;
+  aspect-ratio: 1 / 1;
+  border-radius: 50%;
+  outline: 1px solid rgba($text, 0.4);
 }

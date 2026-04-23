@@ -1,12 +1,13 @@
 import { Component, inject } from '@angular/core';
-import { Router, RouterLink, RouterOutlet } from '@angular/router';
+import { Router, RouterOutlet } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { DeltaAuth } from './services/delta-auth';
+import { NavigationBar } from './navigation-bar/navigation-bar';
 import { Version } from './services/version';
 
 @Component({
   selector: 'app-root',
-  imports: [CommonModule, RouterLink, RouterOutlet],
+  imports: [CommonModule, RouterOutlet, NavigationBar],
   templateUrl: './app.html',
   styleUrl: './app.scss',
 })

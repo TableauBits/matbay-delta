@@ -10,8 +10,9 @@ import { User } from '../../../../../../common/user';
 })
 export class RedirectToUserProfile {
   user = input<User | null>();
-  imgWidth = input<number>(25);
-  imgHeight = input<number>(25);
+  imgWidth = input<number>();
+  imgHeight = input<number>();
+  showName = input<boolean>(true);
 
   private router = inject(Router);
 
