@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { Observable, ReplaySubject } from 'rxjs';
-import { User, UserUpdateRequestBody } from '../../../../common/user';
+import { User, UserIdResponse, UserUpdateRequestBody } from '../../../../common/user';
 import { DeltaAuth } from './delta-auth';
 import { HttpRequests } from './requests/http-requests';
 
@@ -36,7 +36,12 @@ export class Users {
     return newUser.asObservable();
   }
 
-  async getCurrentUser(): Promise<Observable<User> | undefined> {
+  async getFromHandle(handle: string): Promise<Observable<User>> {
+    const response = await this.httpRequests.authenticatedGetRequest<UserIdResponse>(`user/uid-from-handle/${handle}`);
+    return this.get(response.id);
+  }
+
+  async getCurrentUser(): Promise<Observable<User>> {
     const uid = await this.deltaAuth.getUid();
     return this.get(uid);
   }

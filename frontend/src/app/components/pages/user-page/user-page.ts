@@ -2,7 +2,6 @@ import { Component, OnDestroy, inject } from '@angular/core';
 import { Observable, Subscription } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
 import { CurrentUserForm } from './current-user-form/current-user-form';
-import { DeltaAuth } from '../../../services/delta-auth';
 import { HttpErrorResponse } from '@angular/common/http';
 import { User } from '../../../../../../common/user';
 import { Users } from '../../../services/users';
@@ -16,7 +15,6 @@ import { Users } from '../../../services/users';
 export class UserPage implements OnDestroy {
   // Service injections
   private activatedRoute = inject(ActivatedRoute);
-  private deltaAuth = inject(DeltaAuth);
   users = inject(Users);
 
   private subscriptions: Subscription = new Subscription();
@@ -36,22 +34,26 @@ export class UserPage implements OnDestroy {
     // Get the user from the route
     this.activatedRoute.params.subscribe((params) => {
       this.userHandle = params['handle'];
-      this.userObs = this.users.get(this.userHandle);
+      this.users.getFromHandle(this.userHandle).then((obs) => {
+        this.userObs = obs;
 
-      const subscription = this.userObs.subscribe({
-        next: (data) => {
-          this.user = data;
-        },
-        error: (err) => {
-          this.userError = err;
-        },
+        const subscription = this.userObs.subscribe({
+          next: (data) => {
+            this.user = data;
+          },
+          error: (err) => {
+            this.userError = err;
+          },
+        });
+
+        this.subscriptions.add(subscription);
       });
 
-      this.deltaAuth.getUid().then((uid) => {
-        this.isCurrentUser = uid === this.userId;
+      this.users.getCurrentUser().then((currentUser) => {
+        currentUser.subscribe((user) => {
+          this.isCurrentUser = user.handle === this.userHandle;
+        })
       });
-
-      this.subscriptions.add(subscription);
     });
   }
 }
