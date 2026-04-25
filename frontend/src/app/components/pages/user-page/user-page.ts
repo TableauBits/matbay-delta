@@ -52,7 +52,7 @@ export class UserPage implements OnDestroy {
       this.users.getCurrentUser().then((currentUser) => {
         currentUser.subscribe((user) => {
           this.isCurrentUser = user.handle === this.userHandle;
-        })
+        });
       });
     });
   }
