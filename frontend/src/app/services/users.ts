@@ -15,6 +15,10 @@ export class Users {
   // Cache of user data to avoid redundant requests
   private users = new Map<string, ReplaySubject<User>>();
 
+  // Indices
+  /// handle => uid
+  private handleIndex = new Map<string, string>();
+
   get(uid: string): Observable<User> {
     // Check if we already have the requested user
     const user = this.users.get(uid);
@@ -27,6 +31,7 @@ export class Users {
     this.httpRequests
       .authenticatedGetRequest<User>(`user/get/${uid}`)
       .then((user) => {
+        this.handleIndex.set(user.handle, user.id);
         newUser.next(user);
       })
       .catch((error) => {
@@ -37,8 +42,12 @@ export class Users {
   }
 
   async getFromHandle(handle: string): Promise<Observable<User>> {
-    const response = await this.httpRequests.authenticatedGetRequest<UserIdResponse>(`user/uid-from-handle/${handle}`);
-    return this.get(response.id);
+    let uid = this.handleIndex.get(handle);
+    if (!uid) {
+      uid = (await this.httpRequests.authenticatedGetRequest<UserIdResponse>(`user/uid-from-handle/${handle}`)).id;
+    }
+
+    return this.get(uid);
   }
 
   async getCurrentUser(): Promise<Observable<User>> {
