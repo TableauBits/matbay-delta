@@ -32,8 +32,6 @@ export class NavigationBar implements OnInit {
   }
 
   redirectToProfile(): void {
-    this.deltaAuth.getUid().then((uid) => {
-      this.router.navigate(['/users', uid]);
-    });
+    this.router.navigate(['/users', this.user?.handle]);
   }
 }
