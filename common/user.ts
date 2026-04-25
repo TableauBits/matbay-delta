@@ -8,10 +8,14 @@ interface User {
   description: string,
 }
 
+interface UserIdResponse {
+    id: string
+}
+
 interface UserUpdateRequestBody {
   displayName: string,
   imageURL: string,
   description: string,
 }
 
-export type { User, UserUpdateRequestBody };
+export type { User, UserIdResponse, UserUpdateRequestBody };

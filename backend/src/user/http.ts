@@ -1,13 +1,13 @@
 import { eq } from "drizzle-orm";
 import { type Request, type Response, Router } from "express";
 import { Option } from "oxide.ts";
-import type { UserUpdateRequestBody } from "../../../common/user";
+import type { UserIdResponse, UserUpdateRequestBody } from "../../../common/user";
 import { ensureAuthMiddleware } from "../auth/http";
 import { db } from "../db/http";
 import { users } from "../db/schemas";
 import type { DB } from "../db-namepsace";
 import { getBody, getParam, getReqUID, HttpError, HttpStatus, sendResult } from "../utils";
-import { getUser } from "./utils";
+import { getUidFromHandle, getUser } from "./utils";
 
 async function get(req: Request, res: Response): Promise<void> {
     const uid = getParam(req, "uid");
@@ -16,6 +16,19 @@ async function get(req: Request, res: Response): Promise<void> {
         (err) => new HttpError(HttpStatus.NotFound, `failed to get user info from uid ${err}`),
     );
     sendResult(user, res);
+}
+
+async function uidFromHandle(req: Request, res: Response): Promise<void> {
+    const handle = getParam(req, "handle");
+
+    const uid = (await getUidFromHandle(handle))
+        .map(
+            (uid): UserIdResponse => ({
+                id: uid,
+            }),
+        )
+        .mapErr((err) => new HttpError(HttpStatus.NotFound, `failed to get user info from handle ${err}`));
+    sendResult(uid, res);
 }
 
 async function update(req: Request, res: Response): Promise<void> {
@@ -34,6 +47,7 @@ async function update(req: Request, res: Response): Promise<void> {
 const userApiRouter = Router();
 
 userApiRouter.get("/get/:uid", ensureAuthMiddleware, get);
+userApiRouter.get("/uid-from-handle/:handle", ensureAuthMiddleware, uidFromHandle);
 userApiRouter.post("/update", ensureAuthMiddleware, update);
 
 export { userApiRouter };

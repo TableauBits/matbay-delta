@@ -31,4 +31,15 @@ async function getUserFromAuth(authID: string): Promise<Result<DB.Select.User, E
     return Option(queryResult.unwrap().at(0)).okOr(new Error(`No user with authID: ${authID}`));
 }
 
-export { createUser, getUser, getUserFromAuth };
+async function getUidFromHandle(handle: string): Promise<Result<string, Error>> {
+    const operation = async () => await db.select({ id: users.id }).from(users).where(eq(users.handle, handle));
+
+    const queryResult = await Result.safe(operation());
+    if (queryResult.isErr()) return queryResult;
+
+    return Option(queryResult.unwrap().at(0))
+        .okOr(new Error(`No user with handle: ${handle}`))
+        .map((user) => user.id);
+}
+
+export { createUser, getUidFromHandle, getUser, getUserFromAuth };
