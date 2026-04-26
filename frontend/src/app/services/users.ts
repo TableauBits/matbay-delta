@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { Observable, ReplaySubject } from 'rxjs';
-import { User, UserUpdateRequestBody } from '../../../../common/user';
+import { User, UserIdResponse, UserUpdateRequestBody } from '../../../../common/user';
 import { DeltaAuth } from './delta-auth';
 import { HttpRequests } from './requests/http-requests';
 
@@ -15,6 +15,10 @@ export class Users {
   // Cache of user data to avoid redundant requests
   private users = new Map<string, ReplaySubject<User>>();
 
+  // Indices
+  /// handle => uid
+  private handleIndex = new Map<string, string>();
+
   get(uid: string): Observable<User> {
     // Check if we already have the requested user
     const user = this.users.get(uid);
@@ -27,6 +31,7 @@ export class Users {
     this.httpRequests
       .authenticatedGetRequest<User>(`user/get/${uid}`)
       .then((user) => {
+        this.handleIndex.set(user.handle, user.id);
         newUser.next(user);
       })
       .catch((error) => {
@@ -36,7 +41,16 @@ export class Users {
     return newUser.asObservable();
   }
 
-  async getCurrentUser(): Promise<Observable<User> | undefined> {
+  async getFromHandle(handle: string): Promise<Observable<User>> {
+    let uid = this.handleIndex.get(handle);
+    if (!uid) {
+      uid = (await this.httpRequests.authenticatedGetRequest<UserIdResponse>(`user/uid-from-handle/${handle}`)).id;
+    }
+
+    return this.get(uid);
+  }
+
+  async getCurrentUser(): Promise<Observable<User>> {
     const uid = await this.deltaAuth.getUid();
     return this.get(uid);
   }

@@ -18,7 +18,7 @@ export const routes: Routes = [
     component: CurrentConstitutionsPage,
   },
   {
-    path: 'users/:id',
+    path: 'users/:handle',
     component: UserPage,
   },
 ];

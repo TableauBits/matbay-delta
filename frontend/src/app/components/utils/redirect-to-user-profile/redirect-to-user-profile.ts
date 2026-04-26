@@ -16,7 +16,7 @@ export class RedirectToUserProfile {
 
   private router = inject(Router);
 
-  redirectToUserPage(id: string): void {
-    this.router.navigate(['/users', id]);
+  redirectToUserPage(handle: string): void {
+    this.router.navigate(['/users', handle]);
   }
 }

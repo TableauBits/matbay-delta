@@ -16,7 +16,7 @@ export class NavigationBar implements OnInit {
   deltaAuth = inject(DeltaAuth);
   users = inject(Users);
   private readonly router = inject(Router);
-  user: User | null | undefined = null;
+  user: User | undefined;
 
   ngOnInit(): void {
     this.deltaAuth.getUid().then((uid) => {
@@ -32,8 +32,6 @@ export class NavigationBar implements OnInit {
   }
 
   redirectToProfile(): void {
-    this.deltaAuth.getUid().then((uid) => {
-      this.router.navigate(['/users', uid]);
-    });
+    this.router.navigate(['/users', this.user?.handle]);
   }
 }

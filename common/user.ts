@@ -1,11 +1,15 @@
 interface User {
   id: string,
   authID: string,
-  username: string,
+  handle: string,
   displayName: string,
   imageURL: string,
   joinDate: string,
   description: string,
+}
+
+interface UserIdResponse {
+    id: string
 }
 
 interface UserUpdateRequestBody {
@@ -14,4 +18,4 @@ interface UserUpdateRequestBody {
   description: string,
 }
 
-export type { User, UserUpdateRequestBody };
+export type { User, UserIdResponse, UserUpdateRequestBody };

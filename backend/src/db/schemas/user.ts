@@ -7,7 +7,7 @@ const users = sqliteTable(
     {
         id: text().primaryKey(),
         authID: text().notNull(),
-        username: text().notNull(),
+        handle: text().notNull(),
         displayName: text().notNull(),
         imageURL: text().notNull(),
         joinDate: text()
@@ -15,7 +15,7 @@ const users = sqliteTable(
             .$defaultFn(() => new Date().toISOString()),
         description: text().notNull(),
     },
-    (table) => [uniqueIndex("authID_idx").on(table.authID), uniqueIndex("username_idx").on(table.username)],
+    (table) => [uniqueIndex("authID_idx").on(table.authID), uniqueIndex("handle_idx").on(table.handle)],
 );
 
 const usersRelations = relations(users, ({ many }) => ({
