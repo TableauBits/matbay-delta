@@ -10,7 +10,7 @@ export const routes: Routes = [
     component: HomePage,
     title: 'Matbay Δ',
   },
-  {
+{
     path: 'constitutions/:id',
     component: ConstitutionPage,
   },

@@ -1,4 +1,4 @@
-import { eq } from "drizzle-orm";
+import { eq, like } from "drizzle-orm";
 import { Option, Result } from "oxide.ts";
 import { db } from "../db/http";
 import { artists } from "../db/schemas";
@@ -27,4 +27,14 @@ async function getArtistsIDFromName(name: string): Promise<Result<number[], Erro
     return Result.safe(operation());
 }
 
-export { createArtist, getArtist, getArtistsIDFromName };
+async function searchArtistsByName(query: string): Promise<Result<DB.Select.Artist[], Error>> {
+    const operation = async () =>
+        await db
+            .select()
+            .from(artists)
+            .where(like(artists.name, `%${query}%`));
+
+    return Result.safe(operation());
+}
+
+export { createArtist, getArtist, getArtistsIDFromName, searchArtistsByName };

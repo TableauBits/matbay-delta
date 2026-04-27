@@ -1,0 +1,47 @@
+<div class="autocomplete-container">
+  @if (label) {
+    <label class="autocomplete-label" for="autocomplete-input">{{ label }}</label>
+  }
+  <div class="autocomplete-input-wrapper">
+    <input
+      id="autocomplete-input"
+      type="text"
+      [formControl]="searchControl"
+      [placeholder]="placeholder"
+      class="autocomplete-input"
+      (keydown)="onKeydown($event)"
+      (blur)="onBlur()"
+      (focus)="onFocus()"
+      autocomplete="off"
+    />
+    @if (isLoading) {
+      <div class="spinner"></div>
+    }
+  </div>
+  @if (isDropdownOpen && searchControl.value.trim().length > 0) {
+    <ul class="autocomplete-dropdown">
+      @for (item of getDisplayResults(); track $index; let i = $index) {
+        <li
+          class="autocomplete-item"
+          [class.active]="i === activeIndex"
+          (mousedown)="selectItem(i)"
+          [attr.data-index]="i"
+        >
+          @if (item.isVerbatim) {
+            <span class="item-text verbatim-text">
+              {{ searchControl.value.trim() }}
+            </span>
+            <span class="badge badge-new">new</span>
+          } @else if (item.result) {
+            <span class="item-text">
+              @for (segment of highlightMatch(item.result.name, searchControl.value.trim()); track $index) {
+                <span [style.text-decoration]="segment.isMatch ? 'underline' : 'none'">{{ segment.text }}</span>
+              }
+            </span>
+            <span class="badge badge-existing">existing (id:{{ item.result.id }})</span>
+          }
+        </li>
+      }
+    </ul>
+  }
+</div>
