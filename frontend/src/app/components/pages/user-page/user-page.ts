@@ -5,6 +5,7 @@ import { CurrentUserForm } from './current-user-form/current-user-form';
 import { HttpErrorResponse } from '@angular/common/http';
 import { User } from '../../../../../../common/user';
 import { Users } from '../../../services/users';
+import { Title } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-user-page',
@@ -15,6 +16,7 @@ import { Users } from '../../../services/users';
 export class UserPage implements OnDestroy {
   // Service injections
   private activatedRoute = inject(ActivatedRoute);
+  private titleService = inject(Title);
   users = inject(Users);
 
   private subscriptions: Subscription = new Subscription();
@@ -40,6 +42,7 @@ export class UserPage implements OnDestroy {
         const subscription = this.userObs.subscribe({
           next: (data) => {
             this.user = data;
+            this.titleService.setTitle(this.user.displayName);
           },
           error: (err) => {
             this.userError = err;

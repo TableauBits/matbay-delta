@@ -14,6 +14,7 @@ import { Songs } from '../../../services/songs';
 import { Sources } from '../../../services/sources';
 import { User } from '../../../../../../common/user';
 import { Users } from '../../../services/users';
+import { Title } from '@angular/platform-browser';
 
 function sortByJoinDate(a: { joinDate: string }, b: { joinDate: string }): number {
   if (a.joinDate === b.joinDate) return 0;
@@ -34,6 +35,7 @@ function sortByAddDate(a: { addDate: string }, b: { addDate: string }): number {
 export class ConstitutionPage implements OnDestroy {
   // Service injections
   private activatedRoute = inject(ActivatedRoute);
+  private titleService = inject(Title);
   artists = inject(Artists);
   constitutions = inject(Constitutions);
   users = inject(Users);
@@ -64,6 +66,7 @@ export class ConstitutionPage implements OnDestroy {
       const subscription = this.constitutionObs.subscribe({
         next: (data) => {
           this.constitution = data;
+          if (this.constitution) this.titleService.setTitle(this.constitution.name);
         },
         error: (err) => {
           this.constitutionError = err;
