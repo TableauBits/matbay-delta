@@ -12,6 +12,7 @@ import { RedirectToUserProfile } from '../../utils/redirect-to-user-profile/redi
 import { Song } from '../../../../../../common/song';
 import { Songs } from '../../../services/songs';
 import { Sources } from '../../../services/sources';
+import { Title } from '@angular/platform-browser';
 import { User } from '../../../../../../common/user';
 import { Users } from '../../../services/users';
 
@@ -34,6 +35,7 @@ function sortByAddDate(a: { addDate: string }, b: { addDate: string }): number {
 export class ConstitutionPage implements OnDestroy {
   // Service injections
   private activatedRoute = inject(ActivatedRoute);
+  private titleService = inject(Title);
   artists = inject(Artists);
   constitutions = inject(Constitutions);
   users = inject(Users);
@@ -64,6 +66,7 @@ export class ConstitutionPage implements OnDestroy {
       const subscription = this.constitutionObs.subscribe({
         next: (data) => {
           this.constitution = data;
+          if (this.constitution) this.titleService.setTitle(this.constitution.name);
         },
         error: (err) => {
           this.constitutionError = err;

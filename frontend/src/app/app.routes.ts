@@ -8,6 +8,7 @@ export const routes: Routes = [
   {
     path: '',
     component: HomePage,
+    title: 'Matbay Δ',
   },
   {
     path: 'constitutions/:id',
@@ -16,6 +17,7 @@ export const routes: Routes = [
   {
     path: 'current-constitutions',
     component: CurrentConstitutionsPage,
+    title: 'Current constitutions',
   },
   {
     path: 'users/:handle',
