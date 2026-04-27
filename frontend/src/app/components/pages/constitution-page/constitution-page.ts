@@ -12,9 +12,9 @@ import { RedirectToUserProfile } from '../../utils/redirect-to-user-profile/redi
 import { Song } from '../../../../../../common/song';
 import { Songs } from '../../../services/songs';
 import { Sources } from '../../../services/sources';
+import { Title } from '@angular/platform-browser';
 import { User } from '../../../../../../common/user';
 import { Users } from '../../../services/users';
-import { Title } from '@angular/platform-browser';
 
 function sortByJoinDate(a: { joinDate: string }, b: { joinDate: string }): number {
   if (a.joinDate === b.joinDate) return 0;

@@ -3,9 +3,9 @@ import { Observable, Subscription } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
 import { CurrentUserForm } from './current-user-form/current-user-form';
 import { HttpErrorResponse } from '@angular/common/http';
+import { Title } from '@angular/platform-browser';
 import { User } from '../../../../../../common/user';
 import { Users } from '../../../services/users';
-import { Title } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-user-page',
