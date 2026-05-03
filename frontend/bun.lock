@@ -15,7 +15,7 @@
         "@ngx-env/builder": "^21.0.1",
         "eslint-config-prettier": "^10.1.8",
         "eslint-plugin-prettier": "^5.5.4",
-        "parse-url": "^10.0.3",
+        "parse-url": "^11.1.0",
         "prettier": "^3.7.4",
         "rxjs": "~7.8.2",
         "socket.io-client": "^4.8.1",
@@ -1159,7 +1159,7 @@
 
     "parse-path": ["parse-path@7.1.0", "", { "dependencies": { "protocols": "^2.0.0" } }, "sha512-EuCycjZtfPcjWk7KTksnJ5xPMvWGA/6i4zrLYhRG0hGvC3GPU/jGUj3Cy+ZR0v30duV3e23R95T1lE2+lsndSw=="],
 
-    "parse-url": ["parse-url@10.0.3", "", { "dependencies": { "parse-path": "^7.1.0" } }, "sha512-RvldzLvNE0DtOO1loukZsYcHCzHVUnHe7GNyrKIkavp7fNWs5ueX3kUzY/hXS8uRqDWwtaRKDcAmLEVouPIxIw=="],
+    "parse-url": ["parse-url@11.1.0", "", { "dependencies": { "parse-path": "^7.1.0" } }, "sha512-UYn/lNb1bmkYiM6UaqEbHl9T/VIYreM2Vm79MGZ2soUOXOoOq7qxoTwx8C8p9V4Ko2DLcsVnEhRJzhxsF2kssg=="],
 
     "parse5": ["parse5@8.0.0", "", { "dependencies": { "entities": "^6.0.0" } }, "sha512-9m4m5GSgXjL4AjumKzq1Fgfp3Z8rsvjRNbnkVwfu2ImRqE5D0LnY2QfDen18FSY9C573YU5XxSapdHZTZ2WolA=="],
 

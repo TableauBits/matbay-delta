@@ -26,7 +26,7 @@
     "@ngx-env/builder": "^21.0.1",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-prettier": "^5.5.4",
-    "parse-url": "^10.0.3",
+    "parse-url": "^11.1.0",
     "prettier": "^3.7.4",
     "rxjs": "~7.8.2",
     "socket.io-client": "^4.8.1",
