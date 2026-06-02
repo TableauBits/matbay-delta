@@ -1,12 +1,12 @@
-/* eslint-disable sort-imports */
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { AfterViewChecked, Component, ElementRef, inject, ViewChild } from '@angular/core';
+import { AfterViewChecked, Component, ElementRef, ViewChild, inject } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+
 import { CommonModule } from '@angular/common';
+import { DeltaAuth } from '../../../services/delta-auth';
+import { environment } from '../../../../environments/environment';
+import { JsonEditor } from './json-editor/json-editor';
 import { lastValueFrom } from 'rxjs';
-import { DeltaAuth } from '../../services/delta-auth';
-import { environment } from '../../../environments/environment';
-import { JsonEditor } from '../json-editor/json-editor';
 
 interface RequestEntry {
   timestamp: Date;
@@ -82,7 +82,7 @@ export class DebugPage implements AfterViewChecked {
     const url = `${this.baseUrl}/${endpoint.replace(/^\//, '')}`;
 
     let parsedHeaders: Record<string, string> = {};
-    if (headersRaw && headersRaw.trim()) {
+    if (headersRaw?.trim()) {
       try {
         parsedHeaders = JSON.parse(headersRaw);
       } catch {
@@ -92,7 +92,7 @@ export class DebugPage implements AfterViewChecked {
     }
 
     let parsedBody: unknown = null;
-    if (bodyRaw && bodyRaw.trim()) {
+    if (bodyRaw?.trim()) {
       try {
         parsedBody = JSON.parse(bodyRaw);
       } catch {

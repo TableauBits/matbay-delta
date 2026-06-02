@@ -1,8 +1,9 @@
 import { AuthService, IdToken } from '@auth0/auth0-angular';
 import { BehaviorSubject, Observable, ReplaySubject, firstValueFrom } from 'rxjs';
 import { DOCUMENT, Injectable, inject } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+
 import { environment } from '../../environments/environment';
+import { HttpClient } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root',

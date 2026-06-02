@@ -1,23 +1,23 @@
-/* eslint-disable sort-imports */
 import {
-  AfterViewInit,
+  type AfterViewInit,
   Component,
-  ElementRef,
-  forwardRef,
-  inject,
+  type ElementRef,
   Input,
   NgZone,
-  OnDestroy,
+  type OnDestroy,
   ViewChild,
+  forwardRef,
+  inject,
 } from '@angular/core';
-import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
-import { indentWithTab } from '@codemirror/commands';
+import { Compartment, EditorState } from '@codemirror/state';
+import { type ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { EditorView, placeholder as cmPlaceholder, keymap } from '@codemirror/view';
 import { json, jsonParseLinter } from '@codemirror/lang-json';
 import { lintGutter, linter } from '@codemirror/lint';
-import { Compartment, EditorState } from '@codemirror/state';
-import { EditorView, keymap, placeholder as cmPlaceholder } from '@codemirror/view';
-import { oneDark } from '@codemirror/theme-one-dark';
+
 import { basicSetup } from 'codemirror';
+import { indentWithTab } from '@codemirror/commands';
+import { oneDark } from '@codemirror/theme-one-dark';
 
 /**
  * Reusable JSON code editor wrapping CodeMirror 6.
