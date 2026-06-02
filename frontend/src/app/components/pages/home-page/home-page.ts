@@ -1,12 +1,11 @@
 import { Component, OnDestroy, inject } from '@angular/core';
 import { Observable, Subscription } from 'rxjs';
-import { ConstitutionForm } from '../../constitution-form/constitution-form';
 import { User } from '../../../../../../common/user';
 import { Users } from '../../../services/users';
 
 @Component({
   selector: 'app-home-page',
-  imports: [ConstitutionForm],
+  imports: [],
   templateUrl: './home-page.html',
   styleUrl: './home-page.scss',
 })
