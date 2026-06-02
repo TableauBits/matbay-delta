@@ -1,0 +1,16 @@
+.json-editor-host {
+  display: block;
+  border: 1px solid #393346;
+  border-radius: 4px;
+  overflow: hidden;
+
+  // CodeMirror manages its own focus styling; surface a purple accent on the
+  // wrapper when the inner editor is focused, matching the rest of the form.
+  &:focus-within {
+    border-color: #673ab7;
+  }
+
+  .cm-editor {
+    border-radius: 4px;
+  }
+}

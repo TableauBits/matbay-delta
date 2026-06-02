@@ -6,6 +6,7 @@ import { CommonModule } from '@angular/common';
 import { lastValueFrom } from 'rxjs';
 import { DeltaAuth } from '../../services/delta-auth';
 import { environment } from '../../../environments/environment';
+import { JsonEditor } from '../json-editor/json-editor';
 
 interface RequestEntry {
   timestamp: Date;
@@ -25,7 +26,7 @@ const HTTP_METHODS = ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'HEAD', 'OPTIONS'
 
 @Component({
   selector: 'app-debug-page',
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, JsonEditor],
   templateUrl: './debug-page.html',
   styleUrl: './debug-page.scss',
 })
@@ -49,8 +50,8 @@ export class DebugPage implements AfterViewChecked {
     this.debugForm = this.formBuilder.group({
       method: ['GET'],
       url: [''],
-      headers: ['{}'],
-      body: [''],
+      headers: ['{\n  "Content-Type": "application/json"\n}'],
+      body: ['{\n  \n}'],
       includeAuth: [true],
     });
   }
@@ -247,6 +248,7 @@ export class DebugPage implements AfterViewChecked {
       403: 'Forbidden',
       404: 'Not Found',
       405: 'Method Not Allowed',
+      422: 'Unprocessable Entity',
       500: 'Internal Server Error',
       502: 'Bad Gateway',
       503: 'Service Unavailable',

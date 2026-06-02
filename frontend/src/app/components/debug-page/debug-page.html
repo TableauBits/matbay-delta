@@ -23,19 +23,18 @@
           {{ showHeaders ? 'Hide' : 'Show' }} Headers
         </button>
         @if (showHeaders) {
-          <textarea
+          <app-json-editor
             formControlName="headers"
             placeholder='{"Content-Type": "application/json"}'
-            class="headers-textarea"
-            rows="3"
-          ></textarea>
+            minHeight="4rem"
+          />
         }
       </div>
 
-      <label class="body-label">
-        Request Body (JSON)
-        <textarea formControlName="body" placeholder='{ "key": "value" }' class="body-textarea" rows="8"></textarea>
-      </label>
+      <div class="body-label">
+        <span>Request Body (JSON)</span>
+        <app-json-editor formControlName="body" placeholder='{ "key": "value" }' minHeight="10rem" />
+      </div>
 
       <div class="button-row">
         <button type="submit" class="send-button" [disabled]="loading">

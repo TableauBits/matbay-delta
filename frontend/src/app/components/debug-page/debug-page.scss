@@ -113,22 +113,6 @@
       background-color: rgba(#ffffff, 0.05);
     }
   }
-
-  .headers-textarea {
-    border: 1px solid #393346;
-    border-radius: 4px;
-    padding: 0.5em;
-    background-color: #181719;
-    color: #ffffff;
-    font-family: monospace;
-    font-size: 0.85rem;
-    resize: vertical;
-
-    &:focus {
-      outline: none;
-      border-color: #673ab7;
-    }
-  }
 }
 
 .body-label {
@@ -137,22 +121,6 @@
   gap: 0.5rem;
   font-size: 0.9rem;
   color: rgba(#ffffff, 0.8);
-
-  .body-textarea {
-    border: 1px solid #393346;
-    border-radius: 4px;
-    padding: 0.5em;
-    background-color: #181719;
-    color: #ffffff;
-    font-family: monospace;
-    font-size: 0.85rem;
-    resize: vertical;
-
-    &:focus {
-      outline: none;
-      border-color: #673ab7;
-    }
-  }
 }
 
 .button-row {
