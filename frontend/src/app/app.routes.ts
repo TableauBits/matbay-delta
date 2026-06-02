@@ -18,6 +18,7 @@ export const routes: Routes = [
   {
     path: 'create-constitution',
     component: CreateConstitutionPage,
+    title: 'Create a constitution',
   },
   {
     path: 'current-constitutions',
