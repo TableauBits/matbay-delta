@@ -44,6 +44,14 @@ async function addUserToConstitution(uid: string, cstid: number, tx?: DB.Transac
         });
 }
 
+async function getSongConstitution(id: number): Promise<Result<DB.Select.SongConstitution, Error>> {
+    const operation = async () => await db.select().from(songConstitution).where(eq(songConstitution.id, id));
+
+    return (await Result.safe(operation())).andThen((val) =>
+        Option(val.at(0)).okOr(new Error(`No songConstitution with id '${id}'`)),
+    );
+}
+
 async function addSongToConstitution(constitution: number, song: number, user: string): Promise<Result<Unit, Error>> {
     const operation = async () =>
         await db
@@ -64,6 +72,20 @@ async function addSongToConstitution(constitution: number, song: number, user: s
         });
 }
 
+async function removeSongFromConstitution(id: number): Promise<Result<Unit, Error>> {
+    const operation = async () => await db.delete(songConstitution).where(eq(songConstitution.id, id)).returning();
+
+    return (await Result.safe(operation()))
+        .andThen((entries) =>
+            Option(entries.at(0)).okOr(new Error("failed to remove song participation from database")),
+        )
+        .map((_songParticipation) => {
+            // TODO: callback
+
+            return {};
+        });
+}
+
 async function getConstitution(id: number): Promise<Result<Constitution, Error>> {
     // Get the constitution with :
     // - The list of songs in the constitution
@@ -80,6 +102,7 @@ async function getConstitution(id: number): Promise<Result<Constitution, Error>>
                 },
                 songConstitution: {
                     columns: {
+                        id: true,
                         song: true,
                         user: true,
                         addDate: true,
@@ -89,12 +112,12 @@ async function getConstitution(id: number): Promise<Result<Constitution, Error>>
         });
 
     return (await Result.safe(operation())).andThen((val) =>
-        Option(val.at(0)).okOr(new Error(`No constitution with id: ${id}`)),
+        Option(val.at(0)).okOr(new Error(`No constitution with id '${id}'`)),
     );
 }
 
 async function getCurrentConstitutionsIDs(): Promise<Result<number[], Error>> {
-    // TODO : Should only returns the constitutions that the user should have access. Currently returns all ids.
+    // TODO : Should only return the constitutions that the user should have access to. Currently returns all ids.
     const operation = async () => await db.select({ id: constitutions.id }).from(constitutions);
 
     return (await Result.safe(operation())).map((constitutions) => constitutions.map((cst) => cst.id));
@@ -116,7 +139,7 @@ async function countSongsOfUser(cstid: number, uid: string): Promise<Result<numb
             .where(and(eq(songConstitution.user, uid), eq(songConstitution.constitution, cstid)));
 
     return (await Result.safe(operation()))
-        .andThen((counts) => Option(counts.at(0)).okOr(new Error(`failed to count songs of user ${uid}`)))
+        .andThen((counts) => Option(counts.at(0)).okOr(new Error(`failed to count songs of user '${uid}'`)))
         .map((c) => c.count);
 }
 
@@ -154,6 +177,8 @@ export {
     getConstitution,
     getCurrentConstitutionsIDs,
     getDBConstitution,
+    getSongConstitution,
     isMember,
+    removeSongFromConstitution,
     removeUserFromConstitution,
 };

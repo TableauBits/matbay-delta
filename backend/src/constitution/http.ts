@@ -5,6 +5,7 @@ import type {
     CreateConstitutionRequestBody,
     JoinConstitutionRequestBody,
     LeaveConstitutionRequestBody,
+    RemoveSongConstitutionRequestBody,
 } from "../../../common/constitution";
 import { ensureAuthMiddleware } from "../auth/http";
 import { getBody, getParam, getReqUID, HttpError, HttpStatus, sendResult, unwrap } from "../utils";
@@ -16,7 +17,9 @@ import {
     getConstitution,
     getCurrentConstitutionsIDs,
     getDBConstitution,
+    getSongConstitution,
     isMember,
+    removeSongFromConstitution,
     removeUserFromConstitution,
 } from "./utils";
 
@@ -47,10 +50,7 @@ async function addSong(req: Request, res: Response): Promise<void> {
     const isMemberOfCst = unwrap(
         (await isMember(uid, participation.constitution)).mapErr(
             (err) =>
-                new HttpError(
-                    HttpStatus.InternalError,
-                    `failed to verify if user is member of constitution: ${err.message}`,
-                ),
+                new HttpError(HttpStatus.InternalError, `failed to verify if user is member of constitution: ${err}`),
         ),
     );
     if (!isMemberOfCst) {
@@ -72,7 +72,7 @@ async function addSong(req: Request, res: Response): Promise<void> {
             (err) =>
                 new HttpError(
                     HttpStatus.InternalError,
-                    `failed to get constitution '${participation.constitution}' ${err.message}`,
+                    `failed to get constitution '${participation.constitution}': ${err}`,
                 ),
         ),
     );
@@ -81,7 +81,7 @@ async function addSong(req: Request, res: Response): Promise<void> {
             (err) =>
                 new HttpError(
                     HttpStatus.InternalError,
-                    `failed to count songs of user '${uid}' in constitution '${participation.constitution}' ${err.message}`,
+                    `failed to count songs of user '${uid}' in constitution '${participation.constitution}': ${err}`,
                 ),
         ),
     );
@@ -103,11 +103,35 @@ async function addSong(req: Request, res: Response): Promise<void> {
         (err) =>
             new HttpError(
                 HttpStatus.UnprocessableContent,
-                `failed to add song '${participation.song}' constitution '${participation.constitution}' ${err}`,
+                `failed to add song '${participation.song}' constitution '${participation.constitution}': ${err}`,
             ),
     );
 
     sendResult(result, res);
+}
+
+async function removeSong(req: Request, res: Response): Promise<void> {
+    const uid = getReqUID(req);
+    const id = getBody<RemoveSongConstitutionRequestBody>(req).songParticipationId;
+
+    const songParticipationInfo = unwrap(
+        (await getSongConstitution(id)).mapErr(
+            (err) => new HttpError(HttpStatus.NotFound, `no song participation found with id '${id}': ${err}`),
+        ),
+    );
+
+    if (songParticipationInfo.user !== uid) {
+        sendResult(
+            Err(new HttpError(HttpStatus.Unauthorized, `you are not authorized to perform this operation`)),
+            res,
+        );
+        return;
+    }
+
+    const deletionResult = (await removeSongFromConstitution(id)).mapErr(
+        (err) => new HttpError(HttpStatus.InternalError, `failed to delete song participation '${id}': ${err}`),
+    );
+    sendResult(deletionResult, res);
 }
 
 async function create(req: Request, res: Response): Promise<void> {
@@ -152,7 +176,7 @@ async function leave(req: Request, res: Response): Promise<void> {
     );
 
     const result = (await removeUserFromConstitution(uid, id)).mapErr(
-        (err) => new HttpError(HttpStatus.UnprocessableContent, `failed to leave constitution ${err}`),
+        (err) => new HttpError(HttpStatus.UnprocessableContent, `failed to leave constitution: ${err}`),
     );
     sendResult(result, res);
 }
@@ -164,6 +188,7 @@ constitutionApiRouter.get("/get/:id", ensureAuthMiddleware, get);
 
 constitutionApiRouter.post("/addSong", ensureAuthMiddleware, addSong);
 constitutionApiRouter.post("/create", ensureAuthMiddleware, create);
+constitutionApiRouter.post("/removeSong", ensureAuthMiddleware, removeSong);
 constitutionApiRouter.post("/join", ensureAuthMiddleware, join);
 constitutionApiRouter.post("/leave", ensureAuthMiddleware, leave);
 
