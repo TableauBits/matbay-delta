@@ -4,8 +4,9 @@ import { CurrentConstitutionsPage } from './components/pages/current-constitutio
 import { HomePage } from './components/pages/home-page/home-page';
 import { Routes } from '@angular/router';
 import { UserPage } from './components/pages/user-page/user-page';
+import { environment } from '../environments/environment';
 
-export const routes: Routes = [
+const routes: Routes = [
   {
     path: '',
     component: HomePage,
@@ -30,3 +31,13 @@ export const routes: Routes = [
     component: UserPage,
   },
 ];
+
+if (environment.name === 'development') {
+  routes.push({
+    path: 'debug',
+    loadComponent: () => import('./components/debug-page/debug-page').then((m) => m.DebugPage),
+    title: 'Δ-Debug',
+  });
+}
+
+export { routes };

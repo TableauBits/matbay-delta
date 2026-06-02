@@ -5,6 +5,7 @@ import { DeltaAuth } from '../services/delta-auth';
 import { RedirectToUserProfile } from '../components/utils/redirect-to-user-profile/redirect-to-user-profile';
 import { User } from '../../../../common/user';
 import { Users } from '../services/users';
+import { environment } from '../../environments/environment';
 
 @Component({
   selector: 'app-navigation-bar',
@@ -17,6 +18,9 @@ export class NavigationBar implements OnInit {
   users = inject(Users);
   private readonly router = inject(Router);
   user: User | undefined;
+
+  // Mirrors the route gating in app.routes.ts: the debug page only exists in dev.
+  showDebug = environment.name === 'development';
 
   ngOnInit(): void {
     this.deltaAuth.getUid().then((uid) => {
