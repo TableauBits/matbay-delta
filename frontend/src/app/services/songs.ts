@@ -1,7 +1,8 @@
 import { Injectable, inject } from '@angular/core';
 import { Observable, ReplaySubject } from 'rxjs';
-import { HttpRequests } from './requests/http-requests';
 import { Song } from '../../../../common/song';
+import { HttpRequests } from './requests/http-requests';
+import { AutocompleteResult } from '../components/autocomplete-textbox/autocomplete-textbox';
 
 @Injectable({
   providedIn: 'root',
@@ -35,6 +36,15 @@ export class Songs {
       });
 
     return newSong.asObservable();
+  }
+
+  async search(query: string, artistId?: number): Promise<AutocompleteResult[]> {
+    let endpoint = `song/autocomplete/${encodeURIComponent(query)}`;
+    if (artistId !== undefined) {
+      endpoint += `?artistId=${artistId}`;
+    }
+    const results = await this.httpRequests.authenticatedGetRequest<{ id: number; title: string }[]>(endpoint);
+    return results.map((r) => ({ id: r.id, name: r.title }));
   }
 
   // TODO : add a method to update the cache with an array of songs when requesting a constitution ?
