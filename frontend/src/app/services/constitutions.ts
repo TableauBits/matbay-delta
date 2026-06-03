@@ -9,6 +9,7 @@ import {
 import { Injectable, OnDestroy, inject } from '@angular/core';
 import {
   WSCstSongAddMessage,
+  WSCstSongRemoveMessage,
   WSCstSubscribeMessage,
   WSCstUnsubscribeMessage,
   WSCstUserJoinMessage,
@@ -42,6 +43,7 @@ export class Constitutions implements OnDestroy {
     // Initialize the list of events to react with websockets
     this.wsEvents = new Map()
       .set(WebsocketEvents.CST_SONG_ADD, this.onSongAdd.bind(this))
+      .set(WebsocketEvents.CST_SONG_REMOVE, this.onSongRemove.bind(this))
       .set(WebsocketEvents.CST_USER_JOIN, this.onUserJoin.bind(this))
       .set(WebsocketEvents.CST_USER_LEAVE, this.onUserLeave.bind(this));
 
@@ -103,6 +105,16 @@ export class Constitutions implements OnDestroy {
     if (!constitution) return;
     constitution.value?.songConstitution.push(message.songConstitution);
     constitution.next(constitution.value);
+  }
+
+  private onSongRemove(message: WSCstSongRemoveMessage): void {
+    const constitution = this.constitutions.get(message.constitution);
+    if (!constitution) return;
+
+    if (constitution.value) {
+      constitution.value.songConstitution = constitution.value.songConstitution.filter((participation) => message.songConstitution.id !== participation.id);
+      constitution.next(constitution.value);
+    }
   }
 
   private onUserJoin(message: WSCstUserJoinMessage): void {

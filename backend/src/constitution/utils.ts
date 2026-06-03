@@ -6,7 +6,7 @@ import { db } from "../db/http.ts";
 import { constitutions, songConstitution, userConstitution } from "../db/schemas/index.ts";
 import type { DB } from "../db-namepsace.ts";
 import { unwrap } from "../utils.ts";
-import { onSongAddCallback, onUserJoinCallback, onUserLeaveCallback } from "./ws.ts";
+import { onSongAddCallback, onSongRemoveCallback, onUserJoinCallback, onUserLeaveCallback } from "./ws.ts";
 
 async function createConstitution(cstInfos: DB.Insert.Constitution): Promise<Result<DB.Select.Constitution, Error>> {
     return Result.safe(
@@ -79,9 +79,9 @@ async function removeSongFromConstitution(id: number): Promise<Result<Unit, Erro
         .andThen((entries) =>
             Option(entries.at(0)).okOr(new Error("failed to remove song participation from database")),
         )
-        .map((_songParticipation) => {
-            // TODO: callback
-
+        .map((songParticipation) => {
+            // Update users who were listening to changes
+            onSongRemoveCallback(songParticipation);
             return {};
         });
 }
