@@ -12,7 +12,10 @@ export const appConfig: ApplicationConfig = {
       clientId: environment.auth0.client || '',
       authorizationParams: {
         redirect_uri: window.location.origin,
+        scope: 'openid profile email offline_access',
       },
+      useRefreshTokens: true,
+      cacheLocation: 'localstorage',
     }),
     provideBrowserGlobalErrorListeners(),
     provideHttpClient(),
