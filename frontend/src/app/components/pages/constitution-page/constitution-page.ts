@@ -1,5 +1,10 @@
 import { Component, OnDestroy, inject } from '@angular/core';
-import { Constitution, RemoveSongConstitutionRequestBody, SongConstitution, UserConstitution } from '../../../../../../common/constitution';
+import {
+  Constitution,
+  RemoveSongConstitutionRequestBody,
+  SongConstitution,
+  UserConstitution,
+} from '../../../../../../common/constitution';
 import { Observable, Subscription } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
 import { AddSongForm } from './add-song-form/add-song-form';
@@ -8,6 +13,7 @@ import { Artists } from '../../../services/artists';
 import { AsyncPipe } from '@angular/common';
 import { Constitutions } from '../../../services/constitutions';
 import { HttpErrorResponse } from '@angular/common/http';
+import { HttpRequests } from '../../../services/requests/http-requests';
 import { RedirectToUserProfile } from '../../utils/redirect-to-user-profile/redirect-to-user-profile';
 import { Song } from '../../../../../../common/song';
 import { Songs } from '../../../services/songs';
@@ -15,7 +21,6 @@ import { Sources } from '../../../services/sources';
 import { Title } from '@angular/platform-browser';
 import { User } from '../../../../../../common/user';
 import { Users } from '../../../services/users';
-import { HttpRequests } from '../../../services/requests/http-requests';
 
 function sortByJoinDate(a: { joinDate: string }, b: { joinDate: string }): number {
   if (a.joinDate === b.joinDate) return 0;
@@ -123,7 +128,10 @@ export class ConstitutionPage implements OnDestroy {
   }
 
   removeSong(participation: number): void {
-    this.httpRequests.authenticatedPostRequest<RemoveSongConstitutionRequestBody>("constitution/removeSong", { songParticipationId: participation })
-      .catch((err) => console.error(err))
+    this.httpRequests
+      .authenticatedPostRequest<RemoveSongConstitutionRequestBody>('constitution/removeSong', {
+        songParticipationId: participation,
+      })
+      .catch((err) => console.error(err));
   }
 }

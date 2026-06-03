@@ -40,7 +40,7 @@
             </li>
           }
         </ul>
-        @if (observers.user?.id === (currentUser?.id ?? "")) {
+        @if (observers.user?.id === (currentUser?.id ?? '')) {
           <button (click)="removeSong(songConstitution.id)">Remove song</button>
         }
       }
