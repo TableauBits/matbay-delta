@@ -1,0 +1,7 @@
+@if (song(); as song) {
+<span (click)="redirectToSongPage(song.id)" (keydown.enter)="redirectToSongPage(song.id)" tabindex="0">
+  {{ song.title }}
+</span>
+} @else {
+User is undefined.
+}

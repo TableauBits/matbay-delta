@@ -8,6 +8,7 @@ import { Artists } from '../../../services/artists';
 import { AsyncPipe } from '@angular/common';
 import { Constitutions } from '../../../services/constitutions';
 import { HttpErrorResponse } from '@angular/common/http';
+import { RedirectToSongPage } from "../../utils/redirect-to-song-page/redirect-to-song-page";
 import { RedirectToUserProfile } from '../../utils/redirect-to-user-profile/redirect-to-user-profile';
 import { Song } from '../../../../../../common/song';
 import { Songs } from '../../../services/songs';
@@ -28,7 +29,7 @@ function sortByAddDate(a: { addDate: string }, b: { addDate: string }): number {
 
 @Component({
   selector: 'app-constitution-page',
-  imports: [AsyncPipe, AddSongForm, RedirectToUserProfile],
+  imports: [AsyncPipe, AddSongForm, RedirectToUserProfile, RedirectToSongPage],
   templateUrl: './constitution-page.html',
   styleUrl: './constitution-page.scss',
 })

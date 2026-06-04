@@ -17,7 +17,7 @@ export class UserPage implements OnDestroy {
   // Service injections
   private activatedRoute = inject(ActivatedRoute);
   private titleService = inject(Title);
-  users = inject(Users);
+  private users = inject(Users);
 
   private subscriptions: Subscription = new Subscription();
 

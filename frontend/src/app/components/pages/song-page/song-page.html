@@ -1,0 +1,17 @@
+@if (error) {
+<p>Error loading user : "{{ error.error }}".</p>
+} @else if (song) {
+<h2> {{song.title}} </h2>
+<p> Added on: {{song.creationDate}} </p>
+Sources :
+<ul>
+  @for (source of song.songSource; track $index) {
+  <li>
+    Link:
+    <a [href]="sources.generateURL(source)" target="_blank">{{ source.platform }}:{{ source.sourceID }}</a>
+  </li>
+  }
+</ul>
+} @else {
+<p>Loading user...</p>
+}
