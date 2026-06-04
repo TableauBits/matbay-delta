@@ -17,3 +17,7 @@ updates:
         patterns:
           - "@eslint/js"
           - "eslint"
+      codemirror:
+        patterns:
+          - "@codemirror*"
+          - "codemirror"
