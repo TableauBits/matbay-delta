@@ -2,6 +2,7 @@ import type { Socket } from "socket.io";
 import {
     WebsocketEvents,
     type WSCstSongAddMessage,
+    type WSCstSongRemoveMessage,
     type WSCstSubscribeMessage,
     type WSCstUnsubscribeMessage,
     type WSCstUserJoinMessage,
@@ -24,6 +25,7 @@ function attachWSListeners(socket: Socket): void {
         const isValid = await validateMessage(message);
         if (!isValid) return;
         socket.join(`${WebsocketEvents.CST_SONG_ADD}:${message.constitution}`);
+        socket.join(`${WebsocketEvents.CST_SONG_REMOVE}:${message.constitution}`);
         socket.join(`${WebsocketEvents.CST_USER_JOIN}:${message.constitution}`);
         socket.join(`${WebsocketEvents.CST_USER_LEAVE}:${message.constitution}`);
     });
@@ -33,9 +35,41 @@ function attachWSListeners(socket: Socket): void {
         const isValid = await validateMessage(message);
         if (!isValid) return;
         socket.leave(`${WebsocketEvents.CST_SONG_ADD}:${message.constitution}`);
+        socket.leave(`${WebsocketEvents.CST_SONG_REMOVE}:${message.constitution}`);
         socket.leave(`${WebsocketEvents.CST_USER_JOIN}:${message.constitution}`);
         socket.leave(`${WebsocketEvents.CST_USER_LEAVE}:${message.constitution}`);
     });
+}
+
+function onSongAddCallback(addInfo: DB.Select.SongConstitution): void {
+    const message: WSCstSongAddMessage = {
+        constitution: addInfo.constitution,
+        songConstitution: {
+            id: addInfo.id,
+            song: addInfo.song,
+            user: addInfo.user,
+            addDate: addInfo.addDate,
+        },
+    };
+
+    io.to(`${WebsocketEvents.CST_SONG_ADD}:${addInfo.constitution}`).emit(WebsocketEvents.CST_SONG_ADD, message);
+}
+
+function onSongRemoveCallback(removeInfo: DB.Select.SongConstitution): void {
+    const message: WSCstSongRemoveMessage = {
+        constitution: removeInfo.constitution,
+        songConstitution: {
+            id: removeInfo.id,
+            song: removeInfo.song,
+            user: removeInfo.user,
+            addDate: removeInfo.addDate,
+        },
+    };
+
+    io.to(`${WebsocketEvents.CST_SONG_REMOVE}:${removeInfo.constitution}`).emit(
+        WebsocketEvents.CST_SONG_REMOVE,
+        message,
+    );
 }
 
 function onUserJoinCallback(joinInfo: DB.Select.UserConstitution): void {
@@ -59,17 +93,4 @@ function onUserLeaveCallback(leaveInfo: DB.Select.UserConstitution): void {
     io.to(`${WebsocketEvents.CST_USER_LEAVE}:${leaveInfo.constitution}`).emit(WebsocketEvents.CST_USER_LEAVE, message);
 }
 
-function onSongAddCallback(addInfo: DB.Select.SongConstitution): void {
-    const message: WSCstSongAddMessage = {
-        constitution: addInfo.constitution,
-        songConstitution: {
-            song: addInfo.song,
-            user: addInfo.user,
-            addDate: addInfo.addDate,
-        },
-    };
-
-    io.to(`${WebsocketEvents.CST_SONG_ADD}:${addInfo.constitution}`).emit(WebsocketEvents.CST_SONG_ADD, message);
-}
-
-export { attachWSListeners, onSongAddCallback, onUserJoinCallback, onUserLeaveCallback };
+export { attachWSListeners, onSongAddCallback, onSongRemoveCallback, onUserJoinCallback, onUserLeaveCallback };

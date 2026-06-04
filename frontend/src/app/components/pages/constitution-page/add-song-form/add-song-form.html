@@ -23,7 +23,7 @@
   <div formArrayName="artists">
     <h4>Artists</h4>
     <button (click)="addArtist()">+ Add another artist</button>
-    @for (artistForm of artists.controls; track artistForm; let i = $index) {
+    @for (artistForm of artists.controls; track $index; let i = $index) {
       <div [formGroupName]="i">
         <div class="artist-inputs">
           Artist {{ i + 1 }}
