@@ -14,6 +14,6 @@ export class RedirectToSongPage {
   private router = inject(Router);
 
   redirectToSongPage(id: number): void {
-    this.router.navigate(["/songs", id]);
+    this.router.navigate(['/songs', id]);
   }
 }

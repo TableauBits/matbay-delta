@@ -1,13 +1,13 @@
-import { Component, inject, OnDestroy } from '@angular/core';
+import { Component, OnDestroy, inject } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { HttpErrorResponse } from '@angular/common/http';
-import { Title } from '@angular/platform-browser';
-import { Song } from '../../../../../../common/song';
-import { Songs } from '../../../services/songs';
-import { Subscription } from 'rxjs';
-import { Sources } from '../../../services/sources';
 import { Artists } from '../../../services/artists';
 import { AsyncPipe } from '@angular/common';
+import { HttpErrorResponse } from '@angular/common/http';
+import { Song } from '../../../../../../common/song';
+import { Songs } from '../../../services/songs';
+import { Sources } from '../../../services/sources';
+import { Subscription } from 'rxjs';
+import { Title } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-song-page',
@@ -44,7 +44,7 @@ export class SongPage implements OnDestroy {
         },
         error: (err) => {
           this.error = err;
-        }
+        },
       });
       this.subscriptions.add(subscription);
     });

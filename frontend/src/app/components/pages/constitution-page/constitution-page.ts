@@ -14,7 +14,7 @@ import { AsyncPipe } from '@angular/common';
 import { Constitutions } from '../../../services/constitutions';
 import { HttpErrorResponse } from '@angular/common/http';
 import { HttpRequests } from '../../../services/requests/http-requests';
-import { RedirectToSongPage } from "../../utils/redirect-to-song-page/redirect-to-song-page";
+import { RedirectToSongPage } from '../../utils/redirect-to-song-page/redirect-to-song-page';
 import { RedirectToUserProfile } from '../../utils/redirect-to-user-profile/redirect-to-user-profile';
 import { Song } from '../../../../../../common/song';
 import { Songs } from '../../../services/songs';
