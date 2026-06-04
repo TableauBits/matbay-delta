@@ -6,10 +6,12 @@ import { Song } from '../../../../../../common/song';
 import { Songs } from '../../../services/songs';
 import { Subscription } from 'rxjs';
 import { Sources } from '../../../services/sources';
+import { Artists } from '../../../services/artists';
+import { AsyncPipe } from '@angular/common';
 
 @Component({
   selector: 'app-song-page',
-  imports: [],
+  imports: [AsyncPipe],
   templateUrl: './song-page.html',
   styleUrl: './song-page.scss',
 })
@@ -18,6 +20,8 @@ export class SongPage implements OnDestroy {
   private activatedRoute = inject(ActivatedRoute);
   private titleService = inject(Title);
   private songs = inject(Songs);
+
+  artists = inject(Artists);
   sources = inject(Sources);
 
   private subscriptions: Subscription = new Subscription();
