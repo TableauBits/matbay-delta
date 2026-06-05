@@ -22,8 +22,6 @@ export class UserPage implements OnDestroy {
   private subscriptions: Subscription = new Subscription();
 
   // Observable of the user data
-  private userObs: Observable<User> | undefined;
-  private userHandle = '';
   user: User | undefined;
   userError: HttpErrorResponse | undefined;
   isCurrentUser = false;
@@ -35,11 +33,9 @@ export class UserPage implements OnDestroy {
   constructor() {
     // Get the user from the route
     this.activatedRoute.params.subscribe((params) => {
-      this.userHandle = params['handle'];
-      this.users.getFromHandle(this.userHandle).then((obs) => {
-        this.userObs = obs;
-
-        const subscription = this.userObs.subscribe({
+      const handle = params['handle'];
+      this.users.getFromHandle(handle).then((obs) => {
+        const subscription = obs.subscribe({
           next: (data) => {
             this.user = data;
             this.titleService.setTitle(this.user.displayName);
@@ -54,7 +50,7 @@ export class UserPage implements OnDestroy {
 
       this.users.getCurrentUser().then((currentUser) => {
         currentUser.subscribe((user) => {
-          this.isCurrentUser = user.handle === this.userHandle;
+          this.isCurrentUser = user.handle === handle;
         });
       });
     });
