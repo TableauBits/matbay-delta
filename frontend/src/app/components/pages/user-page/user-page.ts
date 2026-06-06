@@ -1,8 +1,8 @@
 import { Component, OnDestroy, inject } from '@angular/core';
-import { Observable, Subscription } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
 import { CurrentUserForm } from './current-user-form/current-user-form';
 import { HttpErrorResponse } from '@angular/common/http';
+import { Subscription } from 'rxjs';
 import { Title } from '@angular/platform-browser';
 import { User } from '../../../../../../common/user';
 import { Users } from '../../../services/users';
