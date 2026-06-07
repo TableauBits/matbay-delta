@@ -14,7 +14,7 @@ export const appConfig: ApplicationConfig = {
         redirect_uri: window.location.origin,
         scope: 'openid profile email offline_access',
       },
-      useRefreshTokens: true,
+      useRefreshTokens: false,
       cacheLocation: 'localstorage',
     }),
     provideBrowserGlobalErrorListeners(),
