@@ -1,0 +1,25 @@
+@if (error) {
+  <p>Error loading song : "{{ error.error }}".</p>
+} @else if (song) {
+  <h2>{{ song.title }}</h2>
+  <p>Added on: {{ song.creationDate }}</p>
+  <h3>Artists:</h3>
+  <ul>
+    @for (songArtist of song.songArtist; track $index) {
+      <li>{{ (artists.get(songArtist.artist) | async)?.name }} (as {{ songArtist.contribution }})</li>
+    }
+  </ul>
+  <h3>Sources:</h3>
+  <ul>
+    @for (source of song.songSource; track $index) {
+      <li>
+        <a [href]="sources.generateURL(source)" target="_blank">{{ source.platform }}:{{ source.sourceID }}</a>
+      </li>
+    }
+    @if (song.songSource.length === 0) {
+      /
+    }
+  </ul>
+} @else {
+  <p>Loading song...</p>
+}

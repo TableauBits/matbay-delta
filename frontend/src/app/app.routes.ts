@@ -3,6 +3,7 @@ import { CreateConstitutionPage } from './components/pages/create-constitution-p
 import { CurrentConstitutionsPage } from './components/pages/current-constitutions-page/current-constitutions-page';
 import { HomePage } from './components/pages/home-page/home-page';
 import { Routes } from '@angular/router';
+import { SongPage } from './components/pages/song-page/song-page';
 import { UserPage } from './components/pages/user-page/user-page';
 
 export const routes: Routes = [
@@ -24,6 +25,10 @@ export const routes: Routes = [
     path: 'current-constitutions',
     component: CurrentConstitutionsPage,
     title: 'Current constitutions',
+  },
+  {
+    path: 'songs/:id',
+    component: SongPage,
   },
   {
     path: 'users/:handle',
