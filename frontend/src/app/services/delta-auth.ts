@@ -36,7 +36,13 @@ export class DeltaAuth {
         next: (response) => {
           this.succesfullLoginResponse(claims, response);
         },
-        error: (error) => console.error(error),
+        error: (error) => {
+          console.error(error);
+          console.warn('attempting to get new token');
+          firstValueFrom(this.auth.getAccessTokenSilently({ cacheMode: 'off' }))
+            .then((_token) => console.info('new token successfully fetched'))
+            .catch((err) => console.error('failed to refresh token:', err));
+        },
       });
   }
 
