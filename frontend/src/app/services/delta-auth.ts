@@ -18,8 +18,8 @@ export class DeltaAuth {
   private http = inject(HttpClient);
 
   constructor() {
-    this.auth.idTokenClaims$.pipe(distinct(claims => claims?.iat)).subscribe((claims) => {
-      console.warn("claims: ", claims);
+    this.auth.idTokenClaims$.pipe(distinct((claims) => claims?.iat)).subscribe((claims) => {
+      console.warn('claims: ', claims);
       if (claims) this.onConnect(claims);
     });
   }
@@ -40,10 +40,10 @@ export class DeltaAuth {
         error: (err) => {
           console.error(err);
           const message = err.error.toString();
-          if (message.includes("jwt expired")) {
+          if (message.includes('jwt expired')) {
             console.warn('attempting to get new token');
             firstValueFrom(this.auth.getAccessTokenSilently({ cacheMode: 'off' }))
-              .then((_token) => console.info('new token successfully fetched'))
+              .then(() => console.info('new token successfully fetched'))
               .catch((err) => console.error('failed to refresh token:', err));
           }
         },
