@@ -58,14 +58,14 @@ export class DebugPage implements AfterViewChecked {
 
   ngAfterViewChecked(): void {
     if (this.entries.length > this.previousEntryCount) {
-      this.scrollToBottom();
+      this.scrollToTop();
       this.previousEntryCount = this.entries.length;
     }
   }
 
-  private scrollToBottom(): void {
+  private scrollToTop(): void {
     const el = this.consoleBody.nativeElement;
-    el.scrollTop = el.scrollHeight;
+    el.scrollTop = 0;
   }
 
   async sendRequest(): Promise<void> {
@@ -131,7 +131,7 @@ export class DebugPage implements AfterViewChecked {
         if (val) responseHeaders[key] = val;
       });
 
-      this.entries.push({
+      this.entries.unshift({
         timestamp: new Date(),
         method,
         url,
@@ -160,7 +160,7 @@ export class DebugPage implements AfterViewChecked {
         });
       }
 
-      this.entries.push({
+      this.entries.unshift({
         timestamp: new Date(),
         method,
         url,
@@ -179,7 +179,7 @@ export class DebugPage implements AfterViewChecked {
   }
 
   private addErrorEntry(method: string, url: string, error: string, responseBody: string | null): void {
-    this.entries.push({
+    this.entries.unshift({
       timestamp: new Date(),
       method,
       url,
