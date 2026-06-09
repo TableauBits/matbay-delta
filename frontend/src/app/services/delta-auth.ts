@@ -1,5 +1,5 @@
 import { AuthService, IdToken } from '@auth0/auth0-angular';
-import { BehaviorSubject, Observable, ReplaySubject, firstValueFrom } from 'rxjs';
+import { BehaviorSubject, Observable, ReplaySubject, distinct, firstValueFrom } from 'rxjs';
 import { DOCUMENT, Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environments/environment';
@@ -18,7 +18,8 @@ export class DeltaAuth {
   private http = inject(HttpClient);
 
   constructor() {
-    this.auth.idTokenClaims$.subscribe((claims) => {
+    this.auth.idTokenClaims$.pipe(distinct((claims) => claims?.iat)).subscribe((claims) => {
+      console.warn('claims: ', claims);
       if (claims) this.onConnect(claims);
     });
   }
@@ -36,7 +37,16 @@ export class DeltaAuth {
         next: (response) => {
           this.succesfullLoginResponse(claims, response);
         },
-        error: (error) => console.error(error),
+        error: (err) => {
+          console.error(err);
+          const message = err.error.toString();
+          if (message.includes('jwt expired')) {
+            console.warn('attempting to get new token');
+            firstValueFrom(this.auth.getAccessTokenSilently({ cacheMode: 'off' }))
+              .then(() => console.info('new token successfully fetched'))
+              .catch((err) => console.error('failed to refresh token:', err));
+          }
+        },
       });
   }
 
