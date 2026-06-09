@@ -1,5 +1,10 @@
 import { Component, OnDestroy, inject } from '@angular/core';
-import { Constitution, SongConstitution, UserConstitution } from '../../../../../../common/constitution';
+import {
+  Constitution,
+  RemoveSongConstitutionRequestBody,
+  SongConstitution,
+  UserConstitution,
+} from '../../../../../../common/constitution';
 import { Observable, Subscription } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
 import { AddSongForm } from './add-song-form/add-song-form';
@@ -8,6 +13,8 @@ import { Artists } from '../../../services/artists';
 import { AsyncPipe } from '@angular/common';
 import { Constitutions } from '../../../services/constitutions';
 import { HttpErrorResponse } from '@angular/common/http';
+import { HttpRequests } from '../../../services/requests/http-requests';
+import { RedirectToSongPage } from '../../utils/redirect-to-song-page/redirect-to-song-page';
 import { RedirectToUserProfile } from '../../utils/redirect-to-user-profile/redirect-to-user-profile';
 import { Song } from '../../../../../../common/song';
 import { Songs } from '../../../services/songs';
@@ -28,7 +35,7 @@ function sortByAddDate(a: { addDate: string }, b: { addDate: string }): number {
 
 @Component({
   selector: 'app-constitution-page',
-  imports: [AsyncPipe, AddSongForm, RedirectToUserProfile],
+  imports: [AsyncPipe, AddSongForm, RedirectToUserProfile, RedirectToSongPage],
   templateUrl: './constitution-page.html',
   styleUrl: './constitution-page.scss',
 })
@@ -41,6 +48,7 @@ export class ConstitutionPage implements OnDestroy {
   users = inject(Users);
   songs = inject(Songs);
   sources = inject(Sources);
+  httpRequests = inject(HttpRequests);
 
   private subscriptions: Subscription = new Subscription();
 
@@ -118,5 +126,13 @@ export class ConstitutionPage implements OnDestroy {
     songs.sort((a, b) => sortByAddDate(a, b));
 
     return songs;
+  }
+
+  removeSong(participation: number): void {
+    this.httpRequests
+      .authenticatedPostRequest<RemoveSongConstitutionRequestBody>('constitution/removeSong', {
+        songParticipationId: participation,
+      })
+      .catch((err) => console.error(err));
   }
 }

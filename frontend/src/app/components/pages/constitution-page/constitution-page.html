@@ -4,7 +4,7 @@
   <h1>{{ constitution.name }} (id : {{ constitution.id }})</h1>
   <hr />
   <p>Description : {{ constitution.description }}</p>
-  <p>Owner: {{ (users.get(constitution.owner) | async)?.displayName }}</p>
+  <p>Owner: <app-redirect-to-user-profile [user]="users.get(constitution.owner) | async" /></p>
   <p>Number of songs: {{ constitution.songConstitution.length }} / {{ getMaxNSongs(constitution) }}</p>
   <h3>Participants</h3>
   @for (userConstitution of getUsers(); track $index) {
@@ -26,7 +26,8 @@
       as observers
     ) {
       @if (observers.song && artists.get(observers.song.primaryArtist) | async; as artist) {
-        Song {{ $index + 1 }} : {{ observers.song?.title }} (id: {{ observers.song?.id }}) from
+        Song {{ $index + 1 }} : <app-redirect-to-song-page [song]="observers.song" /> (id: {{ observers.song?.id }})
+        from
         @for (songArtist of getSongArtists(observers.song); track $index) {
           {{ (artists.get(songArtist.artist) | async)?.name }} (as {{ songArtist.contribution }})
         }
@@ -40,6 +41,9 @@
             </li>
           }
         </ul>
+        @if (observers.user?.id === (currentUser?.id ?? '')) {
+          <button (click)="removeSong(songConstitution.id)">Remove song</button>
+        }
       }
     }
   }

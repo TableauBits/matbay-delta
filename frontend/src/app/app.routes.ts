@@ -4,6 +4,7 @@ import { CurrentConstitutionsPage } from './components/pages/current-constitutio
 import { environment } from '../environments/environment';
 import { HomePage } from './components/pages/home-page/home-page';
 import { Routes } from '@angular/router';
+import { SongPage } from './components/pages/song-page/song-page';
 import { UserPage } from './components/pages/user-page/user-page';
 
 const routes: Routes = [
@@ -25,6 +26,10 @@ const routes: Routes = [
     path: 'current-constitutions',
     component: CurrentConstitutionsPage,
     title: 'Current constitutions',
+  },
+  {
+    path: 'songs/:id',
+    component: SongPage,
   },
   {
     path: 'users/:handle',
