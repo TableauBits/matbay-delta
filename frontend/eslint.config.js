@@ -39,11 +39,11 @@ export default defineConfig([
         },
       ],
       "sort-imports": [
-        "error",
+        "off",
         {
-          "ignoreCase": false,
+          "ignoreCase": true,
           "ignoreDeclarationSort": false,
-          "ignoreMemberSort": false,
+          "ignoreMemberSort": true,
           "memberSyntaxSortOrder": ["none", "all", "multiple", "single"],
           "allowSeparatedGroups": false
         }

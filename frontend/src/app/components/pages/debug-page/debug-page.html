@@ -1,0 +1,116 @@
+<div class="debug-container">
+  <h1><span class="colorful-text madimi-one">Δ-Debug</span></h1>
+
+  <div class="form-card glass-box">
+    <form [formGroup]="debugForm" (ngSubmit)="sendRequest()">
+      <div class="request-line">
+        <select formControlName="method" class="method-select">
+          @for (method of httpMethods; track method) {
+            <option [value]="method">{{ method }}</option>
+          }
+        </select>
+        <span class="base-url">{{ baseUrl }}</span>
+        <span class="url-separator">/</span>
+        <input type="text" formControlName="url" placeholder="endpoint" class="url-input" />
+        <label class="auth-toggle">
+          <input type="checkbox" formControlName="includeAuth" />
+          Include auth token
+        </label>
+      </div>
+
+      <div class="headers-section">
+        <button type="button" class="toggle-headers" (click)="showHeaders = !showHeaders">
+          {{ showHeaders ? 'Hide' : 'Show' }} Headers
+        </button>
+        @if (showHeaders) {
+          <app-json-editor
+            formControlName="headers"
+            placeholder='{"Content-Type": "application/json"}'
+            minHeight="4rem"
+          />
+        }
+      </div>
+
+      <div class="body-label">
+        <span>Request Body (JSON)</span>
+        <app-json-editor formControlName="body" placeholder='{ "key": "value" }' minHeight="10rem" />
+      </div>
+
+      <div class="button-row">
+        <button type="submit" class="send-button" [disabled]="loading">
+          {{ loading ? 'Sending...' : 'Send' }}
+        </button>
+        <button type="button" class="clear-button" (click)="clearConsole()">Clear Console</button>
+      </div>
+    </form>
+  </div>
+
+  <div class="console-card glass-box">
+    <div class="console-header">
+      <h2>Console</h2>
+      <span class="entry-count">{{ entries.length }} entries</span>
+    </div>
+    <hr />
+    <div class="console-body" #consoleBody>
+      @if (entries.length === 0) {
+        <div class="empty-console">No requests yet. Send one to see the results here.</div>
+      }
+
+      @for (entry of entries; track entry.timestamp) {
+        <div class="console-entry" [class.error]="entry.status === 'error'">
+          <div class="entry-header">
+            <span class="timestamp">{{ formatTime(entry.timestamp) }}</span>
+            <span class="method-badge">{{ entry.method }}</span>
+            <span class="url-text">{{ entry.url }}</span>
+          </div>
+          <div class="entry-meta">
+            <span class="status-badge" [style.color]="getStatusColor(entry.statusCode)">
+              {{ getStatusText(entry.statusCode) }}
+            </span>
+            <span class="duration">{{ formatDuration(entry.duration) }}</span>
+          </div>
+
+          @if (entry.error) {
+            <div class="error-message">{{ entry.error }}</div>
+          }
+
+          @if (entry.requestHeaders) {
+            <details>
+              <summary>Request Headers</summary>
+              <pre class="json-block">{{ prettyPrint(entry.requestHeaders | json) }}</pre>
+              <button type="button" class="copy-button" (click)="copyRequestHeaders(entry)">Copy</button>
+            </details>
+          }
+
+          @if (entry.requestBody) {
+            <details>
+              <summary>Request Body</summary>
+              <pre class="json-block">{{ prettyPrint(entry.requestBody) }}</pre>
+              <button type="button" class="copy-button" (click)="copyToClipboard(prettyPrint(entry.requestBody))">
+                Copy
+              </button>
+            </details>
+          }
+
+          @if (entry.responseBody) {
+            <details open>
+              <summary>Response Body</summary>
+              <pre class="json-block">{{ prettyPrint(entry.responseBody) }}</pre>
+              <button type="button" class="copy-button" (click)="copyToClipboard(prettyPrint(entry.responseBody))">
+                Copy
+              </button>
+            </details>
+          }
+
+          @if (entry.responseHeaders) {
+            <details>
+              <summary>Response Headers</summary>
+              <pre class="json-block">{{ prettyPrint(entry.responseHeaders | json) }}</pre>
+              <button type="button" class="copy-button" (click)="copyResponseHeaders(entry)">Copy</button>
+            </details>
+          }
+        </div>
+      }
+    </div>
+  </div>
+</div>

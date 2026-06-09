@@ -1,12 +1,13 @@
 import { ConstitutionPage } from './components/pages/constitution-page/constitution-page';
 import { CreateConstitutionPage } from './components/pages/create-constitution-page/create-constitution-page';
 import { CurrentConstitutionsPage } from './components/pages/current-constitutions-page/current-constitutions-page';
+import { environment } from '../environments/environment';
 import { HomePage } from './components/pages/home-page/home-page';
 import { Routes } from '@angular/router';
 import { SongPage } from './components/pages/song-page/song-page';
 import { UserPage } from './components/pages/user-page/user-page';
 
-export const routes: Routes = [
+const routes: Routes = [
   {
     path: '',
     component: HomePage,
@@ -35,3 +36,13 @@ export const routes: Routes = [
     component: UserPage,
   },
 ];
+
+if (environment.name === 'development') {
+  routes.push({
+    path: 'debug',
+    loadComponent: () => import('./components/pages/debug-page/debug-page').then((m) => m.DebugPage),
+    title: 'Δ-Debug',
+  });
+}
+
+export { routes };

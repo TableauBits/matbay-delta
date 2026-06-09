@@ -1,0 +1,338 @@
+.debug-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: 900px;
+  padding: 1rem;
+  gap: 1.5rem;
+  overflow-y: auto;
+
+  h1 {
+    font-size: 2rem;
+    margin: 0;
+  }
+}
+
+.form-card {
+  width: 100%;
+  border-radius: 1.5rem;
+
+  form {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+}
+
+.request-line {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+
+  .method-select {
+    border: 1px solid #393346;
+    border-radius: 4px;
+    padding: 0.5em;
+    background-color: #181719;
+    color: #ffffff;
+    font-family: 'Rubik', sans-serif;
+    font-size: 0.9rem;
+    cursor: pointer;
+    min-width: 90px;
+
+    &:focus {
+      outline: none;
+      border-color: #673ab7;
+    }
+  }
+
+  .base-url {
+    font-family: monospace;
+    font-size: 0.85rem;
+    color: rgba(#ffffff, 0.5);
+    white-space: nowrap;
+  }
+
+  .url-separator {
+    color: rgba(#ffffff, 0.3);
+    font-family: monospace;
+  }
+
+  .url-input {
+    flex: 1;
+    border: 1px solid #393346;
+    border-radius: 4px;
+    padding: 0.5em;
+    background-color: #181719;
+    color: #ffffff;
+    font-family: 'Rubik', sans-serif;
+    font-size: 0.9rem;
+
+    &:focus {
+      outline: none;
+      border-color: #673ab7;
+    }
+  }
+
+  .auth-toggle {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    font-size: 0.85rem;
+    color: rgba(#ffffff, 0.8);
+    cursor: pointer;
+    white-space: nowrap;
+
+    input[type='checkbox'] {
+      cursor: pointer;
+      accent-color: #673ab7;
+    }
+  }
+}
+
+.headers-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+
+  .toggle-headers {
+    background: none;
+    border: 1px solid rgba(#ffffff, 0.3);
+    border-radius: 0.5rem;
+    padding: 0.3rem 0.8rem;
+    font-size: 0.8rem;
+    cursor: pointer;
+    color: rgba(#ffffff, 0.7);
+    transition: all 0.2s ease-in-out;
+    width: fit-content;
+
+    &:hover {
+      color: #ffffff;
+      background-color: rgba(#ffffff, 0.05);
+    }
+  }
+}
+
+.body-label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+  color: rgba(#ffffff, 0.8);
+}
+
+.button-row {
+  display: flex;
+  gap: 0.5rem;
+
+  .send-button {
+    border: 1px solid transparent;
+    background: radial-gradient(
+      1008.57% 60.91% at 53.04% 50%,
+      rgba(255, 227, 155, 0.05) 0%,
+      rgba(254, 208, 87, 0.05) 0.01%,
+      rgba(247, 87, 72, 0.05) 52.4%,
+      rgba(231, 80, 173, 0.05) 100%
+    );
+    background-clip: padding-box;
+    color: rgba(#ffffff, 0.9);
+    font-family: 'Rubik', sans-serif;
+    font-size: 0.9rem;
+    cursor: pointer;
+    padding: 0.5rem 1.5rem;
+    border-radius: 2rem;
+    transition: all 0.2s ease-in-out;
+
+    &:hover:not(:disabled) {
+      background: radial-gradient(
+        1008.57% 60.91% at 53.04% 50%,
+        rgba(255, 227, 155, 0.1) 0%,
+        rgba(254, 208, 87, 0.1) 0.01%,
+        rgba(247, 87, 72, 0.1) 52.4%,
+        rgba(231, 80, 173, 0.1) 100%
+      );
+      color: #ffffff;
+    }
+
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+  }
+
+  .clear-button {
+    background: none;
+    border: 1px solid rgba(#ffffff, 0.3);
+    border-radius: 2rem;
+    padding: 0.5rem 1.25rem;
+    font-size: 0.9rem;
+    cursor: pointer;
+    color: rgba(#ffffff, 0.7);
+    transition: all 0.2s ease-in-out;
+
+    &:hover {
+      color: #ffffff;
+      background-color: rgba(#ffffff, 0.05);
+    }
+  }
+}
+
+.console-card {
+  width: 100%;
+  border-radius: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  max-height: 600px;
+
+  hr {
+    margin: 0.5rem 0;
+  }
+}
+
+.console-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  h2 {
+    font-size: 1.2rem;
+    margin: 0;
+  }
+
+  .entry-count {
+    font-size: 0.8rem;
+    color: rgba(#ffffff, 0.5);
+  }
+}
+
+.console-body {
+  overflow-y: auto;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 0.5rem 0;
+}
+
+.empty-console {
+  text-align: center;
+  color: rgba(#ffffff, 0.4);
+  padding: 2rem;
+  font-size: 0.9rem;
+}
+
+.console-entry {
+  border: 1px solid rgba(#ffffff, 0.2);
+  border-radius: 0.75rem;
+  padding: 0.75rem;
+  background-color: rgba(#181719, 0.5);
+
+  &.error {
+    border-color: rgba(#ef547b, 0.5);
+  }
+
+  .entry-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.3rem;
+
+    .timestamp {
+      font-family: monospace;
+      font-size: 0.75rem;
+      color: rgba(#ffffff, 0.5);
+    }
+
+    .method-badge {
+      font-family: monospace;
+      font-size: 0.8rem;
+      font-weight: bold;
+      padding: 0.1rem 0.4rem;
+      border-radius: 3px;
+      background-color: rgba(#673ab7, 0.3);
+      color: #dbaeff;
+    }
+
+    .url-text {
+      font-family: monospace;
+      font-size: 0.85rem;
+      color: #ffffff;
+      word-break: break-all;
+    }
+  }
+
+  .entry-meta {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 0.5rem;
+
+    .status-badge {
+      font-family: monospace;
+      font-size: 0.8rem;
+      font-weight: bold;
+    }
+
+    .duration {
+      font-family: monospace;
+      font-size: 0.75rem;
+      color: rgba(#ffffff, 0.6);
+    }
+  }
+
+  .error-message {
+    color: #ef547b;
+    font-family: monospace;
+    font-size: 0.85rem;
+    margin-bottom: 0.5rem;
+    padding: 0.3rem 0.5rem;
+    background-color: rgba(#ef547b, 0.1);
+    border-radius: 4px;
+  }
+
+  details {
+    margin-top: 0.3rem;
+
+    summary {
+      cursor: pointer;
+      font-size: 0.8rem;
+      color: rgba(#ffffff, 0.7);
+      user-select: none;
+
+      &:hover {
+        color: #ffffff;
+      }
+    }
+
+    .json-block {
+      margin: 0.3rem 0;
+      padding: 0.5rem;
+      background-color: rgba(#0e0e0e, 0.8);
+      border-radius: 4px;
+      font-family: monospace;
+      font-size: 0.8rem;
+      overflow-x: auto;
+      white-space: pre-wrap;
+      word-break: break-word;
+      max-height: 300px;
+      overflow-y: auto;
+    }
+
+    .copy-button {
+      font-size: 0.75rem;
+      padding: 0.2rem 0.6rem;
+      border: 1px solid rgba(#ffffff, 0.3);
+      border-radius: 4px;
+      background: none;
+      color: rgba(#ffffff, 0.6);
+      cursor: pointer;
+      transition: all 0.2s ease-in-out;
+
+      &:hover {
+        color: #ffffff;
+        background-color: rgba(#ffffff, 0.1);
+      }
+    }
+  }
+}
