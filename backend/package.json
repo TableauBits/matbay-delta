@@ -27,7 +27,7 @@
         "oxide.ts": "^1.1.0",
         "parse-url": "^10.0.3",
         "socket.io": "^4.8.3",
-        "uuid": "^13.0.0"
+        "uuid": "^14.0.0"
     },
     "devDependencies": {
         "@biomejs/biome": "2.4.13",
