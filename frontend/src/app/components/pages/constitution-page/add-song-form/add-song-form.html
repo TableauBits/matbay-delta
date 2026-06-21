@@ -7,7 +7,7 @@
   <div formArrayName="sources">
     <h4>Sources</h4>
     <button (click)="addSource()">+ Add another source</button>
-    @for (sourceForm of sources.controls; track $index; let i = $index) {
+    @for (sourceForm of sources.controls; track sourceForm; let i = $index) {
       <div [formGroupName]="i">
         <div class="artist-inputs">
           Source {{ i + 1 }}
@@ -23,7 +23,7 @@
   <div formArrayName="artists">
     <h4>Artists</h4>
     <button (click)="addArtist()">+ Add another artist</button>
-    @for (artistForm of artists.controls; track $index; let i = $index) {
+    @for (artistForm of artists.controls; track artistForm; let i = $index) {
       <div [formGroupName]="i">
         <div class="artist-inputs">
           Artist {{ i + 1 }}
