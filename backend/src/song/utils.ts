@@ -62,6 +62,7 @@ async function getSong(id: number): Promise<Result<Song, Error>> {
     // Get the song with the specified id with :
     // - The list of contributing artists (the artist id and the contribution type)
     // - The list of sources (the source original id and platform)
+    // - The list of languages
     const operation = async () =>
         await db.query.songs.findMany({
             where: eq(songs.id, id),
