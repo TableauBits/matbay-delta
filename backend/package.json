@@ -13,7 +13,8 @@
         "format": "bun x --bun biome format",
         "check": "bun x --bun biome check",
         "fix": "bun x --bun biome check --fix",
-        "ci": "bun x --bun biome ci"
+        "ci": "bun x --bun biome ci",
+        "drizzle-studio": "bunx drizzle-kit studio"
     },
     "dependencies": {
         "consola": "^3.4.2",
@@ -35,6 +36,7 @@
         "@types/dotenv": "^8.2.3",
         "@types/express": "^5.0.6",
         "@types/jsonwebtoken": "^9.0.10",
+        "better-sqlite3": "^12.11.1",
         "drizzle-kit": "^0.31.10"
     }
 }
