@@ -54,3 +54,6 @@ bun x drizzle-kit push
 
 ```
 but keep in mind that this will **NOT** generate any migration files and might desync the database schema from the type declarations.
+
+### Drizzle Studio
+Drizzle studio is a tool that allows inspecting and editing the state of the database. It can be started with `bun run drizzle-studio`.
