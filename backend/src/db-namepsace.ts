@@ -4,6 +4,7 @@ import type {
     constitutions,
     songArtist,
     songConstitution,
+    songLanguage,
     songSource,
     songs,
     userConstitution,
@@ -18,6 +19,7 @@ export namespace DB {
         export type Song = typeof songs.$inferInsert;
         export type SongArtist = typeof songArtist.$inferInsert;
         export type SongConstitution = typeof songConstitution.$inferInsert;
+        export type songLanguage = typeof songLanguage.$inferInsert;
         export type User = typeof users.$inferInsert;
         export type UserConstitution = typeof userConstitution.$inferInsert;
     }

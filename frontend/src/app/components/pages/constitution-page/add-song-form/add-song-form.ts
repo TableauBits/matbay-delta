@@ -125,6 +125,7 @@ export class AddSongForm {
             .slice(1)
             .map((val, index) => [val, (this.songForm.value.artists as FormArtist[])[index + 1].role]),
           sources: (this.songForm.value.sources as FormSource[]).map((source) => source.url),
+          languages: []
         })
       ).id;
     }
