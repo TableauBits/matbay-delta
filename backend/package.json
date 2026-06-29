@@ -14,7 +14,7 @@
         "check": "bun x --bun biome check",
         "fix": "bun x --bun biome check --fix",
         "ci": "bun x --bun biome ci",
-        "drizzle-studio": "bunx drizzle-kit studio"
+        "drizzle-studio": "bun x drizzle-kit studio"
     },
     "dependencies": {
         "consola": "^3.4.2",
