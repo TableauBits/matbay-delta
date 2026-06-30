@@ -1,4 +1,4 @@
-<div class="autocomplete-container">
+<div class="autocomplete-container" [class.disabled]="disabled">
   @if (label) {
     <label class="autocomplete-label" for="autocomplete-input">{{ label }}</label>
   }
@@ -18,7 +18,7 @@
       <div class="spinner"></div>
     }
   </div>
-  @if (isDropdownOpen && searchControl.value.trim().length > 0) {
+  @if (isDropdownOpen && !disabled && searchControl.value.trim().length > 0) {
     <ul class="autocomplete-dropdown">
       @for (item of getDisplayResults(); track $index; let i = $index) {
         <li
@@ -38,7 +38,6 @@
                 <span [style.text-decoration]="segment.isMatch ? 'underline' : 'none'">{{ segment.text }}</span>
               }
             </span>
-            <span class="badge badge-existing">existing (id:{{ item.result.id }})</span>
           }
         </li>
       }

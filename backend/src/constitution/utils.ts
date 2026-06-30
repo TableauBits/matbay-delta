@@ -143,6 +143,16 @@ async function countSongsOfUser(cstid: number, uid: string): Promise<Result<numb
         .map((c) => c.count);
 }
 
+async function isSongInConstitution(cstid: number, songId: number): Promise<Result<boolean, Error>> {
+    const operation = async () =>
+        await db
+            .select()
+            .from(songConstitution)
+            .where(and(eq(songConstitution.song, songId), eq(songConstitution.constitution, cstid)));
+
+    return (await Result.safe(operation())).map((results) => results.length !== 0);
+}
+
 async function isMember(uid: string, cstid: number): Promise<Result<boolean, Error>> {
     const operation = async () =>
         await db
@@ -179,6 +189,7 @@ export {
     getDBConstitution,
     getSongConstitution,
     isMember,
+    isSongInConstitution,
     removeSongFromConstitution,
     removeUserFromConstitution,
 };

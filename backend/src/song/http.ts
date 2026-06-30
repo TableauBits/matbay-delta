@@ -36,9 +36,8 @@ async function search(req: Request, res: Response): Promise<void> {
 
 async function autocomplete(req: Request, res: Response): Promise<void> {
     const query = getParam(req, "query");
-    const artistId = req.query["artistId"] ? parseInt(req.query["artistId"] as string, 10) : undefined;
 
-    const results = (await searchSongsByTitle(query, artistId)).mapErr(
+    const results = (await searchSongsByTitle(query)).mapErr(
         (err) => new HttpError(HttpStatus.InternalError, `failed to autocomplete songs in database: ${err}`),
     );
 

@@ -19,6 +19,7 @@ import {
     getDBConstitution,
     getSongConstitution,
     isMember,
+    isSongInConstitution,
     removeSongFromConstitution,
     removeUserFromConstitution,
 } from "./utils";
@@ -91,6 +92,29 @@ async function addSong(req: Request, res: Response): Promise<void> {
                 new HttpError(
                     HttpStatus.Unauthorized,
                     `user '${uid}' already added the maximum number of songs (${constitution.nSongs}) to constitution '${participation.constitution}'`,
+                ),
+            ),
+            res,
+        );
+        return;
+    }
+
+    // Check if the song is already in the constitution
+    const songAlreadyInCst = unwrap(
+        (await isSongInConstitution(participation.constitution, participation.song)).mapErr(
+            (err) =>
+                new HttpError(
+                    HttpStatus.InternalError,
+                    `failed to check if song '${participation.song}' is already in constitution '${participation.constitution}': ${err.message}`,
+                ),
+        ),
+    );
+    if (songAlreadyInCst) {
+        sendResult(
+            Err(
+                new HttpError(
+                    HttpStatus.Conflict,
+                    `song '${participation.song}' is already in constitution '${participation.constitution}'`,
                 ),
             ),
             res,

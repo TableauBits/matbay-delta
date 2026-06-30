@@ -18,6 +18,19 @@ export class AutocompleteTextbox implements OnDestroy {
   @Input() label = '';
   @Input() placeholder = '';
   @Input() searchFn: (query: string) => Promise<AutocompleteResult[]> = () => Promise.resolve([]);
+  @Input()
+  set disabled(value: boolean) {
+    this._disabled = value;
+    if (value) {
+      this.searchControl.disable();
+    } else {
+      this.searchControl.enable();
+    }
+  }
+  get disabled(): boolean {
+    return this._disabled;
+  }
+  private _disabled = false;
 
   @Output() resultSelected = new EventEmitter<AutocompleteResult | null>();
 

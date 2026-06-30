@@ -1,14 +1,16 @@
 import { AbstractControl, FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { FormsModule } from '@angular/forms';
 import { AddArtistRequestBody, Artist, ArtistContribution } from '../../../../../../../common/artist';
 import { AddSongRequestBody, Song } from '../../../../../../../common/song';
 import { AutocompleteResult, AutocompleteTextbox } from '../../../autocomplete-textbox/autocomplete-textbox';
+import { HttpErrorResponse } from '@angular/common/http';
 import { Component, inject, input, ViewChild } from '@angular/core';
 import { AddSongConstitutionRequestBody } from '../../../../../../../common/constitution';
+import { FormsModule } from '@angular/forms';
 import { HttpRequests } from '../../../../services/requests/http-requests';
 import { Artists } from '../../../../services/artists';
 import { Songs } from '../../../../services/songs';
 import { KNOWN_HOSTS } from '../../../../../../../common/source';
+import { firstValueFrom } from 'rxjs';
 import parseUrl from 'parse-url';
 
 interface PendingArtist {
@@ -42,6 +44,8 @@ export class AddSongForm {
   selectedSong: AutocompleteResult | null = null;
   pendingArtists: PendingArtist[] = [];
   nextArtistRole: ArtistContribution = ArtistContribution.MAIN;
+  errorMessage: string | null = null;
+  artistsLocked = false;
 
   constructor() {
     this.songForm = this.formBuilder.group({
@@ -87,8 +91,35 @@ export class AddSongForm {
   }
 
   onSongSelected(result: AutocompleteResult | null): void {
-    if (!result) return;
     this.selectedSong = result;
+
+    // A new song (or none selected): the user must provide the artists themselves
+    if (!result || result.id === -1) {
+      this.artistsLocked = false;
+      this.pendingArtists = [];
+      this.nextArtistRole = ArtistContribution.MAIN;
+      return;
+    }
+
+    // An existing song already knows its artists: fill them in and lock the artist autocomplete
+    this.artistsLocked = true;
+    void this.fillArtistsFromSong(result.id);
+  }
+
+  private async fillArtistsFromSong(songId: number): Promise<void> {
+    const song = await firstValueFrom(this.songsService.get(songId));
+    const entries: PendingArtist[] = await Promise.all(
+      song.songArtist.map(async (sa): Promise<PendingArtist> => {
+        const artist = await firstValueFrom(this.artistsService.get(sa.artist));
+        return {
+          id: sa.artist,
+          name: artist.name,
+          isNew: false,
+          role: sa.contribution as ArtistContribution,
+        };
+      }),
+    );
+    this.pendingArtists = entries;
   }
 
   createSourceFormGroup(): FormGroup {
@@ -117,50 +148,60 @@ export class AddSongForm {
   async submitForm(): Promise<void> {
     if (!this.selectedSong || this.pendingArtists.length === 0) return;
 
-    let songID: number;
+    this.errorMessage = null;
 
-    if (this.selectedSong.id !== -1) {
-      songID = this.selectedSong.id;
-    } else {
-      const artistIds = await Promise.all(
-        this.pendingArtists.map(async (artist) => {
-          if (!artist.isNew) return artist.id;
-          const created = await this.httpRequests.authenticatedPostRequest<AddArtistRequestBody, Artist>(
-            'artist/add',
-            { name: artist.name },
-          );
-          return created.id;
-        }),
-      );
+    try {
+      let songID: number;
 
-      const primaryArtistId = artistIds[0];
-      const otherContributions: [number, ArtistContribution][] = artistIds
-        .slice(1)
-        .map((id, i) => [id, this.pendingArtists[i + 1].role]);
+      if (this.selectedSong.id !== -1) {
+        songID = this.selectedSong.id;
+      } else {
+        const artistIds = await Promise.all(
+          this.pendingArtists.map(async (artist) => {
+            if (!artist.isNew) return artist.id;
+            const created = await this.httpRequests.authenticatedPostRequest<AddArtistRequestBody, Artist>(
+              'artist/add',
+              { name: artist.name },
+            );
+            return created.id;
+          }),
+        );
 
-      const sources = (this.songForm.value.sources as FormSource[] | undefined)?.map((s) => s.url) ?? [];
+        const primaryArtistId = artistIds[0];
+        const otherContributions: [number, ArtistContribution][] = artistIds
+          .slice(1)
+          .map((id, i) => [id, this.pendingArtists[i + 1].role]);
 
-      songID = (
-        await this.httpRequests.authenticatedPostRequest<AddSongRequestBody, Song>('song/add', {
-          song: {
-            title: this.selectedSong!.name,
-            primaryArtist: primaryArtistId,
-          },
-          otherContributions,
-          sources,
-        })
-      ).id;
+        const sources = (this.songForm.value.sources as FormSource[] | undefined)?.map((s) => s.url) ?? [];
+
+        songID = (
+          await this.httpRequests.authenticatedPostRequest<AddSongRequestBody, Song>('song/add', {
+            song: {
+              title: this.selectedSong!.name,
+              primaryArtist: primaryArtistId,
+            },
+            otherContributions,
+            sources,
+          })
+        ).id;
+      }
+
+      await this.httpRequests.authenticatedPostRequest<AddSongConstitutionRequestBody>('constitution/addSong', {
+        song: songID,
+        constitution: this.constitution(),
+      });
+
+      this.selectedSong = null;
+      this.pendingArtists = [];
+      this.nextArtistRole = ArtistContribution.MAIN;
+      this.songForm.reset();
+      this.sources.clear();
+    } catch (e) {
+      if (e instanceof HttpErrorResponse) {
+        this.errorMessage = typeof e.error === 'string' ? e.error : e.message;
+      } else {
+        this.errorMessage = 'An unexpected error occurred';
+      }
     }
-
-    await this.httpRequests.authenticatedPostRequest<AddSongConstitutionRequestBody>('constitution/addSong', {
-      song: songID,
-      constitution: this.constitution(),
-    });
-
-    this.selectedSong = null;
-    this.pendingArtists = [];
-    this.nextArtistRole = ArtistContribution.MAIN;
-    this.songForm.reset();
-    this.sources.clear();
   }
 }

@@ -3,6 +3,11 @@
 .autocomplete-container {
   position: relative;
   width: 100%;
+
+  &.disabled {
+    opacity: 0.5;
+    pointer-events: none;
+  }
 }
 
 .autocomplete-label {
@@ -123,10 +128,4 @@
 .badge-new {
   background-color: $primary;
   color: $text;
-}
-
-.badge-existing {
-  background-color: rgba($text, 0.08);
-  color: $secondary-dark;
-  border: 1px solid rgba($text, 0.12);
 }

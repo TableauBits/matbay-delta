@@ -86,12 +86,6 @@
   color: $text;
 }
 
-.tag-existing {
-  background-color: rgba($text, 0.08);
-  color: $secondary-dark;
-  border: 1px solid rgba($text, 0.12);
-}
-
 .role-tag {
   background-color: rgba($text, 0.06);
   color: rgba($text, 0.6);
@@ -132,4 +126,10 @@
   gap: 0.5em;
   align-items: center;
   margin-top: 0.4em;
+}
+
+.error-message {
+  color: $orange;
+  font-size: 0.9rem;
+  padding: 0.5em 0;
 }

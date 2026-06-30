@@ -38,12 +38,10 @@ export class Songs {
     return newSong.asObservable();
   }
 
-  async search(query: string, artistId?: number): Promise<AutocompleteResult[]> {
-    let endpoint = `song/autocomplete/${encodeURIComponent(query)}`;
-    if (artistId !== undefined) {
-      endpoint += `?artistId=${artistId}`;
-    }
-    const results = await this.httpRequests.authenticatedGetRequest<{ id: number; title: string }[]>(endpoint);
+  async search(query: string): Promise<AutocompleteResult[]> {
+    const results = await this.httpRequests.authenticatedGetRequest<{ id: number; title: string }[]>(
+      `song/autocomplete/${encodeURIComponent(query)}`,
+    );
     return results.map((r) => ({ id: r.id, name: r.title }));
   }
 
