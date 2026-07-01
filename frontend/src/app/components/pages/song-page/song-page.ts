@@ -8,10 +8,11 @@ import { Songs } from '../../../services/songs';
 import { Sources } from '../../../services/sources';
 import { Subscription } from 'rxjs';
 import { Title } from '@angular/platform-browser';
+import { RedirectToArtistPage } from '../../utils/redirect-to-artist-page/redirect-to-artist-page';
 
 @Component({
   selector: 'app-song-page',
-  imports: [AsyncPipe],
+  imports: [AsyncPipe, RedirectToArtistPage],
   templateUrl: './song-page.html',
   styleUrl: './song-page.scss',
 })
