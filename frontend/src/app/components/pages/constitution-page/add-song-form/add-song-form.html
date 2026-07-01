@@ -8,14 +8,6 @@
       [searchFn]="searchSongs.bind($any(this))"
       (resultSelected)="onSongSelected($event)"
     ></app-autocomplete-textbox>
-    @if (selectedSong) {
-      <div class="selection-info">
-        {{ selectedSong.name }}
-        @if (selectedSong.id === -1) {
-          <span class="tag tag-new">new</span>
-        }
-      </div>
-    }
   </div>
 
   <div class="form-section">

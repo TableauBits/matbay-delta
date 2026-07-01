@@ -43,12 +43,17 @@ export class AutocompleteTextbox implements OnDestroy {
 
   private searchSubject = new Subject<string>();
   private subscriptions: Subscription = new Subscription();
+  private selectedName: string | null = null;
 
   constructor() {
     const searchSub = this.searchControl.valueChanges
       .pipe(
         distinctUntilChanged(),
         tap((query) => {
+          if (this.selectedName !== null && query.trim() !== this.selectedName) {
+            this.selectedName = null;
+            this.resultSelected.emit(null);
+          }
           if (query.trim().length === 0) {
             this.results = [];
             this.isDropdownOpen = false;
@@ -125,14 +130,19 @@ export class AutocompleteTextbox implements OnDestroy {
     this.isDropdownOpen = false;
     this.activeIndex = -1;
     this.isLoading = false;
+    this.selectedName = null;
   }
 
   selectItem(index: number): void {
     const query = this.searchControl.value.trim();
     if (index === 0) {
+      this.selectedName = null;
       this.resultSelected.emit({ id: -1, name: query });
     } else if (index <= this.results.length) {
-      this.resultSelected.emit(this.results[index - 1]);
+      const chosen = this.results[index - 1];
+      this.selectedName = chosen.name;
+      this.searchControl.setValue(chosen.name, { emitEvent: false });
+      this.resultSelected.emit(chosen);
     }
     this.isDropdownOpen = false;
   }
