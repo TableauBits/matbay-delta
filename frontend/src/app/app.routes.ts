@@ -6,12 +6,17 @@ import { HomePage } from './components/pages/home-page/home-page';
 import { Routes } from '@angular/router';
 import { SongPage } from './components/pages/song-page/song-page';
 import { UserPage } from './components/pages/user-page/user-page';
+import { ArtistPage } from './components/pages/artist-page/artist-page';
 
 const routes: Routes = [
   {
     path: '',
     component: HomePage,
     title: 'Matbay Δ',
+  },
+  {
+    path: 'artists/:id',
+    component: ArtistPage,
   },
   {
     path: 'constitutions/:id',
