@@ -3,6 +3,7 @@
   <div class="form-section">
     <h4>Song</h4>
     <app-autocomplete-textbox
+      #songAutocomplete
       label="Title"
       placeholder="Type a song title..."
       [searchFn]="searchSongs.bind(this)"

@@ -38,6 +38,7 @@ export class AddSongForm {
 
   constitution = input.required<number>();
 
+  @ViewChild('songAutocomplete') songAutocomplete!: AutocompleteTextbox;
   @ViewChild('artistAutocomplete') artistAutocomplete!: AutocompleteTextbox;
 
   songForm: FormGroup;
@@ -191,17 +192,30 @@ export class AddSongForm {
         constitution: this.constitution(),
       });
 
-      this.selectedSong = null;
-      this.pendingArtists = [];
-      this.nextArtistRole = ArtistContribution.MAIN;
-      this.songForm.reset();
-      this.sources.clear();
+      this.resetForm();
     } catch (e) {
       if (e instanceof HttpErrorResponse) {
-        this.errorMessage = typeof e.error === 'string' ? e.error : e.message;
+        this.errorMessage =
+          e.status === 409
+            ? 'This song has already been added to the constitution.'
+            : typeof e.error === 'string'
+              ? e.error
+              : e.message;
       } else {
         this.errorMessage = 'An unexpected error occurred';
       }
     }
+  }
+
+  private resetForm(): void {
+    this.selectedSong = null;
+    this.pendingArtists = [];
+    this.nextArtistRole = ArtistContribution.MAIN;
+    this.errorMessage = null;
+    this.artistsLocked = false;
+    this.songForm.reset();
+    this.sources.clear();
+    this.songAutocomplete.reset();
+    this.artistAutocomplete.reset();
   }
 }
