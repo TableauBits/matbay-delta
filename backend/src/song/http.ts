@@ -2,7 +2,7 @@ import { type Request, type Response, Router } from "express";
 import type { AddSongRequestBody } from "../../../common/song";
 import { ensureAuthMiddleware } from "../auth/http";
 import { getBody, getParam, HttpError, HttpStatus, sendResult } from "../utils";
-import { addSong, getSong, searchSong, searchSongsByTitle } from "./utils";
+import { addSong, getSong, searchSongsByTitle } from "./utils";
 
 // GET ROUTES
 async function get(req: Request, res: Response): Promise<void> {
@@ -24,16 +24,6 @@ async function add(req: Request, res: Response): Promise<void> {
     sendResult(dbResult, res);
 }
 
-async function search(req: Request, res: Response): Promise<void> {
-    const title = getParam(req, "title");
-    const aid = parseInt(getParam(req, "aid"), 10);
-
-    const ids = (await searchSong(title, aid)).mapErr(
-        (err) => new HttpError(HttpStatus.InternalError, `failed to search songs in database: ${err}`),
-    );
-    sendResult(ids, res);
-}
-
 async function autocomplete(req: Request, res: Response): Promise<void> {
     const query = getParam(req, "query");
 
@@ -47,7 +37,6 @@ async function autocomplete(req: Request, res: Response): Promise<void> {
 const songApiRouter = Router();
 
 songApiRouter.get("/get/:id", ensureAuthMiddleware, get);
-songApiRouter.get("/search/:aid/:title", ensureAuthMiddleware, search);
 songApiRouter.get("/autocomplete/:query", ensureAuthMiddleware, autocomplete);
 
 songApiRouter.post("/add", ensureAuthMiddleware, add);

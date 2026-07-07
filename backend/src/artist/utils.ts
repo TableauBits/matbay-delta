@@ -20,13 +20,6 @@ async function getArtist(id: number): Promise<Result<DB.Select.Artist, Error>> {
     return queryResult.andThen((val) => Option(val.at(0)).okOr(new Error(`No artist with id: ${id}`)));
 }
 
-async function getArtistsIDFromName(name: string): Promise<Result<number[], Error>> {
-    // TODO : add support for incomplete name ? "LIKE" operators with  % and _ ?
-    const operation = async () => (await db.select().from(artists).where(eq(artists.name, name))).map((r) => r.id);
-
-    return Result.safe(operation());
-}
-
 async function searchArtistsByName(query: string): Promise<Result<DB.Select.Artist[], Error>> {
     const operation = async () =>
         await db
@@ -37,4 +30,4 @@ async function searchArtistsByName(query: string): Promise<Result<DB.Select.Arti
     return Result.safe(operation());
 }
 
-export { createArtist, getArtist, getArtistsIDFromName, searchArtistsByName };
+export { createArtist, getArtist, searchArtistsByName };

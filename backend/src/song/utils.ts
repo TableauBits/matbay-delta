@@ -1,4 +1,4 @@
-import { and, eq, like } from "drizzle-orm";
+import { eq, like } from "drizzle-orm";
 import { Err, Option, Result } from "oxide.ts";
 import parseUrl from "parse-url";
 import { ArtistContribution } from "../../../common/artist";
@@ -74,18 +74,6 @@ async function getSong(id: number): Promise<Result<Song, Error>> {
     );
 }
 
-async function searchSong(title: string, aid: number): Promise<Result<number[], Error>> {
-    const operation = async () =>
-        (
-            await db
-                .select()
-                .from(songs)
-                .where(and(eq(songs.title, title), eq(songs.primaryArtist, aid)))
-        ).map((r) => r.id);
-
-    return Result.safe(operation());
-}
-
 async function searchSongsByTitle(query: string): Promise<Result<DB.Select.Song[], Error>> {
     const operation = async () =>
         await db
@@ -157,4 +145,4 @@ async function linkSongToArtists(
     return await Result.safe(operation());
 }
 
-export { addSong, getSong, searchSong, searchSongsByTitle };
+export { addSong, getSong, searchSongsByTitle };
