@@ -1,6 +1,6 @@
-import { Component, EventEmitter, Input, OnDestroy, Output } from '@angular/core';
+import { Component, effect, input, OnDestroy, output } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
-import { Subject, Subscription, of } from 'rxjs';
+import { Subscription, of } from 'rxjs';
 import { debounceTime, distinctUntilChanged, switchMap, tap } from 'rxjs/operators';
 
 export interface AutocompleteResult {
@@ -15,24 +15,12 @@ export interface AutocompleteResult {
   styleUrl: './autocomplete-textbox.scss',
 })
 export class AutocompleteTextbox implements OnDestroy {
-  @Input() label = '';
-  @Input() placeholder = '';
-  @Input() searchFn: (query: string) => Promise<AutocompleteResult[]> = () => Promise.resolve([]);
-  @Input()
-  set disabled(value: boolean) {
-    this._disabled = value;
-    if (value) {
-      this.searchControl.disable();
-    } else {
-      this.searchControl.enable();
-    }
-  }
-  get disabled(): boolean {
-    return this._disabled;
-  }
-  private _disabled = false;
+  label = input('');
+  placeholder = input('');
+  searchFn = input<(query: string) => Promise<AutocompleteResult[]>>(() => Promise.resolve([]));
+  disabled = input(false);
 
-  @Output() resultSelected = new EventEmitter<AutocompleteResult | null>();
+  resultSelected = output<AutocompleteResult | null>();
 
   searchControl = new FormControl<string>('', { nonNullable: true });
 
@@ -41,11 +29,18 @@ export class AutocompleteTextbox implements OnDestroy {
   isDropdownOpen = false;
   activeIndex = -1;
 
-  private searchSubject = new Subject<string>();
   private subscriptions: Subscription = new Subscription();
   private selectedName: string | null = null;
 
   constructor() {
+    effect(() => {
+      if (this.disabled()) {
+        this.searchControl.disable();
+      } else {
+        this.searchControl.enable();
+      }
+    });
+
     const searchSub = this.searchControl.valueChanges
       .pipe(
         distinctUntilChanged(),
@@ -67,7 +62,7 @@ export class AutocompleteTextbox implements OnDestroy {
         debounceTime(1000),
         switchMap((query) => {
           if (query.trim().length === 0) return of([]);
-          return this.searchFn(query.trim());
+          return this.searchFn()(query.trim());
         }),
       )
       .subscribe((results) => {
@@ -81,7 +76,6 @@ export class AutocompleteTextbox implements OnDestroy {
 
   ngOnDestroy(): void {
     this.subscriptions.unsubscribe();
-    this.searchSubject.unsubscribe();
   }
 
   onKeydown(event: KeyboardEvent): void {

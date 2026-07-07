@@ -5,7 +5,7 @@
     <app-autocomplete-textbox
       label="Title"
       placeholder="Type a song title..."
-      [searchFn]="searchSongs.bind($any(this))"
+      [searchFn]="searchSongs.bind(this)"
       (resultSelected)="onSongSelected($event)"
     ></app-autocomplete-textbox>
   </div>
@@ -17,7 +17,7 @@
         #artistAutocomplete
         label="Add an artist"
         placeholder="Type an artist name..."
-        [searchFn]="searchArtists.bind($any(this))"
+        [searchFn]="searchArtists.bind(this)"
         [disabled]="artistsLocked"
         (resultSelected)="onArtistSelected($event)"
       ></app-autocomplete-textbox>

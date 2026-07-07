@@ -90,7 +90,7 @@ export class AddSongForm {
     this.pendingArtists.splice(index, 1);
   }
 
-  onSongSelected(result: AutocompleteResult | null): void {
+  async onSongSelected(result: AutocompleteResult | null): Promise<void> {
     this.selectedSong = result;
 
     // A new song (or none selected): the user must provide the artists themselves
@@ -103,7 +103,7 @@ export class AddSongForm {
 
     // An existing song already knows its artists: fill them in and lock the artist autocomplete
     this.artistsLocked = true;
-    void this.fillArtistsFromSong(result.id);
+    await this.fillArtistsFromSong(result.id);
   }
 
   private async fillArtistsFromSong(songId: number): Promise<void> {

@@ -1,13 +1,13 @@
-<div class="autocomplete-container" [class.disabled]="disabled">
-  @if (label) {
-    <label class="autocomplete-label" for="autocomplete-input">{{ label }}</label>
+<div class="autocomplete-container" [class.disabled]="disabled()">
+  @if (label()) {
+    <label class="autocomplete-label" for="autocomplete-input">{{ label() }}</label>
   }
   <div class="autocomplete-input-wrapper">
     <input
       id="autocomplete-input"
       type="text"
       [formControl]="searchControl"
-      [placeholder]="placeholder"
+      [placeholder]="placeholder()"
       class="autocomplete-input"
       (keydown)="onKeydown($event)"
       (blur)="onBlur()"
@@ -18,7 +18,7 @@
       <div class="spinner"></div>
     }
   </div>
-  @if (isDropdownOpen && !disabled && searchControl.value.trim().length > 0) {
+  @if (isDropdownOpen && !disabled() && searchControl.value.trim().length > 0) {
     <ul class="autocomplete-dropdown">
       @for (item of getDisplayResults(); track $index; let i = $index) {
         <li
