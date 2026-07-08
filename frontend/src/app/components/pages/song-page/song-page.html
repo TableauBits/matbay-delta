@@ -6,9 +6,11 @@
   <h3>Artists:</h3>
   <ul>
     @for (songArtist of song.songArtist; track $index) {
-      
-      <li><app-redirect-to-artist-page [artist]="artists.get(songArtist.artist) | async"/> (as {{ songArtist.contribution }})</li>
-    } 
+      <li>
+        <app-redirect-to-artist-page [artist]="artists.get(songArtist.artist) | async" /> (as
+        {{ songArtist.contribution }})
+      </li>
+    }
   </ul>
   <h3>Sources:</h3>
   <ul>

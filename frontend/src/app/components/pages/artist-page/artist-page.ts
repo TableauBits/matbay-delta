@@ -41,6 +41,6 @@ export class ArtistPage implements OnDestroy {
       });
 
       this.subscriptions.add(subscription);
-    })
+    });
   }
 }
