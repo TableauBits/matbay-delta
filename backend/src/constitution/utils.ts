@@ -154,19 +154,33 @@ async function isMember(uid: string, cstid: number): Promise<Result<boolean, Err
 }
 
 async function removeUserFromConstitution(uid: string, cstid: number): Promise<Result<Unit, Error>> {
-    const operation = async () =>
-        await db
-            .delete(userConstitution)
-            .where(and(eq(userConstitution.user, uid), eq(userConstitution.constitution, cstid)))
-            .returning();
+    return Result.safe(
+        db.transaction(async (tx) => {
+            const removeUserOp = async () =>
+                await tx
+                    .delete(userConstitution)
+                    .where(and(eq(userConstitution.constitution, cstid), eq(userConstitution.user, uid)))
+                    .returning();
 
-    return (await Result.safe(operation()))
-        .andThen((users) => Option(users.at(0)).okOr(new Error("failed to remove user participation in the database")))
-        .map((user) => {
-            // Update users who were listening to changes
-            onUserLeaveCallback(user);
+            const removeResult = unwrap(await Result.safe(removeUserOp()));
+            const removedUser = unwrap(
+                Option(removeResult.at(0)),
+                "failed to remove user participation in the database",
+            );
+            onUserLeaveCallback(removedUser);
+
+            const removeSongsOp = async () =>
+                await tx
+                    .delete(songConstitution)
+                    .where(and(eq(songConstitution.constitution, cstid), eq(songConstitution.user, uid)))
+                    .returning();
+
+            const removedSongs = unwrap(await Result.safe(removeSongsOp()));
+            removedSongs.forEach((song) => onSongRemoveCallback(song));
+
             return {};
-        });
+        }),
+    );
 }
 
 export {
