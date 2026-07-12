@@ -145,7 +145,7 @@ export class AutocompleteTextbox implements OnDestroy {
     const query = this.searchControl.value.trim();
     if (!query) return [];
     const verbatim: { result: null; isVerbatim: true } = { result: null, isVerbatim: true };
-    const matches = this.results.map((r) => ({ result: r, isVerbatim: false as const }));
+    const matches = this.results.map((r) => ({ result: r, isVerbatim: false }));
     return [verbatim, ...matches];
   }
 
