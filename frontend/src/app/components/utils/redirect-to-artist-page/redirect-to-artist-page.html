@@ -1,0 +1,7 @@
+@if (artist(); as artist) {
+  <span (click)="redirectToPage(artist.id)" (keydown.enter)="redirectToPage(artist.id)" tabindex="0">
+    {{ artist.name }}
+  </span>
+} @else {
+  Artist is undefined.
+}
