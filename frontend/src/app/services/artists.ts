@@ -1,6 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { Observable, ReplaySubject } from 'rxjs';
 import { Artist } from '../../../../common/artist';
+import { AutocompleteResult } from '../components/autocomplete-textbox/autocomplete-textbox';
 import { HttpRequests } from './requests/http-requests';
 
 @Injectable({
@@ -34,5 +35,12 @@ export class Artists {
       });
 
     return newArtist.asObservable();
+  }
+
+  async search(query: string): Promise<AutocompleteResult[]> {
+    const results = await this.httpRequests.authenticatedGetRequest<{ id: number; name: string }[]>(
+      `artist/autocomplete/${encodeURIComponent(query)}`,
+    );
+    return results.map((r) => ({ id: r.id, name: r.name }));
   }
 }
