@@ -29,6 +29,14 @@
                         "strictCase": false
                     }
                 }
+            },
+            "suspicious": {
+                "useIterableCallbackReturn": {
+                    "level": "on",
+                    "options": {
+                        "checkForEach": false
+                    }
+                }
             }
         }
     },

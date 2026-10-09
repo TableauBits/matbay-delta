@@ -2,7 +2,7 @@ import { type Request, type Response, Router } from "express";
 import type { AddArtistRequestBody } from "../../../common/artist";
 import { ensureAuthMiddleware } from "../auth/http";
 import { getBody, getParam, HttpError, HttpStatus, sendResult } from "../utils";
-import { createArtist, getArtist, getArtistsIDFromName } from "./utils";
+import { createArtist, getArtist, searchArtistsByName } from "./utils";
 
 // GET ROUTES
 async function get(req: Request, res: Response): Promise<void> {
@@ -14,14 +14,14 @@ async function get(req: Request, res: Response): Promise<void> {
     sendResult(artist, res);
 }
 
-async function search(req: Request, res: Response): Promise<void> {
-    const name = getParam(req, "name");
+async function autocomplete(req: Request, res: Response): Promise<void> {
+    const query = getParam(req, "query");
 
-    const ids = (await getArtistsIDFromName(name)).mapErr(
-        (err) => new HttpError(HttpStatus.InternalError, `failed to search artist in database: ${err}`),
+    const results = (await searchArtistsByName(query)).mapErr(
+        (err) => new HttpError(HttpStatus.InternalError, `failed to autocomplete artist in database: ${err}`),
     );
 
-    sendResult(ids, res);
+    sendResult(results, res);
 }
 
 // POST ROUTES
@@ -40,7 +40,7 @@ async function add(req: Request, res: Response): Promise<void> {
 const artistApiRouter = Router();
 
 artistApiRouter.get("/get/:id", ensureAuthMiddleware, get);
-artistApiRouter.get("/search/:name", ensureAuthMiddleware, search);
+artistApiRouter.get("/autocomplete/:query", ensureAuthMiddleware, autocomplete);
 
 artistApiRouter.post("/add", ensureAuthMiddleware, add);
 
