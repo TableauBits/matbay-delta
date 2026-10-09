@@ -17,6 +17,7 @@ import {
   WebsocketEvents,
 } from '../../../../common/websocket';
 import { HttpRequests } from './requests/http-requests';
+import { SnackbarService } from './snackbar';
 
 @Injectable({
   providedIn: 'root',
@@ -25,6 +26,7 @@ export class Constitutions implements OnDestroy {
   // Service injections
   private httpRequests = inject(HttpRequests);
   private wsRequests = inject(WsRequests);
+  private snackbar = inject(SnackbarService);
 
   private constitutions = new Map<number, BehaviorSubject<Constitution | undefined>>();
 
@@ -78,24 +80,36 @@ export class Constitutions implements OnDestroy {
   create(name: string, description: string, nSongs: number): void {
     this.httpRequests
       .authenticatedPostRequest<CreateConstitutionRequestBody>('constitution/create', { name, description, nSongs })
+      .then(() => {
+        this.snackbar.showSuccess('Constitution créée avec succès');
+      })
       .catch((error) => {
         console.error('Failed to create constitution', error);
+        this.snackbar.showError('Échec de la création de la constitution');
       });
   }
 
   join(id: number): void {
     this.httpRequests
       .authenticatedPostRequest<JoinConstitutionRequestBody>('constitution/join', { id })
+      .then(() => {
+        this.snackbar.showSuccess('Vous avez rejoint la constitution');
+      })
       .catch((error) => {
         console.error('Failed to join constitution', error);
+        this.snackbar.showError('Échec de la rejoindre');
       });
   }
 
   leave(id: number): void {
     this.httpRequests
       .authenticatedPostRequest<LeaveConstitutionRequestBody>('constitution/leave', { id })
+      .then(() => {
+        this.snackbar.showSuccess('Vous avez quitté la constitution');
+      })
       .catch((error) => {
         console.error('Failed to leave constitution', error);
+        this.snackbar.showError('Échec de quitter la constitution');
       });
   }
 
