@@ -4,10 +4,11 @@ import { CommonModule } from '@angular/common';
 import { DeltaAuth } from './services/delta-auth';
 import { NavigationBar } from './navigation-bar/navigation-bar';
 import { Version } from './services/version';
+import { SnackbarComponent } from './components/snackbar/snackbar';
 
 @Component({
   selector: 'app-root',
-  imports: [CommonModule, RouterOutlet, NavigationBar],
+  imports: [CommonModule, RouterOutlet, NavigationBar, SnackbarComponent],
   templateUrl: './app.html',
   styleUrl: './app.scss',
 })

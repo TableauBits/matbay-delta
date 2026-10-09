@@ -1,0 +1,7 @@
+@if (snackbar(); as sb) {
+  <div class="snackbar" [class]="sb.type" [class.is-exiting]="isExiting()">
+    <span class="snackbar__icon">{{ icon }}</span>
+    <span class="snackbar__message">{{ sb.message }}</span>
+    <button class="snackbar__dismiss" (click)="dismiss()" aria-label="Fermer">✕</button>
+  </div>
+}
