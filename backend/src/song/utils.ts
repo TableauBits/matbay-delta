@@ -2,38 +2,50 @@ import { eq, like } from "drizzle-orm";
 import { Err, Option, Result } from "oxide.ts";
 import parseUrl from "parse-url";
 import { ArtistContribution } from "../../../common/artist";
-import type { Song } from "../../../common/song";
+import type { AddSongRequestBody, Song } from "../../../common/song";
 import { KNOWN_HOSTS, type Source, SourceHost, SourcePlatform } from "../../../common/source";
 import { db } from "../db/http";
-import { songArtist, songSource, songs } from "../db/schemas";
+import { songArtist, songLanguage, songSource, songs } from "../db/schemas";
 import type { DB } from "../db-namepsace";
 import { unwrap } from "../utils";
 
-async function addSong(
-    song: DB.Insert.Song,
-    additionalArtists: [number, ArtistContribution][],
-    sources: string[],
-): Promise<Result<DB.Select.Song, Error>> {
+async function addSong(body: AddSongRequestBody): Promise<Result<DB.Select.Song, Error>> {
     return Result.safe(
         db.transaction(async (tx) => {
             // Insert new song in table
-            const songData = unwrap(await createSong(song, tx));
+            const songData = unwrap(await createSong(body.song, tx));
 
             // Add a link between the song and the artists
             const artistLinks: [number, ArtistContribution][] = [
                 [songData.primaryArtist, ArtistContribution.MAIN],
-                ...additionalArtists,
+                ...body.otherContributions,
             ];
             unwrap(await linkSongToArtists(songData.id, artistLinks, tx));
 
             // Creates sources of the song
-            if (sources.length !== 0) {
-                unwrap(await createSources(songData.id, sources, tx));
+            if (body.sources.length !== 0) {
+                unwrap(await createSources(songData.id, body.sources, tx));
             }
+
+            // Create languages of the song
+            createLanguagesForSong(songData.id, body.languages);
 
             return songData;
         }),
     );
+}
+
+async function createLanguagesForSong(song: number, languages: string[], tx?: DB.Transaction): Promise<Result<void, Error>> {
+    const ctx = tx ? tx : db;
+
+    const rows = languages.map(l => {
+        const row: DB.Insert.SongLanguage = {song, language: l};
+        return row;
+    });
+
+    const operation = async () => await ctx.insert(songLanguage).values(rows);
+
+    return (await Result.safe(operation()));
 }
 
 async function createSong(song: DB.Insert.Song, tx?: DB.Transaction): Promise<Result<DB.Select.Song, Error>> {
@@ -50,6 +62,7 @@ async function getSong(id: number): Promise<Result<Song, Error>> {
     // Get the song with the specified id with :
     // - The list of contributing artists (the artist id and the contribution type)
     // - The list of sources (the source original id and platform)
+    // - The list of languages
     const operation = async () =>
         await db.query.songs.findMany({
             where: eq(songs.id, id),
@@ -66,6 +79,11 @@ async function getSong(id: number): Promise<Result<Song, Error>> {
                         platform: true,
                     },
                 },
+                songLanguage: {
+                    columns: {
+                        language: true,
+                    }
+                }
             },
         });
 

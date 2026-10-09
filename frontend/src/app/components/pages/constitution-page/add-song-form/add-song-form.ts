@@ -183,6 +183,7 @@ export class AddSongForm {
             },
             otherContributions,
             sources,
+            languages: [],
           })
         ).id;
       }

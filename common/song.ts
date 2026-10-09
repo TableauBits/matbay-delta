@@ -19,6 +19,7 @@ interface AddSongRequestBody {
   }
   otherContributions: [number, ArtistContribution][];
   sources: string[];
+  languages: string[];
 }
 
 export {
