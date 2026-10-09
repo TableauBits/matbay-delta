@@ -52,6 +52,17 @@
   </div>
 
   <div class="form-section">
+    <h4>Languages</h4>
+    <app-autocomplete-textbox
+      #languageAutocomplete
+      label="Add a language"
+      placeholder="Type a language..."
+      [searchFn]="searchLanguages.bind(this)"
+      (resultSelected)="onLanguageSelected($event)">
+    </app-autocomplete-textbox>
+  </div>
+
+  <div class="form-section">
     <h4>Sources</h4>
     <button (click)="addSource()">+ Add source</button>
     <div formArrayName="sources">

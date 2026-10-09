@@ -13,6 +13,22 @@ import { KNOWN_HOSTS } from '../../../../../../../common/source';
 import { firstValueFrom } from 'rxjs';
 import parseUrl from 'parse-url';
 
+import { getAll639_3, getName } from 'all-iso-language-codes';
+
+function getLanguageName(code: string): string {
+  const name = getName(code, "fr");
+  if (!name) return code;
+
+  // Capitalize first letter
+  return name.charAt(0).toUpperCase() + name.slice(1);
+}
+
+const languages_iso = getAll639_3();
+const languages: { code: string; name: string }[] = languages_iso.map((code) => ({
+  code,
+  name: getLanguageName(code),
+}));
+
 interface PendingArtist {
   id: number;
   name: string;
@@ -40,6 +56,7 @@ export class AddSongForm {
 
   @ViewChild('songAutocomplete') songAutocomplete!: AutocompleteTextbox;
   @ViewChild('artistAutocomplete') artistAutocomplete!: AutocompleteTextbox;
+  @ViewChild('languageAutocomplete') languageAutocomplete!: AutocompleteTextbox;
 
   songForm: FormGroup;
   selectedSong: AutocompleteResult | null = null;
@@ -68,6 +85,14 @@ export class AddSongForm {
 
   searchSongs(query: string): Promise<AutocompleteResult[]> {
     return this.songsService.search(query);
+  }
+
+  searchLanguages(query: string): Promise<AutocompleteResult[]> {
+    const lowerQuery = query.toLowerCase();
+    const results = languages
+      .filter((lang) => lang.name.toLowerCase().includes(lowerQuery))
+      .map((lang) => ({ id: 0, name: `${lang.name} (${lang.code})` }));
+    return Promise.resolve(results);
   }
 
   onArtistSelected(result: AutocompleteResult | null): void {
@@ -105,6 +130,17 @@ export class AddSongForm {
     // An existing song already knows its artists: fill them in and lock the artist autocomplete
     this.artistsLocked = true;
     await this.fillArtistsFromSong(result.id);
+  }
+
+  onLanguageSelected(result: AutocompleteResult | null): void {
+    if (!result) return;
+
+    const languageCode = result.name.match(/\(([^)]+)\)$/)?.[1];
+    if (!languageCode) return;
+
+    const existingLanguages = this.songForm.value.languages as string[] | undefined;
+    const updatedLanguages = existingLanguages ? [...existingLanguages, languageCode] : [languageCode];
+    this.songForm.patchValue({ languages: updatedLanguages });
   }
 
   private async fillArtistsFromSong(songId: number): Promise<void> {
@@ -218,5 +254,6 @@ export class AddSongForm {
     this.sources.clear();
     this.songAutocomplete.reset();
     this.artistAutocomplete.reset();
+    this.languageAutocomplete.reset();
   }
 }
