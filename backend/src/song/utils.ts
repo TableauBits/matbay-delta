@@ -39,7 +39,7 @@ async function createLanguagesForSong(song: number, languages: string[], tx?: DB
     const ctx = tx ? tx : db;
 
     const rows = languages.map(l => {
-        const row: DB.Insert.songLanguage = {song, language: l};
+        const row: DB.Insert.SongLanguage = {song, language: l};
         return row;
     });
 

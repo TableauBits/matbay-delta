@@ -19,7 +19,7 @@ export namespace DB {
         export type Song = typeof songs.$inferInsert;
         export type SongArtist = typeof songArtist.$inferInsert;
         export type SongConstitution = typeof songConstitution.$inferInsert;
-        export type songLanguage = typeof songLanguage.$inferInsert;
+        export type SongLanguage = typeof songLanguage.$inferInsert;
         export type User = typeof users.$inferInsert;
         export type UserConstitution = typeof userConstitution.$inferInsert;
     }
