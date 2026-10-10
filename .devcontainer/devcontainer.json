@@ -10,6 +10,11 @@
         "source=matbay-frontend-node-modules,target=${containerWorkspaceFolder}/frontend/node_modules,type=volume"
     ],
     "postCreateCommand": "cd backend && bun install && cd ../frontend && bun install",
+    "forwardPorts": [
+        3000,
+        4200,
+        4983
+    ],
     "customizations": {
         "vscode": {
             "extensions": [
