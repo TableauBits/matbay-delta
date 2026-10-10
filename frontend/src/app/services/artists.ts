@@ -37,7 +37,7 @@ export class Artists {
     return newArtist.asObservable();
   }
 
-  async search(query: string): Promise<AutocompleteResult[]> {
+  async search(query: string): Promise<AutocompleteResult<number>[]> {
     const results = await this.httpRequests.authenticatedGetRequest<{ id: number; name: string }[]>(
       `artist/autocomplete/${encodeURIComponent(query)}`,
     );

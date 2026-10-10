@@ -60,6 +60,16 @@
       [searchFn]="searchLanguages.bind(this)"
       (resultSelected)="onLanguageSelected($event)">
     </app-autocomplete-textbox>
+    @if (pendingLanguages.length > 0) {
+      <ul class="pending-languages">
+        @for (language of pendingLanguages; track $index; let i = $index) {
+          <li class="pending-language">
+            <span class="pending-language-name">{{ getLanguageName(language) }}</span>
+            <button class="btn-remove" (click)="removePendingLanguage(i)">x</button>
+          </li>
+        }
+      </ul>
+    }
   </div>
 
   <div class="form-section">

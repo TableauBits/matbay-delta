@@ -3,8 +3,8 @@ import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { Subscription, of } from 'rxjs';
 import { debounceTime, distinctUntilChanged, switchMap, tap } from 'rxjs/operators';
 
-export interface AutocompleteResult {
-  id: number;
+export interface AutocompleteResult<T> {
+  id: T | null;
   name: string;
 }
 
@@ -14,17 +14,17 @@ export interface AutocompleteResult {
   templateUrl: './autocomplete-textbox.html',
   styleUrl: './autocomplete-textbox.scss',
 })
-export class AutocompleteTextbox implements OnDestroy {
+export class AutocompleteTextbox<T> implements OnDestroy {
   label = input('');
   placeholder = input('');
-  searchFn = input<(query: string) => Promise<AutocompleteResult[]>>(() => Promise.resolve([]));
+  searchFn = input<(query: string) => Promise<AutocompleteResult<T>[]>>(() => Promise.resolve([]));
   disabled = input(false);
 
-  resultSelected = output<AutocompleteResult | null>();
+  resultSelected = output<AutocompleteResult<T> | null>();
 
   searchControl = new FormControl<string>('', { nonNullable: true });
 
-  results: AutocompleteResult[] = [];
+  results: AutocompleteResult<T>[] = [];
   isLoading = false;
   isDropdownOpen = false;
   activeIndex = -1;
@@ -131,7 +131,7 @@ export class AutocompleteTextbox implements OnDestroy {
     const query = this.searchControl.value.trim();
     if (index === 0) {
       this.selectedName = null;
-      this.resultSelected.emit({ id: -1, name: query });
+      this.resultSelected.emit({ id: null, name: query });
     } else if (index <= this.results.length) {
       const chosen = this.results[index - 1];
       this.selectedName = chosen.name;
@@ -141,7 +141,7 @@ export class AutocompleteTextbox implements OnDestroy {
     this.isDropdownOpen = false;
   }
 
-  getDisplayResults(): { result: AutocompleteResult | null; isVerbatim: boolean }[] {
+  getDisplayResults(): { result: AutocompleteResult<T> | null; isVerbatim: boolean }[] {
     const query = this.searchControl.value.trim();
     if (!query) return [];
     const verbatim: { result: null; isVerbatim: true } = { result: null, isVerbatim: true };

@@ -54,16 +54,19 @@ export class AddSongForm {
 
   constitution = input.required<number>();
 
-  @ViewChild('songAutocomplete') songAutocomplete!: AutocompleteTextbox;
-  @ViewChild('artistAutocomplete') artistAutocomplete!: AutocompleteTextbox;
-  @ViewChild('languageAutocomplete') languageAutocomplete!: AutocompleteTextbox;
+  @ViewChild('songAutocomplete') songAutocomplete!: AutocompleteTextbox<number>;
+  @ViewChild('artistAutocomplete') artistAutocomplete!: AutocompleteTextbox<number>;
+  @ViewChild('languageAutocomplete') languageAutocomplete!: AutocompleteTextbox<string>;
 
   songForm: FormGroup;
-  selectedSong: AutocompleteResult | null = null;
+  selectedSong: AutocompleteResult<number> | null = null;
   pendingArtists: PendingArtist[] = [];
   nextArtistRole: ArtistContribution = ArtistContribution.MAIN;
   errorMessage: string | null = null;
   artistsLocked = false;
+
+  pendingLanguages: string[] = [];
+  // selectedLanguage: AutocompleteResult | null = null;
 
   constructor() {
     this.songForm = this.formBuilder.group({
@@ -75,33 +78,37 @@ export class AddSongForm {
     return this.songForm.get('sources') as FormArray;
   }
 
+  getLanguageName(code: string): string {
+    return getLanguageName(code);
+  }
+
   getContributions(): string[] {
     return Object.values(ArtistContribution);
   }
 
-  searchArtists(query: string): Promise<AutocompleteResult[]> {
+  searchArtists(query: string): Promise<AutocompleteResult<number>[]> {
     return this.artistsService.search(query);
   }
 
-  searchSongs(query: string): Promise<AutocompleteResult[]> {
+  searchSongs(query: string): Promise<AutocompleteResult<number>[]> {
     return this.songsService.search(query);
   }
 
-  searchLanguages(query: string): Promise<AutocompleteResult[]> {
+  searchLanguages(query: string): Promise<AutocompleteResult<string>[]> {
     const lowerQuery = query.toLowerCase();
     const results = languages
       .filter((lang) => lang.name.toLowerCase().includes(lowerQuery))
-      .map((lang) => ({ id: 0, name: `${lang.name} (${lang.code})` }));
+      .map((lang) => ({ id: lang.code, name: lang.name }));
     return Promise.resolve(results);
   }
 
-  onArtistSelected(result: AutocompleteResult | null): void {
+  onArtistSelected(result: AutocompleteResult<number> | null): void {
     if (!result) return;
 
     this.pendingArtists.push({
-      id: result.id,
+      id: result.id ?? -1,
       name: result.name,
-      isNew: result.id === -1,
+      isNew: result.id === null,
       role: this.nextArtistRole,
     });
 
@@ -116,11 +123,15 @@ export class AddSongForm {
     this.pendingArtists.splice(index, 1);
   }
 
-  async onSongSelected(result: AutocompleteResult | null): Promise<void> {
+  removePendingLanguage(index: number): void {
+    this.pendingLanguages.splice(index, 1);
+  }
+
+  async onSongSelected(result: AutocompleteResult<number> | null): Promise<void> {
     this.selectedSong = result;
 
     // A new song (or none selected): the user must provide the artists themselves
-    if (!result || result.id === -1) {
+    if (!result || result.id === null) {
       this.artistsLocked = false;
       this.pendingArtists = [];
       this.nextArtistRole = ArtistContribution.MAIN;
@@ -132,15 +143,11 @@ export class AddSongForm {
     await this.fillArtistsFromSong(result.id);
   }
 
-  onLanguageSelected(result: AutocompleteResult | null): void {
-    if (!result) return;
+  onLanguageSelected(result: AutocompleteResult<string> | null): void {
+    if (!result || result.id === null) return;
+    this.pendingLanguages.push(result.id);
 
-    const languageCode = result.name.match(/\(([^)]+)\)$/)?.[1];
-    if (!languageCode) return;
-
-    const existingLanguages = this.songForm.value.languages as string[] | undefined;
-    const updatedLanguages = existingLanguages ? [...existingLanguages, languageCode] : [languageCode];
-    this.songForm.patchValue({ languages: updatedLanguages });
+    this.languageAutocomplete.reset();  // BUT WAIT
   }
 
   private async fillArtistsFromSong(songId: number): Promise<void> {
@@ -190,7 +197,7 @@ export class AddSongForm {
     try {
       let songID: number;
 
-      if (this.selectedSong.id !== -1) {
+      if (this.selectedSong.id !== null) {
         songID = this.selectedSong.id;
       } else {
         const artistIds = await Promise.all(
@@ -219,7 +226,7 @@ export class AddSongForm {
             },
             otherContributions,
             sources,
-            languages: [],
+            languages: this.pendingLanguages,
           })
         ).id;
       }
@@ -247,6 +254,7 @@ export class AddSongForm {
   private resetForm(): void {
     this.selectedSong = null;
     this.pendingArtists = [];
+    this.pendingLanguages = [];
     this.nextArtistRole = ArtistContribution.MAIN;
     this.errorMessage = null;
     this.artistsLocked = false;
