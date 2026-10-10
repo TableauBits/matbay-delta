@@ -12,22 +12,8 @@ import { Songs } from '../../../../services/songs';
 import { KNOWN_HOSTS } from '../../../../../../../common/source';
 import { firstValueFrom } from 'rxjs';
 import parseUrl from 'parse-url';
+import { Languages } from '../../../../services/languages';
 
-import { getAll639_3, getName } from 'all-iso-language-codes';
-
-function getLanguageName(code: string): string {
-  const name = getName(code, "fr");
-  if (!name) return code;
-
-  // Capitalize first letter
-  return name.charAt(0).toUpperCase() + name.slice(1);
-}
-
-const languages_iso = getAll639_3();
-const languages: { code: string; name: string }[] = languages_iso.map((code) => ({
-  code,
-  name: getLanguageName(code),
-}));
 
 interface PendingArtist {
   id: number;
@@ -51,6 +37,7 @@ export class AddSongForm {
   private formBuilder = inject(FormBuilder);
   private artistsService = inject(Artists);
   private songsService = inject(Songs);
+  private languagesService = inject(Languages);
 
   constitution = input.required<number>();
 
@@ -79,7 +66,7 @@ export class AddSongForm {
   }
 
   getLanguageName(code: string): string {
-    return getLanguageName(code);
+    return this.languagesService.getLanguageName(code);
   }
 
   getContributions(): string[] {
@@ -96,7 +83,7 @@ export class AddSongForm {
 
   searchLanguages(query: string): Promise<AutocompleteResult<string>[]> {
     const lowerQuery = query.toLowerCase();
-    const results = languages
+    const results = this.languagesService.getLanguages()
       .filter((lang) => lang.name.toLowerCase().includes(lowerQuery))
       .map((lang) => ({ id: lang.code, name: lang.name }));
     return Promise.resolve(results);
@@ -147,7 +134,7 @@ export class AddSongForm {
     if (!result || result.id === null) return;
     this.pendingLanguages.push(result.id);
 
-    this.languageAutocomplete.reset();  // BUT WAIT
+    this.languageAutocomplete.reset();
   }
 
   private async fillArtistsFromSong(songId: number): Promise<void> {
