@@ -19,6 +19,7 @@ export class AutocompleteTextbox<T> implements OnDestroy {
   placeholder = input('');
   searchFn = input<(query: string) => Promise<AutocompleteResult<T>[]>>(() => Promise.resolve([]));
   disabled = input(false);
+  allowCustom = input(true);
 
   resultSelected = output<AutocompleteResult<T> | null>();
 
@@ -129,11 +130,14 @@ export class AutocompleteTextbox<T> implements OnDestroy {
 
   selectItem(index: number): void {
     const query = this.searchControl.value.trim();
-    if (index === 0) {
+    
+    const indexModifier = this.allowCustom() ? 1 : 0;
+
+    if (this.allowCustom() && index === 0) {
       this.selectedName = null;
       this.resultSelected.emit({ id: null, name: query });
     } else if (index <= this.results.length) {
-      const chosen = this.results[index - 1];
+      const chosen = this.results[index - indexModifier];
       this.selectedName = chosen.name;
       this.searchControl.setValue(chosen.name, { emitEvent: false });
       this.resultSelected.emit(chosen);
@@ -144,8 +148,9 @@ export class AutocompleteTextbox<T> implements OnDestroy {
   getDisplayResults(): { result: AutocompleteResult<T> | null; isVerbatim: boolean }[] {
     const query = this.searchControl.value.trim();
     if (!query) return [];
-    const verbatim: { result: null; isVerbatim: true } = { result: null, isVerbatim: true };
     const matches = this.results.map((r) => ({ result: r, isVerbatim: false }));
+    if (!this.allowCustom()) return matches;
+    const verbatim: { result: null; isVerbatim: true } = { result: null, isVerbatim: true };
     return [verbatim, ...matches];
   }
 

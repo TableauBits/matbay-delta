@@ -58,7 +58,9 @@
       label="Add a language"
       placeholder="Type a language..."
       [searchFn]="searchLanguages.bind(this)"
-      (resultSelected)="onLanguageSelected($event)">
+      (resultSelected)="onLanguageSelected($event)"
+      [allowCustom]="false"
+      >
     </app-autocomplete-textbox>
     @if (pendingLanguages.length > 0) {
       <ul class="pending-languages">
