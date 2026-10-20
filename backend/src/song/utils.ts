@@ -35,17 +35,21 @@ async function addSong(body: AddSongRequestBody): Promise<Result<DB.Select.Song,
     );
 }
 
-async function createLanguagesForSong(song: number, languages: string[], tx?: DB.Transaction): Promise<Result<void, Error>> {
+async function createLanguagesForSong(
+    song: number,
+    languages: string[],
+    tx?: DB.Transaction,
+): Promise<Result<void, Error>> {
     const ctx = tx ? tx : db;
 
-    const rows = languages.map(l => {
-        const row: DB.Insert.SongLanguage = {song, language: l};
+    const rows = languages.map((l) => {
+        const row: DB.Insert.SongLanguage = { song, language: l };
         return row;
     });
 
     const operation = async () => await ctx.insert(songLanguage).values(rows);
 
-    return (await Result.safe(operation()));
+    return await Result.safe(operation());
 }
 
 async function createSong(song: DB.Insert.Song, tx?: DB.Transaction): Promise<Result<DB.Select.Song, Error>> {
@@ -83,12 +87,15 @@ async function getSong(id: number): Promise<Result<Song, Error>> {
                     columns: {
                         language: true,
                     },
-                }
+                },
             },
         });
 
-    return (await Result.safe(operation())).andThen((val) =>
-        Option(val.at(0)).map(v => ({...v, songLanguage: v.songLanguage.map(l => l.language)})).okOr(new Error(`No song with id: ${id}`)),       // God have mercy, i didn't mean it
+    return (await Result.safe(operation())).andThen(
+        (val) =>
+            Option(val.at(0))
+                .map((v) => ({ ...v, songLanguage: v.songLanguage.map((l) => l.language) }))
+                .okOr(new Error(`No song with id: ${id}`)), // God have mercy, i didn't mean it
     );
 }
 
