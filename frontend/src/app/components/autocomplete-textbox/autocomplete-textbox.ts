@@ -130,7 +130,7 @@ export class AutocompleteTextbox<T> implements OnDestroy {
 
   selectItem(index: number): void {
     const query = this.searchControl.value.trim();
-    
+
     const indexModifier = this.allowCustom() ? 1 : 0;
 
     if (this.allowCustom() && index === 0) {

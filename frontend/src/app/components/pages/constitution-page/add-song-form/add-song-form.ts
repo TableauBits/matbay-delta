@@ -14,7 +14,6 @@ import { firstValueFrom } from 'rxjs';
 import parseUrl from 'parse-url';
 import { Languages } from '../../../../services/languages';
 
-
 interface PendingArtist {
   id: number;
   name: string;
@@ -82,7 +81,8 @@ export class AddSongForm {
 
   searchLanguages(query: string): Promise<AutocompleteResult<string>[]> {
     const lowerQuery = query.toLowerCase();
-    const results = this.languagesService.getLanguages()
+    const results = this.languagesService
+      .getLanguages()
       .filter((lang) => lang.name.toLowerCase().includes(lowerQuery))
       .map((lang) => ({ id: lang.code, name: lang.name }));
     return Promise.resolve(results);
