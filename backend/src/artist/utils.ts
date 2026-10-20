@@ -2,7 +2,7 @@ import { eq, like } from "drizzle-orm";
 import { Option, Result } from "oxide.ts";
 import { db } from "../db/http";
 import { artists } from "../db/schemas";
-import type { DB } from "../db-namepsace";
+import type { DB } from "../db-namespace";
 
 async function createArtist(artist: DB.Insert.Artist): Promise<Result<DB.Select.Artist, Error>> {
     const operation = async () => await db.insert(artists).values(artist).returning();

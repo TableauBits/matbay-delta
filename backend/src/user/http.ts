@@ -5,7 +5,7 @@ import type { UserIdResponse, UserUpdateRequestBody } from "../../../common/user
 import { ensureAuthMiddleware } from "../auth/http";
 import { db } from "../db/http";
 import { users } from "../db/schemas";
-import type { DB } from "../db-namepsace";
+import type { DB } from "../db-namespace";
 import { getBody, getParam, getReqUID, HttpError, HttpStatus, sendResult } from "../utils";
 import { getUidFromHandle, getUser } from "./utils";
 

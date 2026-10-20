@@ -6,7 +6,7 @@ import type { AddSongRequestBody, Song } from "../../../common/song";
 import { KNOWN_HOSTS, type Source, SourceHost, SourcePlatform } from "../../../common/source";
 import { db } from "../db/http";
 import { songArtist, songLanguage, songSource, songs } from "../db/schemas";
-import type { DB } from "../db-namepsace";
+import type { DB } from "../db-namespace";
 import { unwrap } from "../utils";
 
 async function addSong(body: AddSongRequestBody): Promise<Result<DB.Select.Song, Error>> {

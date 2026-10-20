@@ -10,7 +10,7 @@ import {
     type WSInMessage,
 } from "../../../common/websocket";
 import { validateToken } from "../auth/token";
-import type { DB } from "../db-namepsace";
+import type { DB } from "../db-namespace";
 import { io } from "../main";
 
 async function validateMessage(message: WSInMessage): Promise<boolean> {
