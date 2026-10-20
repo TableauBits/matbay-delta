@@ -9,6 +9,7 @@ interface Song {
   primaryArtist: number;
   songArtist: { artist: number, contribution: ArtistContributionType }[];
   songSource: Source[];
+  songLanguage: string[];
 }
 
 // Requests

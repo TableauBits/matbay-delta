@@ -82,13 +82,13 @@ async function getSong(id: number): Promise<Result<Song, Error>> {
                 songLanguage: {
                     columns: {
                         language: true,
-                    }
+                    },
                 }
             },
         });
 
     return (await Result.safe(operation())).andThen((val) =>
-        Option(val.at(0)).okOr(new Error(`No song with id: ${id}`)),
+        Option(val.at(0)).map(v => ({...v, songLanguage: v.songLanguage.map(l => l.language)})).okOr(new Error(`No song with id: ${id}`)),       // God have mercy, i didn't mean it
     );
 }
 
