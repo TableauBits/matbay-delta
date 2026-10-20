@@ -3,6 +3,7 @@ import { Observable, ReplaySubject } from 'rxjs';
 import { User, UserIdResponse, UserUpdateRequestBody } from '../../../../common/user';
 import { DeltaAuth } from './delta-auth';
 import { HttpRequests } from './requests/http-requests';
+import { SnackbarService } from './snackbar';
 
 @Injectable({
   providedIn: 'root',
@@ -11,6 +12,7 @@ export class Users {
   // Service injections
   private deltaAuth = inject(DeltaAuth);
   private httpRequests = inject(HttpRequests);
+  private snackbar = inject(SnackbarService);
 
   // Cache of user data to avoid redundant requests
   private users = new Map<string, ReplaySubject<User>>();
@@ -60,12 +62,14 @@ export class Users {
 
     this.httpRequests
       .authenticatedPostRequest<UserUpdateRequestBody, User>(`user/update`, userInfo)
-      .then((user) => {
+      .then((updatedUser) => {
         const userSubject = this.users.get(uid);
-        if (userSubject) userSubject.next(user);
+        if (userSubject) userSubject.next(updatedUser);
+        this.snackbar.showSuccess('Informations mises à jour');
       })
       .catch((error) => {
         console.error('failed to update user info', error);
+        this.snackbar.showError('Échec de la mise à jour des informations');
       });
   }
 }

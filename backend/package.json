@@ -28,10 +28,10 @@
         "oxide.ts": "^1.1.0",
         "parse-url": "^11.1.0",
         "socket.io": "^4.8.3",
-        "uuid": "^14.0.0"
+        "uuid": "^14.0.1"
     },
     "devDependencies": {
-        "@biomejs/biome": "2.5.1",
+        "@biomejs/biome": "2.5.5",
         "@types/cors": "^2.8.19",
         "@types/dotenv": "^8.2.3",
         "@types/express": "^5.0.6",

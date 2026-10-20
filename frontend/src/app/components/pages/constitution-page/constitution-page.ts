@@ -14,6 +14,7 @@ import { AsyncPipe } from '@angular/common';
 import { Constitutions } from '../../../services/constitutions';
 import { HttpErrorResponse } from '@angular/common/http';
 import { HttpRequests } from '../../../services/requests/http-requests';
+import { SnackbarService } from '../../../services/snackbar';
 import { RedirectToArtistPage } from '../../utils/redirect-to-artist-page/redirect-to-artist-page';
 import { RedirectToSongPage } from '../../utils/redirect-to-song-page/redirect-to-song-page';
 import { RedirectToUserProfile } from '../../utils/redirect-to-user-profile/redirect-to-user-profile';
@@ -50,6 +51,7 @@ export class ConstitutionPage implements OnDestroy {
   songs = inject(Songs);
   sources = inject(Sources);
   httpRequests = inject(HttpRequests);
+  snackbar = inject(SnackbarService);
 
   private subscriptions: Subscription = new Subscription();
 
@@ -134,6 +136,12 @@ export class ConstitutionPage implements OnDestroy {
       .authenticatedPostRequest<RemoveSongConstitutionRequestBody>('constitution/removeSong', {
         songParticipationId: participation,
       })
-      .catch((err) => console.error(err));
+      .then(() => {
+        this.snackbar.showSuccess('Chanson supprimée de la constitution');
+      })
+      .catch((err) => {
+        console.error(err);
+        this.snackbar.showError('Échec de la suppression de la chanson');
+      });
   }
 }
