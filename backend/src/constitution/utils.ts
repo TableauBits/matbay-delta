@@ -4,7 +4,7 @@ import type { Constitution } from "../../../common/constitution.ts";
 import type { Unit } from "../../../common/utils.ts";
 import { db } from "../db/http.ts";
 import { constitutions, songConstitution, userConstitution } from "../db/schemas/index.ts";
-import type { DB } from "../db-namepsace.ts";
+import type { DB } from "../db-namespace.ts";
 import { unwrap } from "../utils.ts";
 import { onSongAddCallback, onSongRemoveCallback, onUserJoinCallback, onUserLeaveCallback } from "./ws.ts";
 

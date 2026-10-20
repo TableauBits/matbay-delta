@@ -12,6 +12,12 @@
       </li>
     }
   </ul>
+  <h3>Languages:</h3>
+  <ul>
+    @for (language of song.songLanguage; track $index) {
+      <li>{{ languages.getLanguageName(language) }}</li>
+    }
+  </ul>
   <h3>Sources:</h3>
   <ul>
     @for (source of song.songSource; track $index) {
@@ -20,7 +26,7 @@
       </li>
     }
     @if (song.songSource.length === 0) {
-      /
+      <li>No sources available.</li>
     }
   </ul>
 } @else {

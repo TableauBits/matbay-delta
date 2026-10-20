@@ -19,10 +19,10 @@
         label="Add an artist"
         placeholder="Type an artist name..."
         [searchFn]="searchArtists.bind(this)"
-        [disabled]="artistsLocked"
+        [disabled]="formLocked"
         (resultSelected)="onArtistSelected($event)"
       ></app-autocomplete-textbox>
-      @if (!artistsLocked) {
+      @if (!formLocked) {
         <div class="role-select-wrapper">
           <label for="artist-role">Role</label>
           <select id="artist-role" [(ngModel)]="nextArtistRole" [ngModelOptions]="{ standalone: true }">
@@ -42,7 +42,7 @@
             @if (artist.isNew) {
               <span class="tag tag-new">new</span>
             }
-            @if (!artistsLocked) {
+            @if (!formLocked) {
               <button class="btn-remove" (click)="removePendingArtist(i)">x</button>
             }
           </li>
@@ -52,8 +52,34 @@
   </div>
 
   <div class="form-section">
+    <h4>Languages</h4>
+    <app-autocomplete-textbox
+      #languageAutocomplete
+      label="Add a language"
+      placeholder="Type a language..."
+      [searchFn]="searchLanguages.bind(this)"
+      (resultSelected)="onLanguageSelected($event)"
+      [allowCustom]="false"
+      [disabled]="formLocked"
+    >
+    </app-autocomplete-textbox>
+    @if (pendingLanguages.length > 0) {
+      <ul class="pending-languages">
+        @for (language of pendingLanguages; track $index; let i = $index) {
+          <li class="pending-language">
+            <span class="pending-language-name">{{ getLanguageName(language) }}</span>
+            @if (!formLocked) {
+              <button class="btn-remove" (click)="removePendingLanguage(i)">x</button>
+            }
+          </li>
+        }
+      </ul>
+    }
+  </div>
+
+  <div class="form-section">
     <h4>Sources</h4>
-    <button (click)="addSource()">+ Add source</button>
+    <button (click)="addSource()" [disabled]="formLocked">+ Add source</button>
     <div formArrayName="sources">
       @for (sourceForm of sources.controls; track $index; let i = $index) {
         <div [formGroupName]="i" class="source-row">

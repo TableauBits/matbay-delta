@@ -38,7 +38,7 @@ export class Songs {
     return newSong.asObservable();
   }
 
-  async search(query: string): Promise<AutocompleteResult[]> {
+  async search(query: string): Promise<AutocompleteResult<number>[]> {
     const results = await this.httpRequests.authenticatedGetRequest<{ id: number; title: string }[]>(
       `song/autocomplete/${encodeURIComponent(query)}`,
     );

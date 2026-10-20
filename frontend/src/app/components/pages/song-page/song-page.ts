@@ -9,6 +9,7 @@ import { Sources } from '../../../services/sources';
 import { Subscription } from 'rxjs';
 import { Title } from '@angular/platform-browser';
 import { RedirectToArtistPage } from '../../utils/redirect-to-artist-page/redirect-to-artist-page';
+import { Languages } from '../../../services/languages';
 
 @Component({
   selector: 'app-song-page',
@@ -24,6 +25,7 @@ export class SongPage implements OnDestroy {
 
   artists = inject(Artists);
   sources = inject(Sources);
+  languages = inject(Languages);
 
   private subscriptions: Subscription = new Subscription();
 
