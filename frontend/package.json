@@ -15,6 +15,7 @@
   "private": true,
   "type": "module",
   "overrides": {
+    "@jridgewell/sourcemap-codec": "1.6.0",
     "@codemirror/view": "$@codemirror/view",
     "@codemirror/state": "$@codemirror/state"
   },
