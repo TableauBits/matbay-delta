@@ -50,10 +50,9 @@ export class AddSongForm {
   pendingArtists: PendingArtist[] = [];
   nextArtistRole: ArtistContribution = ArtistContribution.MAIN;
   errorMessage: string | null = null;
-  artistsLocked = false;
+  formLocked = false;
 
   pendingLanguages: string[] = [];
-  // selectedLanguage: AutocompleteResult | null = null;
 
   constructor() {
     this.songForm = this.formBuilder.group({
@@ -119,15 +118,15 @@ export class AddSongForm {
 
     // A new song (or none selected): the user must provide the artists themselves
     if (!result || result.id === null) {
-      this.artistsLocked = false;
+      this.formLocked = false;
       this.pendingArtists = [];
       this.nextArtistRole = ArtistContribution.MAIN;
       return;
     }
 
     // An existing song already knows its artists: fill them in and lock the artist autocomplete
-    this.artistsLocked = true;
-    await this.fillArtistsFromSong(result.id);
+    this.formLocked = true;
+    await this.fillFormFromSong(result.id);
   }
 
   onLanguageSelected(result: AutocompleteResult<string> | null): void {
@@ -137,9 +136,10 @@ export class AddSongForm {
     this.languageAutocomplete.reset();
   }
 
-  private async fillArtistsFromSong(songId: number): Promise<void> {
+  private async fillFormFromSong(songId: number): Promise<void> {
     const song = await firstValueFrom(this.songsService.get(songId));
-    const entries: PendingArtist[] = await Promise.all(
+
+    this.pendingArtists = await Promise.all(
       song.songArtist.map(async (sa): Promise<PendingArtist> => {
         const artist = await firstValueFrom(this.artistsService.get(sa.artist));
         return {
@@ -150,7 +150,8 @@ export class AddSongForm {
         };
       }),
     );
-    this.pendingArtists = entries;
+
+    this.pendingLanguages = song.songLanguage;
   }
 
   createSourceFormGroup(): FormGroup {
@@ -244,7 +245,7 @@ export class AddSongForm {
     this.pendingLanguages = [];
     this.nextArtistRole = ArtistContribution.MAIN;
     this.errorMessage = null;
-    this.artistsLocked = false;
+    this.formLocked = false;
     this.songForm.reset();
     this.sources.clear();
     this.songAutocomplete.reset();
