@@ -8,9 +8,9 @@ interface Language {
 
 const CUSTOM_LANGUAGES = new Map<string, Language>([
   ['Δ_ins', { code: 'Δ_ins', name: 'Instrumental' }],
-  ['∆_mhl', { code: '∆_mhl', name: 'Monster Hunter Language' }],
-  ['∆_nie', { code: '∆_nie', name: 'Chaos' }], //  NieR Language
-  ['∆_hut', { code: '∆_hut', name: 'Huttese' }],
+  ['Δ_mhl', { code: 'Δ_mhl', name: 'Monster Hunter Language' }],
+  ['Δ_nie', { code: 'Δ_nie', name: 'Chaos' }], //  NieR Language
+  ['Δ_hut', { code: 'Δ_hut', name: 'Huttese' }],
 ]);
 
 @Injectable({
