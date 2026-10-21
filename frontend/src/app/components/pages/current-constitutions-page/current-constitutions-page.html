@@ -1,5 +1,5 @@
 <h1>Current constitutions</h1>
-@for (cstID of currentConstitutions; track $index) {
+@for (cstID of currentConstitutions(); track $index) {
   @if (constitutions.get(cstID) | async; as constitution) {
     <div>
       <h2>{{ $index }} - {{ constitution.name }} (id : {{ constitution.id }})</h2>

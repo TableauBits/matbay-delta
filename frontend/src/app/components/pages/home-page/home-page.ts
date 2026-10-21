@@ -1,4 +1,4 @@
-import { Component, OnDestroy, inject } from '@angular/core';
+import { Component, OnDestroy, inject, signal } from '@angular/core';
 import { Observable, Subscription } from 'rxjs';
 import { User } from '../../../../../../common/user';
 import { Users } from '../../../services/users';
@@ -16,7 +16,7 @@ export class HomePage implements OnDestroy {
   // Observable of the current user data
   private currentUserObs: Promise<Observable<User> | undefined>;
   private subscriptions: Subscription = new Subscription();
-  currentUser: User | undefined;
+  currentUser = signal<User | undefined>(undefined);
 
   constructor() {
     this.currentUserObs = this.users.getCurrentUser();
@@ -25,7 +25,7 @@ export class HomePage implements OnDestroy {
       if (!userObs) return;
 
       const subscription = userObs.subscribe((user) => {
-        this.currentUser = user;
+        this.currentUser.set(user);
       });
       this.subscriptions.add(subscription);
     });

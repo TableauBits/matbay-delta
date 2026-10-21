@@ -1,6 +1,6 @@
-@if (error) {
+@if (error(); as error) {
   <p>Error loading song : "{{ error.error }}".</p>
-} @else if (song) {
+} @else if (song(); as song) {
   <h2>{{ song.title }}</h2>
   <p>Added on: {{ song.creationDate }}</p>
   <h3>Artists:</h3>

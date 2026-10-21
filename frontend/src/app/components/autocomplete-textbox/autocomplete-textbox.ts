@@ -1,4 +1,4 @@
-import { Component, effect, input, OnDestroy, output } from '@angular/core';
+import { Component, effect, input, OnDestroy, output, signal } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { Subscription, of } from 'rxjs';
 import { debounceTime, distinctUntilChanged, switchMap, tap } from 'rxjs/operators';
@@ -25,10 +25,10 @@ export class AutocompleteTextbox<T> implements OnDestroy {
 
   searchControl = new FormControl<string>('', { nonNullable: true });
 
-  results: AutocompleteResult<T>[] = [];
-  isLoading = false;
-  isDropdownOpen = false;
-  activeIndex = -1;
+  results = signal<AutocompleteResult<T>[]>([]);
+  isLoading = signal(false);
+  isDropdownOpen = signal(false);
+  activeIndex = signal(-1);
 
   private subscriptions: Subscription = new Subscription();
   private selectedName: string | null = null;
@@ -51,13 +51,13 @@ export class AutocompleteTextbox<T> implements OnDestroy {
             this.resultSelected.emit(null);
           }
           if (query.trim().length === 0) {
-            this.results = [];
-            this.isDropdownOpen = false;
-            this.isLoading = false;
+            this.results.set([]);
+            this.isDropdownOpen.set(false);
+            this.isLoading.set(false);
             this.resultSelected.emit(null);
           } else {
-            this.isLoading = true;
-            this.isDropdownOpen = true;
+            this.isLoading.set(true);
+            this.isDropdownOpen.set(true);
           }
         }),
         debounceTime(1000),
@@ -67,9 +67,9 @@ export class AutocompleteTextbox<T> implements OnDestroy {
         }),
       )
       .subscribe((results) => {
-        this.results = results;
-        this.isLoading = false;
-        this.activeIndex = -1;
+        this.results.set(results);
+        this.isLoading.set(false);
+        this.activeIndex.set(-1);
       });
 
     this.subscriptions.add(searchSub);
@@ -86,45 +86,45 @@ export class AutocompleteTextbox<T> implements OnDestroy {
       case 'ArrowDown':
         event.preventDefault();
         if (totalItems > 0) {
-          this.activeIndex = (this.activeIndex + 1) % totalItems;
+          this.activeIndex.set((this.activeIndex() + 1) % totalItems);
         }
         break;
       case 'ArrowUp':
         event.preventDefault();
         if (totalItems > 0) {
-          this.activeIndex = this.activeIndex <= 0 ? totalItems - 1 : this.activeIndex - 1;
+          this.activeIndex.set(this.activeIndex() <= 0 ? totalItems - 1 : this.activeIndex() - 1);
         }
         break;
       case 'Enter':
         event.preventDefault();
-        if (this.activeIndex >= 0 && totalItems > 0) {
-          this.selectItem(this.activeIndex);
+        if (this.activeIndex() >= 0 && totalItems > 0) {
+          this.selectItem(this.activeIndex());
         }
         break;
       case 'Escape':
-        this.isDropdownOpen = false;
+        this.isDropdownOpen.set(false);
         break;
     }
   }
 
   onBlur(): void {
     setTimeout(() => {
-      this.isDropdownOpen = false;
+      this.isDropdownOpen.set(false);
     }, 200);
   }
 
   onFocus(): void {
     if (this.searchControl.value.trim().length > 0) {
-      this.isDropdownOpen = true;
+      this.isDropdownOpen.set(true);
     }
   }
 
   reset(): void {
     this.searchControl.setValue('');
-    this.results = [];
-    this.isDropdownOpen = false;
-    this.activeIndex = -1;
-    this.isLoading = false;
+    this.results.set([]);
+    this.isDropdownOpen.set(false);
+    this.activeIndex.set(-1);
+    this.isLoading.set(false);
     this.selectedName = null;
   }
 
@@ -136,19 +136,19 @@ export class AutocompleteTextbox<T> implements OnDestroy {
     if (this.allowCustom() && index === 0) {
       this.selectedName = null;
       this.resultSelected.emit({ id: null, name: query });
-    } else if (index <= this.results.length) {
-      const chosen = this.results[index - indexModifier];
+    } else if (index <= this.results().length) {
+      const chosen = this.results()[index - indexModifier];
       this.selectedName = chosen.name;
       this.searchControl.setValue(chosen.name, { emitEvent: false });
       this.resultSelected.emit(chosen);
     }
-    this.isDropdownOpen = false;
+    this.isDropdownOpen.set(false);
   }
 
   getDisplayResults(): { result: AutocompleteResult<T> | null; isVerbatim: boolean }[] {
     const query = this.searchControl.value.trim();
     if (!query) return [];
-    const matches = this.results.map((r) => ({ result: r, isVerbatim: false }));
+    const matches = this.results().map((r) => ({ result: r, isVerbatim: false }));
     if (!this.allowCustom()) return matches;
     const verbatim: { result: null; isVerbatim: true } = { result: null, isVerbatim: true };
     return [verbatim, ...matches];
@@ -157,7 +157,7 @@ export class AutocompleteTextbox<T> implements OnDestroy {
   getTotalItemCount(): number {
     const query = this.searchControl.value.trim();
     if (!query) return 0;
-    return 1 + this.results.length;
+    return 1 + this.results().length;
   }
 
   highlightMatch(text: string, query: string): { text: string; isMatch: boolean }[] {

@@ -14,16 +14,16 @@
       (focus)="onFocus()"
       autocomplete="off"
     />
-    @if (isLoading) {
+    @if (isLoading()) {
       <div class="spinner"></div>
     }
   </div>
-  @if (isDropdownOpen && !disabled() && searchControl.value.trim().length > 0) {
+  @if (isDropdownOpen() && !disabled() && searchControl.value.trim().length > 0) {
     <ul class="autocomplete-dropdown">
       @for (item of getDisplayResults(); track $index; let i = $index) {
         <li
           class="autocomplete-item"
-          [class.active]="i === activeIndex"
+          [class.active]="i === activeIndex()"
           (mousedown)="selectItem(i)"
           [attr.data-index]="i"
         >
