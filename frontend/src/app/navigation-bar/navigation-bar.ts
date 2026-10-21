@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, signal } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 
 import { CommonModule } from '@angular/common';
@@ -18,7 +18,7 @@ export class NavigationBar implements OnInit {
   deltaAuth = inject(DeltaAuth);
   users = inject(Users);
   private readonly router = inject(Router);
-  user: User | undefined;
+  user = signal<User | undefined>(undefined);
 
   // Mirrors the route gating in app.routes.ts: the debug page only exists in dev.
   showDebug = environment.name === 'development';
@@ -27,7 +27,7 @@ export class NavigationBar implements OnInit {
     this.deltaAuth.getUid().then((uid) => {
       this.users.get(uid).subscribe({
         next: (user) => {
-          this.user = user;
+          this.user.set(user);
         },
         error: (error) => {
           console.error('Failed to get user data for navigation bar', error);
@@ -37,6 +37,6 @@ export class NavigationBar implements OnInit {
   }
 
   redirectToProfile(): void {
-    this.router.navigate(['/users', this.user?.handle]);
+    this.router.navigate(['/users', this.user()?.handle]);
   }
 }

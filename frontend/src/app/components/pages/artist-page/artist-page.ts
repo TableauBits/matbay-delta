@@ -1,4 +1,4 @@
-import { Component, inject, OnDestroy } from '@angular/core';
+import { Component, inject, OnDestroy, signal } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
@@ -20,8 +20,8 @@ export class ArtistPage implements OnDestroy {
 
   private subscriptions: Subscription = new Subscription();
 
-  artist: Artist | undefined;
-  error: HttpErrorResponse | undefined;
+  artist = signal<Artist | undefined>(undefined);
+  error = signal<HttpErrorResponse | undefined>(undefined);
 
   ngOnDestroy(): void {
     this.subscriptions.unsubscribe();
@@ -32,11 +32,11 @@ export class ArtistPage implements OnDestroy {
       const id = parseInt(params['id'], 10);
       const subscription = this.artists.get(id).subscribe({
         next: (data) => {
-          this.artist = data;
-          if (this.artist) this.titleService.setTitle(this.artist.name);
+          this.artist.set(data);
+          if (data) this.titleService.setTitle(data.name);
         },
         error: (err) => {
-          this.error = err;
+          this.error.set(err);
         },
       });
 

@@ -1,4 +1,4 @@
-import { AfterViewChecked, Component, ElementRef, ViewChild, inject } from '@angular/core';
+import { AfterViewChecked, Component, ElementRef, ViewChild, inject, signal } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 
@@ -39,8 +39,8 @@ export class DebugPage implements AfterViewChecked {
   private previousEntryCount = 0;
 
   debugForm: FormGroup;
-  entries: RequestEntry[] = [];
-  loading = false;
+  entries = signal<RequestEntry[]>([]);
+  loading = signal(false);
   showHeaders = false;
 
   httpMethods = HTTP_METHODS;
@@ -57,9 +57,10 @@ export class DebugPage implements AfterViewChecked {
   }
 
   ngAfterViewChecked(): void {
-    if (this.entries.length > this.previousEntryCount) {
+    const entryCount = this.entries().length;
+    if (entryCount > this.previousEntryCount) {
       this.scrollToTop();
-      this.previousEntryCount = this.entries.length;
+      this.previousEntryCount = entryCount;
     }
   }
 
@@ -69,7 +70,7 @@ export class DebugPage implements AfterViewChecked {
   }
 
   async sendRequest(): Promise<void> {
-    if (this.loading) return;
+    if (this.loading()) return;
 
     const method = this.debugForm.get('method')?.value;
     const endpoint = this.debugForm.get('url')?.value;
@@ -111,7 +112,7 @@ export class DebugPage implements AfterViewChecked {
       }
     }
 
-    this.loading = true;
+    this.loading.set(true);
     const startTime = performance.now();
 
     try {
@@ -131,19 +132,22 @@ export class DebugPage implements AfterViewChecked {
         if (val) responseHeaders[key] = val;
       });
 
-      this.entries.unshift({
-        timestamp: new Date(),
-        method,
-        url,
-        statusCode: response.status,
-        duration,
-        requestBody: bodyRaw || null,
-        responseBody: response.body,
-        requestHeaders: includeAuth || headersRaw ? parsedHeaders : null,
-        responseHeaders,
-        error: null,
-        status: 'success',
-      });
+      this.entries.update((entries) => [
+        {
+          timestamp: new Date(),
+          method,
+          url,
+          statusCode: response.status,
+          duration,
+          requestBody: bodyRaw || null,
+          responseBody: response.body,
+          requestHeaders: includeAuth || headersRaw ? parsedHeaders : null,
+          responseHeaders,
+          error: null,
+          status: 'success',
+        },
+        ...entries,
+      ]);
     } catch (err: unknown) {
       const duration = performance.now() - startTime;
       const httpError = err instanceof HttpErrorResponse ? err : null;
@@ -160,42 +164,48 @@ export class DebugPage implements AfterViewChecked {
         });
       }
 
-      this.entries.unshift({
-        timestamp: new Date(),
-        method,
-        url,
-        statusCode,
-        duration,
-        requestBody: bodyRaw || null,
-        responseBody,
-        requestHeaders: includeAuth || headersRaw ? parsedHeaders : null,
-        responseHeaders,
-        error: errorMessage,
-        status: 'error',
-      });
+      this.entries.update((entries) => [
+        {
+          timestamp: new Date(),
+          method,
+          url,
+          statusCode,
+          duration,
+          requestBody: bodyRaw || null,
+          responseBody,
+          requestHeaders: includeAuth || headersRaw ? parsedHeaders : null,
+          responseHeaders,
+          error: errorMessage,
+          status: 'error',
+        },
+        ...entries,
+      ]);
     } finally {
-      this.loading = false;
+      this.loading.set(false);
     }
   }
 
   private addErrorEntry(method: string, url: string, error: string, responseBody: string | null): void {
-    this.entries.unshift({
-      timestamp: new Date(),
-      method,
-      url,
-      statusCode: null,
-      duration: 0,
-      requestBody: this.debugForm.get('body')?.value || null,
-      responseBody,
-      requestHeaders: null,
-      responseHeaders: null,
-      error,
-      status: 'error',
-    });
+    this.entries.update((entries) => [
+      {
+        timestamp: new Date(),
+        method,
+        url,
+        statusCode: null,
+        duration: 0,
+        requestBody: this.debugForm.get('body')?.value || null,
+        responseBody,
+        requestHeaders: null,
+        responseHeaders: null,
+        error,
+        status: 'error',
+      },
+      ...entries,
+    ]);
   }
 
   clearConsole(): void {
-    this.entries = [];
+    this.entries.set([]);
   }
 
   copyToClipboard(text: string): void {

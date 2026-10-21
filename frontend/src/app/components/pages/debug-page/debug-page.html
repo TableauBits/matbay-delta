@@ -37,8 +37,8 @@
       </div>
 
       <div class="button-row">
-        <button type="submit" class="send-button" [disabled]="loading">
-          {{ loading ? 'Sending...' : 'Send' }}
+        <button type="submit" class="send-button" [disabled]="loading()">
+          {{ loading() ? 'Sending...' : 'Send' }}
         </button>
         <button type="button" class="clear-button" (click)="clearConsole()">Clear Console</button>
       </div>
@@ -48,15 +48,15 @@
   <div class="console-card glass-box">
     <div class="console-header">
       <h2>Console</h2>
-      <span class="entry-count">{{ entries.length }} entries</span>
+      <span class="entry-count">{{ entries().length }} entries</span>
     </div>
     <hr />
     <div class="console-body" #consoleBody>
-      @if (entries.length === 0) {
+      @if (entries().length === 0) {
         <div class="empty-console">No requests yet. Send one to see the results here.</div>
       }
 
-      @for (entry of entries; track entry.timestamp) {
+      @for (entry of entries(); track entry.timestamp) {
         <div class="console-entry" [class.error]="entry.status === 'error'">
           <div class="entry-header">
             <span class="timestamp">{{ formatTime(entry.timestamp) }}</span>

@@ -1,4 +1,4 @@
-import { Component, OnDestroy, inject } from '@angular/core';
+import { Component, OnDestroy, inject, signal } from '@angular/core';
 import {
   Constitution,
   RemoveSongConstitutionRequestBody,
@@ -57,12 +57,12 @@ export class ConstitutionPage implements OnDestroy {
 
   // Observable of the constitution data
   private constitutionObs: Observable<Constitution | undefined> | undefined;
-  constitution: Constitution | undefined;
-  constitutionError: HttpErrorResponse | undefined;
+  constitution = signal<Constitution | undefined>(undefined);
+  constitutionError = signal<HttpErrorResponse | undefined>(undefined);
 
   // Observable of the current user data
   private currentUserObs: Promise<Observable<User> | undefined>;
-  currentUser: User | undefined;
+  currentUser = signal<User | undefined>(undefined);
 
   ngOnDestroy(): void {
     this.subscriptions.unsubscribe();
@@ -76,11 +76,11 @@ export class ConstitutionPage implements OnDestroy {
       this.constitutionObs = this.constitutions.get(cstId);
       const subscription = this.constitutionObs.subscribe({
         next: (data) => {
-          this.constitution = data;
-          if (this.constitution) this.titleService.setTitle(this.constitution.name);
+          this.constitution.set(data);
+          if (data) this.titleService.setTitle(data.name);
         },
         error: (err) => {
-          this.constitutionError = err;
+          this.constitutionError.set(err);
         },
       });
       this.subscriptions.add(subscription);
@@ -91,7 +91,7 @@ export class ConstitutionPage implements OnDestroy {
     this.currentUserObs.then((userObs) => {
       if (!userObs) return;
       const subscription = userObs.subscribe((user) => {
-        this.currentUser = user;
+        this.currentUser.set(user);
       });
       this.subscriptions.add(subscription);
     });
@@ -112,20 +112,22 @@ export class ConstitutionPage implements OnDestroy {
   }
 
   getUsers(): UserConstitution[] {
-    if (!this.constitution) return [];
+    const constitution = this.constitution();
+    if (!constitution) return [];
 
     // Sort users by join date
-    const users = this.constitution.userConstitution;
+    const users = constitution.userConstitution;
     users.sort((a, b) => sortByJoinDate(a, b));
 
     return users;
   }
 
   getSongs(): SongConstitution[] {
-    if (!this.constitution) return [];
+    const constitution = this.constitution();
+    if (!constitution) return [];
 
     // Sort songs by add date
-    const songs = this.constitution.songConstitution;
+    const songs = constitution.songConstitution;
     songs.sort((a, b) => sortByAddDate(a, b));
 
     return songs;

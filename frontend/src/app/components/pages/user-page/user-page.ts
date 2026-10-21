@@ -1,4 +1,4 @@
-import { Component, OnDestroy, inject } from '@angular/core';
+import { Component, OnDestroy, inject, signal } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { CurrentUserForm } from './current-user-form/current-user-form';
 import { HttpErrorResponse } from '@angular/common/http';
@@ -22,9 +22,9 @@ export class UserPage implements OnDestroy {
   private subscriptions: Subscription = new Subscription();
 
   // Observable of the user data
-  user: User | undefined;
-  userError: HttpErrorResponse | undefined;
-  isCurrentUser = false;
+  user = signal<User | undefined>(undefined);
+  userError = signal<HttpErrorResponse | undefined>(undefined);
+  isCurrentUser = signal(false);
 
   ngOnDestroy(): void {
     this.subscriptions.unsubscribe();
@@ -37,11 +37,11 @@ export class UserPage implements OnDestroy {
       this.users.getFromHandle(handle).then((obs) => {
         const subscription = obs.subscribe({
           next: (data) => {
-            this.user = data;
-            this.titleService.setTitle(this.user.displayName);
+            this.user.set(data);
+            this.titleService.setTitle(data.displayName);
           },
           error: (err) => {
-            this.userError = err;
+            this.userError.set(err);
           },
         });
 
@@ -49,9 +49,10 @@ export class UserPage implements OnDestroy {
       });
 
       this.users.getCurrentUser().then((currentUser) => {
-        currentUser.subscribe((user) => {
-          this.isCurrentUser = user.handle === handle;
+        const subscription = currentUser.subscribe((user) => {
+          this.isCurrentUser.set(user.handle === handle);
         });
+        this.subscriptions.add(subscription);
       });
     });
   }

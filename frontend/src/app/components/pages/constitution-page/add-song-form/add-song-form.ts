@@ -3,7 +3,7 @@ import { AddArtistRequestBody, Artist, ArtistContribution } from '../../../../..
 import { AddSongRequestBody, Song } from '../../../../../../../common/song';
 import { AutocompleteResult, AutocompleteTextbox } from '../../../autocomplete-textbox/autocomplete-textbox';
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, inject, input, ViewChild } from '@angular/core';
+import { Component, inject, input, signal, ViewChild } from '@angular/core';
 import { AddSongConstitutionRequestBody } from '../../../../../../../common/constitution';
 import { FormsModule } from '@angular/forms';
 import { HttpRequests } from '../../../../services/requests/http-requests';
@@ -45,13 +45,13 @@ export class AddSongForm {
   @ViewChild('languageAutocomplete') languageAutocomplete!: AutocompleteTextbox<string>;
 
   songForm: FormGroup;
-  selectedSong: AutocompleteResult<number> | null = null;
-  pendingArtists: PendingArtist[] = [];
-  nextArtistRole: ArtistContribution = ArtistContribution.MAIN;
-  errorMessage: string | null = null;
-  formLocked = false;
+  selectedSong = signal<AutocompleteResult<number> | null>(null);
+  pendingArtists = signal<PendingArtist[]>([]);
+  nextArtistRole = signal<ArtistContribution>(ArtistContribution.MAIN);
+  errorMessage = signal<string | null>(null);
+  formLocked = signal(false);
 
-  pendingLanguages: string[] = [];
+  pendingLanguages = signal<string[]>([]);
 
   constructor() {
     this.songForm = this.formBuilder.group({
@@ -91,47 +91,50 @@ export class AddSongForm {
   onArtistSelected(result: AutocompleteResult<number> | null): void {
     if (!result) return;
 
-    this.pendingArtists.push({
-      id: result.id ?? -1,
-      name: result.name,
-      isNew: result.id === null,
-      role: this.nextArtistRole,
-    });
+    this.pendingArtists.update((artists) => [
+      ...artists,
+      {
+        id: result.id ?? -1,
+        name: result.name,
+        isNew: result.id === null,
+        role: this.nextArtistRole(),
+      },
+    ]);
 
     this.artistAutocomplete.reset();
 
-    if (this.pendingArtists.filter((a) => a.role === ArtistContribution.MAIN).length === 0) {
-      this.nextArtistRole = ArtistContribution.MAIN;
+    if (this.pendingArtists().filter((a) => a.role === ArtistContribution.MAIN).length === 0) {
+      this.nextArtistRole.set(ArtistContribution.MAIN);
     }
   }
 
   removePendingArtist(index: number): void {
-    this.pendingArtists.splice(index, 1);
+    this.pendingArtists.update((artists) => artists.filter((_, i) => i !== index));
   }
 
   removePendingLanguage(index: number): void {
-    this.pendingLanguages.splice(index, 1);
+    this.pendingLanguages.update((languages) => languages.filter((_, i) => i !== index));
   }
 
   async onSongSelected(result: AutocompleteResult<number> | null): Promise<void> {
-    this.selectedSong = result;
+    this.selectedSong.set(result);
 
     // A new song (or none selected): the user must provide the artists themselves
     if (!result || result.id === null) {
-      this.formLocked = false;
-      this.pendingArtists = [];
-      this.nextArtistRole = ArtistContribution.MAIN;
+      this.formLocked.set(false);
+      this.pendingArtists.set([]);
+      this.nextArtistRole.set(ArtistContribution.MAIN);
       return;
     }
 
     // An existing song already knows its artists: fill them in and lock the artist autocomplete
-    this.formLocked = true;
+    this.formLocked.set(true);
     await this.fillFormFromSong(result.id);
   }
 
   onLanguageSelected(result: AutocompleteResult<string> | null): void {
     if (!result || result.id === null) return;
-    this.pendingLanguages.push(result.id);
+    this.pendingLanguages.update((languages) => [...languages, result.id!]);
 
     this.languageAutocomplete.reset();
   }
@@ -139,19 +142,21 @@ export class AddSongForm {
   private async fillFormFromSong(songId: number): Promise<void> {
     const song = await firstValueFrom(this.songsService.get(songId));
 
-    this.pendingArtists = await Promise.all(
-      song.songArtist.map(async (sa): Promise<PendingArtist> => {
-        const artist = await firstValueFrom(this.artistsService.get(sa.artist));
-        return {
-          id: sa.artist,
-          name: artist.name,
-          isNew: false,
-          role: sa.contribution as ArtistContribution,
-        };
-      }),
+    this.pendingArtists.set(
+      await Promise.all(
+        song.songArtist.map(async (sa): Promise<PendingArtist> => {
+          const artist = await firstValueFrom(this.artistsService.get(sa.artist));
+          return {
+            id: sa.artist,
+            name: artist.name,
+            isNew: false,
+            role: sa.contribution as ArtistContribution,
+          };
+        }),
+      ),
     );
 
-    this.pendingLanguages = song.songLanguage;
+    this.pendingLanguages.set(song.songLanguage);
   }
 
   createSourceFormGroup(): FormGroup {
@@ -174,22 +179,25 @@ export class AddSongForm {
   }
 
   get canSubmit(): boolean {
-    return this.selectedSong !== null && this.pendingArtists.length > 0;
+    return this.selectedSong() !== null && this.pendingArtists().length > 0;
   }
 
   async submitForm(): Promise<void> {
-    if (!this.selectedSong || this.pendingArtists.length === 0) return;
+    const selectedSong = this.selectedSong();
+    const pendingArtists = this.pendingArtists();
+    const pendingLanguages = this.pendingLanguages();
+    if (!selectedSong || pendingArtists.length === 0) return;
 
-    this.errorMessage = null;
+    this.errorMessage.set(null);
 
     try {
       let songID: number;
 
-      if (this.selectedSong.id !== null) {
-        songID = this.selectedSong.id;
+      if (selectedSong.id !== null) {
+        songID = selectedSong.id;
       } else {
         const artistIds = await Promise.all(
-          this.pendingArtists.map(async (artist) => {
+          pendingArtists.map(async (artist) => {
             if (!artist.isNew) return artist.id;
             const created = await this.httpRequests.authenticatedPostRequest<AddArtistRequestBody, Artist>(
               'artist/add',
@@ -202,19 +210,19 @@ export class AddSongForm {
         const primaryArtistId = artistIds[0];
         const otherContributions: [number, ArtistContribution][] = artistIds
           .slice(1)
-          .map((id, i) => [id, this.pendingArtists[i + 1].role]);
+          .map((id, i) => [id, pendingArtists[i + 1].role]);
 
         const sources = (this.songForm.value.sources as FormSource[] | undefined)?.map((s) => s.url) ?? [];
 
         songID = (
           await this.httpRequests.authenticatedPostRequest<AddSongRequestBody, Song>('song/add', {
             song: {
-              title: this.selectedSong!.name,
+              title: selectedSong.name,
               primaryArtist: primaryArtistId,
             },
             otherContributions,
             sources,
-            languages: this.pendingLanguages,
+            languages: pendingLanguages,
           })
         ).id;
       }
@@ -227,25 +235,26 @@ export class AddSongForm {
       this.resetForm();
     } catch (e) {
       if (e instanceof HttpErrorResponse) {
-        this.errorMessage =
+        this.errorMessage.set(
           e.status === 409
             ? 'This song has already been added to the constitution.'
             : typeof e.error === 'string'
               ? e.error
-              : e.message;
+              : e.message,
+        );
       } else {
-        this.errorMessage = 'An unexpected error occurred';
+        this.errorMessage.set('An unexpected error occurred');
       }
     }
   }
 
   private resetForm(): void {
-    this.selectedSong = null;
-    this.pendingArtists = [];
-    this.pendingLanguages = [];
-    this.nextArtistRole = ArtistContribution.MAIN;
-    this.errorMessage = null;
-    this.formLocked = false;
+    this.selectedSong.set(null);
+    this.pendingArtists.set([]);
+    this.pendingLanguages.set([]);
+    this.nextArtistRole.set(ArtistContribution.MAIN);
+    this.errorMessage.set(null);
+    this.formLocked.set(false);
     this.songForm.reset();
     this.sources.clear();
     this.songAutocomplete.reset();

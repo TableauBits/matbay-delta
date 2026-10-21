@@ -1,6 +1,6 @@
-@if (constitutionError) {
+@if (constitutionError(); as constitutionError) {
   <p>Error loading constitution : "{{ constitutionError.error }}".</p>
-} @else if (constitution) {
+} @else if (constitution(); as constitution) {
   <h1>{{ constitution.name }} (id : {{ constitution.id }})</h1>
   <hr />
   <p>Description : {{ constitution.description }}</p>
@@ -42,7 +42,7 @@
             </li>
           }
         </ul>
-        @if (observers.user?.id === (currentUser?.id ?? '')) {
+        @if (observers.user?.id === (currentUser()?.id ?? '')) {
           <button (click)="removeSong(songConstitution.id)">Remove song</button>
         }
       }
@@ -51,7 +51,7 @@
   @if (constitution.songConstitution.length === 0) {
     No song.
   }
-  @if (getUserSongCount(constitution, currentUser?.id) >= constitution.nSongs) {
+  @if (getUserSongCount(constitution, currentUser()?.id) >= constitution.nSongs) {
     You have added all your songs
   } @else {
     <app-add-song-form [constitution]="constitution.id"></app-add-song-form>

@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnDestroy, signal } from '@angular/core';
 import { Observable, Subscription } from 'rxjs';
 import { AsyncPipe } from '@angular/common';
 import { Constitution } from '../../../../../../common/constitution';
@@ -15,7 +15,7 @@ import { Users } from '../../../services/users';
   templateUrl: './current-constitutions-page.html',
   styleUrl: './current-constitutions-page.scss',
 })
-export class CurrentConstitutionsPage {
+export class CurrentConstitutionsPage implements OnDestroy {
   // Service injections
   private httpRequests = inject(HttpRequests);
   private router = inject(Router);
@@ -25,14 +25,14 @@ export class CurrentConstitutionsPage {
   // Observable of the current user data
   private currentUserObs: Promise<Observable<User> | undefined>;
   private subscriptions: Subscription = new Subscription();
-  currentUser: User | undefined;
+  currentUser = signal<User | undefined>(undefined);
 
-  currentConstitutions: number[] = [];
+  currentConstitutions = signal<number[]>([]);
 
   constructor() {
     // Fetch the current constitutions IDs
     this.httpRequests.authenticatedGetRequest<number[]>('constitution/getCurrentIDs').then((ids) => {
-      this.currentConstitutions = ids;
+      this.currentConstitutions.set(ids);
     });
 
     // Get the current user info
@@ -40,15 +40,20 @@ export class CurrentConstitutionsPage {
     this.currentUserObs.then((userObs) => {
       if (!userObs) return;
       const subscription = userObs.subscribe((user) => {
-        this.currentUser = user;
+        this.currentUser.set(user);
       });
       this.subscriptions.add(subscription);
     });
   }
 
+  ngOnDestroy(): void {
+    this.subscriptions.unsubscribe();
+  }
+
   isParticipant(constitution: Constitution): boolean {
-    if (!this.currentUser) return false;
-    return constitution.userConstitution.map((u) => u.user).includes(this.currentUser.id);
+    const currentUser = this.currentUser();
+    if (!currentUser) return false;
+    return constitution.userConstitution.map((u) => u.user).includes(currentUser.id);
   }
 
   joinConstitution(constitutionID: number): void {

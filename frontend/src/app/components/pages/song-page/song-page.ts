@@ -1,4 +1,4 @@
-import { Component, OnDestroy, inject } from '@angular/core';
+import { Component, OnDestroy, inject, signal } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Artists } from '../../../services/artists';
 import { AsyncPipe } from '@angular/common';
@@ -29,8 +29,8 @@ export class SongPage implements OnDestroy {
 
   private subscriptions: Subscription = new Subscription();
 
-  song: Song | undefined;
-  error: HttpErrorResponse | undefined;
+  song = signal<Song | undefined>(undefined);
+  error = signal<HttpErrorResponse | undefined>(undefined);
 
   ngOnDestroy(): void {
     this.subscriptions.unsubscribe();
@@ -42,11 +42,11 @@ export class SongPage implements OnDestroy {
       const id = parseInt(params['id'], 10);
       const subscription = this.songs.get(id).subscribe({
         next: (data) => {
-          this.song = data;
-          if (this.song) this.titleService.setTitle(this.song.title);
+          this.song.set(data);
+          if (data) this.titleService.setTitle(data.title);
         },
         error: (err) => {
-          this.error = err;
+          this.error.set(err);
         },
       });
       this.subscriptions.add(subscription);
