@@ -68,10 +68,10 @@ export class DeltaAuth {
   }
 
   getIdToken(): Promise<IdToken> {
-    return firstValueFrom(this.idToken$.asObservable());
+    return firstValueFrom(this.idToken$);
   }
 
   getUid(): Promise<string> {
-    return firstValueFrom(this.uid$.asObservable());
+    return firstValueFrom(this.uid$);
   }
 }
