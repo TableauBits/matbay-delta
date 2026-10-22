@@ -2,7 +2,7 @@ import { type Request, type Response, Router } from "express";
 import type { AddArtistRequestBody } from "../../../common/artist";
 import { ensureAuthMiddleware } from "../auth/http";
 import { getBody, getParam, HttpError, HttpStatus, sendResult } from "../utils";
-import { createArtist, getArtist, searchArtistsByName } from "./utils";
+import { addArtist, getArtist, searchArtistsByName } from "./utils";
 
 // GET ROUTES
 async function get(req: Request, res: Response): Promise<void> {
@@ -26,11 +26,11 @@ async function autocomplete(req: Request, res: Response): Promise<void> {
 
 // POST ROUTES
 async function add(req: Request, res: Response): Promise<void> {
-    const artist = getBody<AddArtistRequestBody>(req);
+    const body = getBody<AddArtistRequestBody>(req);
 
     // TODO : check if artist already exists and return it instead of creating a new one
 
-    const dbResult = (await createArtist(artist)).mapErr(
+    const dbResult = (await addArtist(body)).mapErr(
         (err) => new HttpError(HttpStatus.InternalError, `failed to create artist in database: ${err}`),
     );
 

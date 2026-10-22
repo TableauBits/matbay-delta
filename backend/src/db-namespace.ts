@@ -1,5 +1,6 @@
 import type { db } from "./db/http";
 import type {
+    artistCountry,
     artists,
     constitutions,
     songArtist,
@@ -15,6 +16,7 @@ import type {
 export namespace DB {
     export namespace Insert {
         export type Artist = typeof artists.$inferInsert;
+        export type ArtistCountry = typeof artistCountry.$inferInsert;
         export type Constitution = typeof constitutions.$inferInsert;
         export type Song = typeof songs.$inferInsert;
         export type SongArtist = typeof songArtist.$inferInsert;

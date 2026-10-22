@@ -10,11 +10,15 @@ interface Artist {
   id: number;
   name: string;
   creationDate: string;
+  countries: string[];
 }
 
 // Requests
 interface AddArtistRequestBody {
-  name: string;
+  artist: {
+    name: string;
+  }
+  countries: string[];
 }
 
 export {

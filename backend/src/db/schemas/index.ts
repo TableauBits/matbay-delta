@@ -1,6 +1,7 @@
 export * from "./album";
 export * from "./artist";
 export * from "./artistAlbum";
+export * from "./artistCountry";
 export * from "./constitution";
 export * from "./song";
 export * from "./songAlbum";
