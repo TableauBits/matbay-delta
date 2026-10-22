@@ -1,0 +1,21 @@
+$primary: #673ab7;
+$primary-dark: #393346;
+$secondary: #dbaeff;
+$secondary-dark: #ab9fc0;
+$background: #0e0e0e;
+$surface: #181719;
+$text: #ffffff;
+
+$magenta: #a834ac;
+$pink: #e750ad;
+$rose: #ef547b;
+$orange: #f75748;
+$yellow: #fed057;
+
+$radial-colorful-gradient:
+  linear-gradient(0deg, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.2) 100%),
+  radial-gradient(797.62% 50% at 50% 50%, $primary 0%, $pink 34.5%, $orange 67%, $yellow 100%);
+
+$stroke-radial: radial-gradient(50% 50% at 50% 50%, rgba(255, 255, 255, 0.5) 10%, rgba(153, 153, 153, 0) 100%);
+
+$font-family-base: 'Rubik', sans-serif;

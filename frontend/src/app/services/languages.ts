@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { getAll639_2T, getName } from 'all-iso-language-codes';
+import { LANGUAGE_CODES, LANGUAGE_NAMES } from './language-data';
 
 interface Language {
   code: string;
@@ -20,13 +20,10 @@ export class Languages {
   private languages: Language[];
 
   constructor() {
-    const codes = getAll639_2T();
-    this.languages = codes
-      .map((code) => ({
-        code,
-        name: this.getLanguageName(code),
-      }))
-      .concat(Array.from(CUSTOM_LANGUAGES.values()));
+    this.languages = LANGUAGE_CODES.map((code) => ({
+      code,
+      name: this.getLanguageName(code),
+    })).concat(Array.from(CUSTOM_LANGUAGES.values()));
   }
 
   getLanguages(): Language[] {
@@ -38,10 +35,6 @@ export class Languages {
       return CUSTOM_LANGUAGES.get(code)!.name;
     }
 
-    const name = getName(code, 'fr');
-    if (!name) return code;
-
-    // Capitalize first letter
-    return name.charAt(0).toUpperCase() + name.slice(1);
+    return Object.hasOwn(LANGUAGE_NAMES, code) ? LANGUAGE_NAMES[code] : code;
   }
 }
