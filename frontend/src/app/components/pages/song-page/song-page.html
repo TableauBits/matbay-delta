@@ -29,6 +29,15 @@
       <li>No sources available.</li>
     }
   </ul>
+  <h3>Participations:</h3>
+  <ul>
+    @for (participation of participations(); track $index) {
+      <li>
+        {{ participation.addDate }} by
+        <app-redirect-to-user-profile [user]="users.get(participation.user) | async" />
+      </li>
+    }
+  </ul>
 } @else {
   <p>Loading song...</p>
 }

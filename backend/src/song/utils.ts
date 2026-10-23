@@ -5,7 +5,7 @@ import { ArtistContribution } from "../../../common/artist";
 import type { AddSongRequestBody, Song } from "../../../common/song";
 import { KNOWN_HOSTS, type Source, SourceHost, SourcePlatform } from "../../../common/source";
 import { db } from "../db/http";
-import { songArtist, songLanguage, songSource, songs } from "../db/schemas";
+import { songArtist, songConstitution, songLanguage, songSource, songs } from "../db/schemas";
 import type { DB } from "../db-namespace";
 import { unwrap } from "../utils";
 
@@ -170,4 +170,13 @@ async function linkSongToArtists(
     return await Result.safe(operation());
 }
 
-export { addSong, getSong, searchSongsByTitle };
+async function getSongConstitution(song: number): Promise<Result<DB.Select.SongConstitution[], Error>> {
+    const operation = async () => await db
+        .select()
+        .from(songConstitution)
+        .where(eq(songConstitution.song, song))
+
+    return await Result.safe(operation());
+}
+
+export { addSong, getSong, getSongConstitution, searchSongsByTitle };

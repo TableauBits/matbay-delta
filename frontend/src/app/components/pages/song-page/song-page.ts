@@ -10,10 +10,14 @@ import { Subscription } from 'rxjs';
 import { Title } from '@angular/platform-browser';
 import { RedirectToArtistPage } from '../../utils/redirect-to-artist-page/redirect-to-artist-page';
 import { Languages } from '../../../services/languages';
+import { HttpRequests } from '../../../services/requests/http-requests';
+import { SongConstitution } from '../../../../../../common/constitution';
+import { RedirectToUserProfile } from '../../utils/redirect-to-user-profile/redirect-to-user-profile';
+import { Users } from '../../../services/users';
 
 @Component({
   selector: 'app-song-page',
-  imports: [AsyncPipe, RedirectToArtistPage],
+  imports: [AsyncPipe, RedirectToArtistPage, RedirectToUserProfile],
   templateUrl: './song-page.html',
   styleUrl: './song-page.scss',
 })
@@ -22,14 +26,17 @@ export class SongPage implements OnDestroy {
   private activatedRoute = inject(ActivatedRoute);
   private titleService = inject(Title);
   private songs = inject(Songs);
+  private httpRequests = inject(HttpRequests);
 
   artists = inject(Artists);
+  users = inject(Users);
   sources = inject(Sources);
   languages = inject(Languages);
 
   private subscriptions: Subscription = new Subscription();
 
   song = signal<Song | undefined>(undefined);
+  participations = signal<SongConstitution[]>([]);
   error = signal<HttpErrorResponse | undefined>(undefined);
 
   ngOnDestroy(): void {
@@ -40,6 +47,12 @@ export class SongPage implements OnDestroy {
     // Get the song from the route
     this.activatedRoute.params.subscribe((params) => {
       const id = parseInt(params['id'], 10);
+      this.participations.set([]);
+      this.httpRequests
+        .authenticatedGetRequest<SongConstitution[]>(`song/participate/${id}`)
+        .then((participations) => this.participations.set(participations))
+        .catch((err) => console.error(`failed to get participations for song ${id}`, err));
+
       const subscription = this.songs.get(id).subscribe({
         next: (data) => {
           this.song.set(data);
