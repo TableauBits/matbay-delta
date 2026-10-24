@@ -101,12 +101,12 @@ async function getConstitution(id: number): Promise<Result<Constitution, Error>>
                     },
                 },
                 songConstitution: {
-                    columns: {
-                        id: true,
-                        song: true,
-                        user: true,
-                        addDate: true,
-                    },
+                    // columns: {
+                    //     id: true,
+                    //     song: true,
+                    //     user: true,
+                    //     addDate: true,
+                    // },
                 },
             },
         });

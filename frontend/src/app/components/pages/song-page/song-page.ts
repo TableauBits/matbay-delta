@@ -14,6 +14,7 @@ import { HttpRequests } from '../../../services/requests/http-requests';
 import { SongConstitution } from '../../../../../../common/constitution';
 import { RedirectToUserProfile } from '../../utils/redirect-to-user-profile/redirect-to-user-profile';
 import { Users } from '../../../services/users';
+import { Constitutions } from '../../../services/constitutions';
 
 @Component({
   selector: 'app-song-page',
@@ -29,6 +30,7 @@ export class SongPage implements OnDestroy {
   private httpRequests = inject(HttpRequests);
 
   artists = inject(Artists);
+  constitutions = inject(Constitutions);
   users = inject(Users);
   sources = inject(Sources);
   languages = inject(Languages);

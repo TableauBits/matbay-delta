@@ -36,7 +36,8 @@
   <ul>
     @for (participation of participations(); track $index) {
       <li>
-        {{ participation.addDate }} by
+        {{ participation.addDate }}
+        in "{{ (constitutions.get(participation.constitution) | async)?.name }}" by
         <app-redirect-to-user-profile [user]="users.get(participation.user) | async" />
       </li>
     }
