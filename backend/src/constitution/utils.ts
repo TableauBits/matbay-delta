@@ -100,14 +100,7 @@ async function getConstitution(id: number): Promise<Result<Constitution, Error>>
                         joinDate: true,
                     },
                 },
-                songConstitution: {
-                    // columns: {
-                    //     id: true,
-                    //     song: true,
-                    //     user: true,
-                    //     addDate: true,
-                    // },
-                },
+                songConstitution: {},
             },
         });
 
