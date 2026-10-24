@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { LANGUAGE_CODES, LANGUAGE_NAMES } from './language-data';
+import { LANGUAGE_OPTIONS, LANGUAGE_NAMES } from './language-data';
 
 interface Language {
   code: string;
@@ -17,14 +17,7 @@ const CUSTOM_LANGUAGES = new Map<string, Language>([
   providedIn: 'root',
 })
 export class Languages {
-  private languages: Language[];
-
-  constructor() {
-    this.languages = LANGUAGE_CODES.map((code) => ({
-      code,
-      name: this.getLanguageName(code),
-    })).concat(Array.from(CUSTOM_LANGUAGES.values()));
-  }
+  private languages: Language[] = [...LANGUAGE_OPTIONS, ...CUSTOM_LANGUAGES.values()];
 
   getLanguages(): Language[] {
     return this.languages;
