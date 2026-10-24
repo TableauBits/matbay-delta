@@ -29,7 +29,7 @@ async function participate(req: Request, res: Response): Promise<void> {
 
     const participations = (await getSongConstitution(id)).mapErr(
         (err) => new HttpError(HttpStatus.InternalError, `failed to get song constitution info from id: ${err}`),
-    );;
+    );
     sendResult(participations, res);
 }
 
@@ -47,7 +47,7 @@ const songApiRouter = Router();
 
 songApiRouter.get("/autocomplete/:query", ensureAuthMiddleware, autocomplete);
 songApiRouter.get("/get/:id", ensureAuthMiddleware, get);
-songApiRouter.get("/participate/:id", ensureAuthMiddleware, participate)
+songApiRouter.get("/participate/:id", ensureAuthMiddleware, participate);
 
 songApiRouter.post("/add", ensureAuthMiddleware, add);
 

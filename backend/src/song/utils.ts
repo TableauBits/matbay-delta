@@ -171,10 +171,7 @@ async function linkSongToArtists(
 }
 
 async function getSongConstitution(song: number): Promise<Result<DB.Select.SongConstitution[], Error>> {
-    const operation = async () => await db
-        .select()
-        .from(songConstitution)
-        .where(eq(songConstitution.song, song))
+    const operation = async () => await db.select().from(songConstitution).where(eq(songConstitution.song, song));
 
     return await Result.safe(operation());
 }
