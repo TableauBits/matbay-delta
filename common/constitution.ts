@@ -9,6 +9,7 @@ interface UserConstitution {
 
 interface SongConstitution {
     id: number;
+    constitution: number;
     song: number;
     user: string;
     addDate: string;
