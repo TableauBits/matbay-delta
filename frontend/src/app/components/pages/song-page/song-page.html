@@ -17,6 +17,9 @@
     @for (language of song.songLanguage; track $index) {
       <li>{{ languages.getLanguageName(language) }}</li>
     }
+    @if (song.songLanguage.length === 0) {
+      <li>No languages available.</li>
+    }
   </ul>
   <h3>Sources:</h3>
   <ul>
@@ -27,6 +30,16 @@
     }
     @if (song.songSource.length === 0) {
       <li>No sources available.</li>
+    }
+  </ul>
+  <h3>Participations:</h3>
+  <ul>
+    @for (participation of participations(); track $index) {
+      <li>
+        {{ participation.addDate }}
+        in "{{ (constitutions.get(participation.constitution) | async)?.name }}" by
+        <app-redirect-to-user-profile [user]="users.get(participation.user) | async" />
+      </li>
     }
   </ul>
 } @else {
