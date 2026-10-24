@@ -51,7 +51,7 @@ export class SongPage implements OnDestroy {
       const id = parseInt(params['id'], 10);
       this.participations.set([]);
       this.httpRequests
-        .authenticatedGetRequest<SongConstitution[]>(`song/participate/${id}`)
+        .authenticatedGetRequest<SongConstitution[]>(`song/participations/${id}`)
         .then((participations) => this.participations.set(participations))
         .catch((err) => console.error(`failed to get participations for song ${id}`, err));
 

@@ -24,7 +24,7 @@ async function get(req: Request, res: Response): Promise<void> {
     sendResult(song, res);
 }
 
-async function participate(req: Request, res: Response): Promise<void> {
+async function participations(req: Request, res: Response): Promise<void> {
     const id = parseInt(getParam(req, "id"), 10);
 
     const participations = (await getSongConstitution(id)).mapErr(
@@ -47,7 +47,7 @@ const songApiRouter = Router();
 
 songApiRouter.get("/autocomplete/:query", ensureAuthMiddleware, autocomplete);
 songApiRouter.get("/get/:id", ensureAuthMiddleware, get);
-songApiRouter.get("/participate/:id", ensureAuthMiddleware, participate);
+songApiRouter.get("/participations/:id", ensureAuthMiddleware, participations);
 
 songApiRouter.post("/add", ensureAuthMiddleware, add);
 
