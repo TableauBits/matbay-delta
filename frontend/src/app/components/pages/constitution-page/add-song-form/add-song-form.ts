@@ -201,7 +201,7 @@ export class AddSongForm {
             if (!artist.isNew) return artist.id;
             const created = await this.httpRequests.authenticatedPostRequest<AddArtistRequestBody, Artist>(
               'artist/add',
-              { name: artist.name },
+              { artist: { name: artist.name }, countries: [] },
             );
             return created.id;
           }),
