@@ -17,7 +17,10 @@ const CUSTOM_LANGUAGES: Language[] = [
   providedIn: 'root',
 })
 export class Languages {
-  private languages: Language[] = [...LANGUAGE_OPTIONS, ...CUSTOM_LANGUAGES];
+  private languages: Language[] = [
+    ...Object.entries(LANGUAGE_OPTIONS).map(([code, name]) => ({ code, name })),
+    ...CUSTOM_LANGUAGES,
+  ];
 
   getLanguages(): Language[] {
     return this.languages;
