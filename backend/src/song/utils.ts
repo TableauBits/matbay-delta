@@ -11,35 +11,35 @@ import { unwrap } from "../utils";
 
 async function addSong(body: AddSongRequestBody): Promise<Result<DB.Select.Song, Error>> {
     return Result.safe(
-        db.transaction(async (tx) => {
-            // Insert new song in table
-            const songData = unwrap(await createSong(body.song, tx));
+        // Bun SQLite transactions must finish synchronously to roll back on errors.
+        () =>
+            db.transaction((tx) => {
+                // Insert new song in table
+                const songData = unwrap(createSong(body.song, tx));
 
-            // Add a link between the song and the artists
-            const artistLinks: [number, ArtistContribution][] = [
-                [songData.primaryArtist, ArtistContribution.MAIN],
-                ...body.otherContributions,
-            ];
-            unwrap(await linkSongToArtists(songData.id, artistLinks, tx));
+                // Add a link between the song and the artists
+                const artistLinks: [number, ArtistContribution][] = [
+                    [songData.primaryArtist, ArtistContribution.MAIN],
+                    ...body.otherContributions,
+                ];
+                unwrap(linkSongToArtists(songData.id, artistLinks, tx));
 
-            // Creates sources of the song
-            if (body.sources.length !== 0) {
-                unwrap(await createSources(songData.id, body.sources, tx));
-            }
+                // Creates sources of the song
+                if (body.sources.length !== 0) {
+                    unwrap(createSources(songData.id, body.sources, tx));
+                }
 
-            // Create languages of the song
-            createLanguagesForSong(songData.id, body.languages);
+                // Create languages of the song
+                if (body.languages.length !== 0) {
+                    unwrap(createLanguagesForSong(songData.id, body.languages, tx));
+                }
 
-            return songData;
-        }),
+                return songData;
+            }),
     );
 }
 
-async function createLanguagesForSong(
-    song: number,
-    languages: string[],
-    tx?: DB.Transaction,
-): Promise<Result<void, Error>> {
+function createLanguagesForSong(song: number, languages: string[], tx?: DB.Transaction): Result<void, Error> {
     const ctx = tx ? tx : db;
 
     const rows = languages.map((l) => {
@@ -47,17 +47,19 @@ async function createLanguagesForSong(
         return row;
     });
 
-    const operation = async () => await ctx.insert(songLanguage).values(rows);
+    const operation = () => {
+        ctx.insert(songLanguage).values(rows).run();
+    };
 
-    return await Result.safe(operation());
+    return Result.safe(operation);
 }
 
-async function createSong(song: DB.Insert.Song, tx?: DB.Transaction): Promise<Result<DB.Select.Song, Error>> {
+function createSong(song: DB.Insert.Song, tx?: DB.Transaction): Result<DB.Select.Song, Error> {
     const ctx = tx ? tx : db;
-    const operation = async () => await ctx.insert(songs).values(song).returning();
+    const operation = () => ctx.insert(songs).values(song).returning().all();
 
     // Only insert one song, so only take the first returned value
-    return (await Result.safe(operation())).andThen((artists) =>
+    return Result.safe(operation).andThen((artists) =>
         Option(artists.at(0)).okOr(new Error("failed to add song to database")),
     );
 }
@@ -128,11 +130,7 @@ function getSourceInfo(source: parseUrl.ParsedUrl, host: SourceHost): Result<Sou
     }
 }
 
-async function createSources(
-    song: number,
-    sources: string[],
-    tx?: DB.Transaction,
-): Promise<Result<DB.Select.SongSource[], Error>> {
+function createSources(song: number, sources: string[], tx?: DB.Transaction): Result<DB.Select.SongSource[], Error> {
     const ctx = tx ? tx : db;
 
     const rows = Result.all(
@@ -151,23 +149,23 @@ async function createSources(
     );
     if (rows.isErr()) return rows;
 
-    const operation = async () => await ctx.insert(songSource).values(rows.unwrap()).returning();
+    const operation = () => ctx.insert(songSource).values(rows.unwrap()).returning().all();
 
-    return await Result.safe(operation());
+    return Result.safe(operation);
 }
 
-async function linkSongToArtists(
+function linkSongToArtists(
     song: number,
     artists: [number, ArtistContribution][],
     tx?: DB.Transaction,
-): Promise<Result<DB.Select.SongArtist[], Error>> {
+): Result<DB.Select.SongArtist[], Error> {
     const ctx = tx ? tx : db;
     const rows = artists.map(([artist, contribution]) => {
         return { song, artist, contribution } as DB.Insert.SongArtist;
     });
-    const operation = async () => await ctx.insert(songArtist).values(rows).returning();
+    const operation = () => ctx.insert(songArtist).values(rows).returning().all();
 
-    return await Result.safe(operation());
+    return Result.safe(operation);
 }
 
 async function getSongConstitution(song: number): Promise<Result<DB.Select.SongConstitution[], Error>> {
