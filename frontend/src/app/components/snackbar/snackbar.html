@@ -1,7 +1,18 @@
 @if (snackbar(); as sb) {
-  <div class="snackbar" [class]="sb.type" [class.is-exiting]="isExiting()">
-    <span class="snackbar__icon">{{ icon }}</span>
-    <span class="snackbar__message">{{ sb.message }}</span>
-    <button class="snackbar__dismiss" (click)="dismiss()" aria-label="Fermer">✕</button>
+  <div
+    class="toast toast-center bottom-4 z-50 w-full max-w-lg px-4 transition-opacity motion-reduce:transition-none"
+    [class.opacity-0]="isExiting()"
+  >
+    <div
+      class="alert min-w-0 grid-cols-[auto_1fr_auto] border"
+      [class.alert-success]="sb.type === 'success'"
+      [class.alert-error]="sb.type === 'error'"
+      role="status"
+      aria-live="polite"
+    >
+      <span aria-hidden="true" class="font-bold">{{ icon }}</span>
+      <span class="min-w-0 break-words text-sm">{{ sb.message }}</span>
+      <button class="btn btn-ghost btn-square btn-sm" (click)="dismiss()" aria-label="Dismiss notification">✕</button>
+    </div>
   </div>
 }

@@ -5,7 +5,6 @@ import { SnackbarService, SnackbarType } from '../../services/snackbar';
   selector: 'app-snackbar',
   imports: [],
   templateUrl: './snackbar.html',
-  styleUrl: './snackbar.scss',
 })
 export class SnackbarComponent {
   private snackbarService = inject(SnackbarService);

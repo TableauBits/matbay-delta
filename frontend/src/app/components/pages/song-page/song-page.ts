@@ -20,7 +20,6 @@ import { Constitutions } from '../../../services/constitutions';
   selector: 'app-song-page',
   imports: [AsyncPipe, RedirectToArtistPage, RedirectToUserProfile],
   templateUrl: './song-page.html',
-  styleUrl: './song-page.scss',
 })
 export class SongPage implements OnDestroy {
   // Service injections

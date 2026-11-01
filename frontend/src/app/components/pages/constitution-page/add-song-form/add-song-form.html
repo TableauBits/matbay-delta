@@ -1,101 +1,138 @@
-<h3>Add a song</h3>
-<form [formGroup]="songForm" class="song-form">
-  <div class="form-section">
-    <h4>Song</h4>
-    <app-autocomplete-textbox
-      #songAutocomplete
-      label="Title"
-      placeholder="Type a song title..."
-      [searchFn]="searchSongs.bind(this)"
-      (resultSelected)="onSongSelected($event)"
-    ></app-autocomplete-textbox>
-  </div>
-
-  <div class="form-section">
-    <h4>Artists</h4>
-    <div class="artist-add-row">
+<section class="card max-w-3xl gap-5 border border-base-300 bg-base-100 p-5 sm:p-6">
+  <h3>Add a song</h3>
+  <form [formGroup]="songForm" class="grid gap-6">
+    <div class="grid gap-3">
+      <h4>Song</h4>
       <app-autocomplete-textbox
-        #artistAutocomplete
-        label="Add an artist"
-        placeholder="Type an artist name..."
-        [searchFn]="searchArtists.bind(this)"
-        [disabled]="formLocked()"
-        (resultSelected)="onArtistSelected($event)"
+        #songAutocomplete
+        label="Title"
+        placeholder="Type a song title..."
+        [searchFn]="searchSongs.bind(this)"
+        (resultSelected)="onSongSelected($event)"
       ></app-autocomplete-textbox>
-      @if (!formLocked()) {
-        <div class="role-select-wrapper">
-          <label for="artist-role">Role</label>
-          <select
-            id="artist-role"
-            [ngModel]="nextArtistRole()"
-            (ngModelChange)="nextArtistRole.set($event)"
-            [ngModelOptions]="{ standalone: true }"
-          >
-            @for (contribution of getContributions(); track $index) {
-              <option [value]="contribution">{{ contribution }}</option>
-            }
-          </select>
-        </div>
+    </div>
+
+    <div class="grid gap-3">
+      <h4>Artists</h4>
+      <div class="grid min-w-0 items-end gap-3 sm:grid-cols-[minmax(0,1fr)_12rem]">
+        <app-autocomplete-textbox
+          #artistAutocomplete
+          label="Add an artist"
+          placeholder="Type an artist name..."
+          [searchFn]="searchArtists.bind(this)"
+          [disabled]="formLocked()"
+          (resultSelected)="onArtistSelected($event)"
+        ></app-autocomplete-textbox>
+        @if (!formLocked()) {
+          <div class="grid gap-2 text-sm font-medium">
+            <label class="grid gap-2 text-sm font-medium" for="artist-role">Role</label>
+            <select
+              class="select w-full border-base-300"
+              id="artist-role"
+              [ngModel]="nextArtistRole()"
+              (ngModelChange)="nextArtistRole.set($event)"
+              [ngModelOptions]="{ standalone: true }"
+            >
+              @for (contribution of getContributions(); track $index) {
+                <option [value]="contribution">{{ contribution }}</option>
+              }
+            </select>
+          </div>
+        }
+      </div>
+      @if (pendingArtists().length > 0) {
+        <ul class="grid gap-2">
+          @for (artist of pendingArtists(); track $index; let i = $index) {
+            <li class="flex flex-wrap items-center gap-2 rounded-field border border-base-300 p-2">
+              <span class="min-w-0 flex-1 break-words">{{ artist.name }}</span>
+              <span class="badge badge-sm badge-ghost">{{ artist.role }}</span>
+              @if (artist.isNew) {
+                <span class="badge badge-sm badge-primary">new</span>
+              }
+              @if (!formLocked()) {
+                <button
+                  type="button"
+                  class="btn btn-ghost btn-square shrink-0 text-error"
+                  (click)="removePendingArtist(i)"
+                  aria-label="Remove artist"
+                >
+                  x
+                </button>
+              }
+            </li>
+          }
+        </ul>
       }
     </div>
-    @if (pendingArtists().length > 0) {
-      <ul class="pending-artists">
-        @for (artist of pendingArtists(); track $index; let i = $index) {
-          <li class="pending-artist">
-            <span class="pending-artist-name">{{ artist.name }}</span>
-            <span class="tag role-tag">{{ artist.role }}</span>
-            @if (artist.isNew) {
-              <span class="tag tag-new">new</span>
-            }
-            @if (!formLocked()) {
-              <button class="btn-remove" (click)="removePendingArtist(i)">x</button>
-            }
-          </li>
-        }
-      </ul>
-    }
-  </div>
 
-  <div class="form-section">
-    <h4>Languages</h4>
-    <app-autocomplete-textbox
-      #languageAutocomplete
-      label="Add a language"
-      placeholder="Type a language..."
-      [searchFn]="searchLanguages.bind(this)"
-      (resultSelected)="onLanguageSelected($event)"
-      [allowCustom]="false"
-      [disabled]="formLocked()"
-    >
-    </app-autocomplete-textbox>
-    @if (pendingLanguages().length > 0) {
-      <ul class="pending-languages">
-        @for (language of pendingLanguages(); track $index; let i = $index) {
-          <li class="pending-language">
-            <span class="pending-language-name">{{ getLanguageName(language) }}</span>
-            @if (!formLocked()) {
-              <button class="btn-remove" (click)="removePendingLanguage(i)">x</button>
-            }
-          </li>
-        }
-      </ul>
-    }
-  </div>
-
-  <div class="form-section">
-    <h4>Sources</h4>
-    <button (click)="addSource()" [disabled]="formLocked()">+ Add source</button>
-    <div formArrayName="sources">
-      @for (sourceForm of sources.controls; track $index; let i = $index) {
-        <div [formGroupName]="i" class="source-row">
-          <input type="text" formControlName="url" placeholder="Source URL" />
-          <button class="btn-remove" (click)="removeSource(i)">x</button>
-        </div>
+    <div class="grid gap-3">
+      <h4>Languages</h4>
+      <app-autocomplete-textbox
+        #languageAutocomplete
+        label="Add a language"
+        placeholder="Type a language..."
+        [searchFn]="searchLanguages.bind(this)"
+        (resultSelected)="onLanguageSelected($event)"
+        [allowCustom]="false"
+        [disabled]="formLocked()"
+      >
+      </app-autocomplete-textbox>
+      @if (pendingLanguages().length > 0) {
+        <ul class="flex flex-wrap gap-2">
+          @for (language of pendingLanguages(); track $index; let i = $index) {
+            <li class="flex items-center gap-2 rounded-field border border-base-300 px-3 py-2">
+              <span class="min-w-0 break-words">{{ getLanguageName(language) }}</span>
+              @if (!formLocked()) {
+                <button
+                  type="button"
+                  class="btn btn-ghost btn-square shrink-0 text-error"
+                  (click)="removePendingLanguage(i)"
+                  aria-label="Remove language"
+                >
+                  x
+                </button>
+              }
+            </li>
+          }
+        </ul>
       }
     </div>
-  </div>
-</form>
-@if (errorMessage(); as errorMessage) {
-  <div class="error-message">{{ errorMessage }}</div>
-}
-<button [disabled]="!canSubmit" (click)="submitForm()">Submit song</button>
+
+    <div class="grid gap-3">
+      <h4>Sources</h4>
+      <button
+        type="button"
+        class="btn btn-outline w-fit border-base-300"
+        (click)="addSource()"
+        [disabled]="formLocked()"
+      >
+        + Add source
+      </button>
+      <div formArrayName="sources">
+        @for (sourceForm of sources.controls; track $index; let i = $index) {
+          <div [formGroupName]="i" class="mt-3 flex min-w-0 items-center gap-2">
+            <input
+              class="input w-full min-w-0 border-base-300"
+              type="text"
+              formControlName="url"
+              placeholder="Source URL"
+              aria-label="Source URL"
+            />
+            <button
+              type="button"
+              class="btn btn-ghost btn-square shrink-0 text-error"
+              (click)="removeSource(i)"
+              aria-label="Remove source"
+            >
+              x
+            </button>
+          </div>
+        }
+      </div>
+    </div>
+  </form>
+  @if (errorMessage(); as errorMessage) {
+    <div class="alert alert-error alert-soft break-words">{{ errorMessage }}</div>
+  }
+  <button type="button" class="btn btn-primary" [disabled]="!canSubmit" (click)="submitForm()">Submit song</button>
+</section>

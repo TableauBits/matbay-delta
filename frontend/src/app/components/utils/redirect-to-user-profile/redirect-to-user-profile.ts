@@ -6,7 +6,6 @@ import { User } from '../../../../../../common/user';
   selector: 'app-redirect-to-user-profile',
   imports: [],
   templateUrl: './redirect-to-user-profile.html',
-  styleUrl: './redirect-to-user-profile.scss',
 })
 export class RedirectToUserProfile {
   user = input<User | null>();

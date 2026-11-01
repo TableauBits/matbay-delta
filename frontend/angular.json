@@ -14,7 +14,7 @@
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
-          "style": "scss"
+          "style": "css"
         }
       },
       "root": "",
@@ -29,7 +29,7 @@
               "zone.js"
             ],
             "tsConfig": "tsconfig.app.json",
-            "inlineStyleLanguage": "scss",
+            "inlineStyleLanguage": "css",
             "assets": [
               {
                 "glob": "**/*",
@@ -37,8 +37,7 @@
               }
             ],
             "styles": [
-              "src/tailwind.css",
-              "src/styles.scss"
+              "src/tailwind.css"
             ]
           },
           "configurations": {
@@ -118,7 +117,7 @@
               "zone.js/testing"
             ],
             "tsConfig": "tsconfig.spec.json",
-            "inlineStyleLanguage": "scss",
+            "inlineStyleLanguage": "css",
             "assets": [
               {
                 "glob": "**/*",
@@ -126,8 +125,7 @@
               }
             ],
             "styles": [
-              "src/tailwind.css",
-              "src/styles.scss"
+              "src/tailwind.css"
             ]
           }
         },

@@ -7,7 +7,6 @@ import { SONGS_PER_USER_DEFAULT } from '../../../../../common/constitution';
   selector: 'app-constitution-form',
   imports: [ReactiveFormsModule],
   templateUrl: './constitution-form.html',
-  styleUrl: './constitution-form.scss',
 })
 export class ConstitutionForm {
   // Service injections

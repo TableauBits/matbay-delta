@@ -9,7 +9,7 @@ import {
   forwardRef,
   inject,
 } from '@angular/core';
-import { Compartment, EditorState } from '@codemirror/state';
+import { Compartment, EditorState, Prec } from '@codemirror/state';
 import { type ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { EditorView, placeholder as cmPlaceholder, keymap } from '@codemirror/view';
 import { json, jsonParseLinter } from '@codemirror/lang-json';
@@ -29,8 +29,8 @@ import { oneDark } from '@codemirror/theme-one-dark';
  */
 @Component({
   selector: 'app-json-editor',
-  template: '<div #host class="json-editor-host"></div>',
-  styleUrl: './json-editor.scss',
+  template:
+    '<div #host class="overflow-hidden rounded-field border border-base-300 focus-within:border-primary"></div>',
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,
@@ -73,14 +73,31 @@ export class JsonEditor implements AfterViewInit, OnDestroy, ControlValueAccesso
             lintGutter(),
             oneDark,
             cmPlaceholder(this.placeholder),
-            EditorView.theme({
-              '&': { fontSize: '0.85rem', borderRadius: '4px' },
-              // minHeight on the content (not the scroller) makes the whole
-              // editor area clickable to place the cursor, not just the lines
-              // that contain text.
-              '.cm-content': { fontFamily: 'monospace', minHeight: this.minHeight },
-              '&.cm-focused': { outline: 'none' },
-            }),
+            Prec.highest(
+              EditorView.theme({
+                '&': {
+                  fontSize: '0.85rem',
+                  backgroundColor: 'var(--color-base-200)',
+                  color: 'var(--color-base-content)',
+                },
+                '.cm-gutters': {
+                  backgroundColor: 'var(--color-base-200)',
+                  color: 'var(--color-base-content)',
+                  borderColor: 'var(--color-base-300)',
+                },
+                '.cm-cursor': { borderLeftColor: 'var(--color-primary)' },
+                '.cm-activeLine, .cm-activeLineGutter': { backgroundColor: 'var(--color-base-100)' },
+                '&.cm-focused .cm-selectionBackground, .cm-selectionBackground': {
+                  backgroundColor: 'var(--color-base-300)',
+                },
+                '.cm-scroller': { overflow: 'auto' },
+                // minHeight on the content (not the scroller) makes the whole
+                // editor area clickable to place the cursor, not just the lines
+                // that contain text.
+                '.cm-content': { fontFamily: 'monospace', minHeight: this.minHeight },
+                '&.cm-focused': { outline: 'none' },
+              }),
+            ),
             this.editableCompartment.of(EditorView.editable.of(!this.disabled)),
             EditorView.updateListener.of((update) => {
               if (update.docChanged) {
