@@ -1,12 +1,6 @@
-import { ConstitutionPage } from './components/pages/constitution-page/constitution-page';
-import { CreateConstitutionPage } from './components/pages/create-constitution-page/create-constitution-page';
-import { CurrentConstitutionsPage } from './components/pages/current-constitutions-page/current-constitutions-page';
 import { environment } from '../environments/environment';
 import { HomePage } from './components/pages/home-page/home-page';
 import { Routes } from '@angular/router';
-import { SongPage } from './components/pages/song-page/song-page';
-import { UserPage } from './components/pages/user-page/user-page';
-import { ArtistPage } from './components/pages/artist-page/artist-page';
 
 const routes: Routes = [
   {
@@ -16,29 +10,36 @@ const routes: Routes = [
   },
   {
     path: 'artists/:id',
-    component: ArtistPage,
+    loadComponent: () => import('./components/pages/artist-page/artist-page').then((m) => m.ArtistPage),
   },
   {
     path: 'constitutions/:id',
-    component: ConstitutionPage,
+    loadComponent: () =>
+      import('./components/pages/constitution-page/constitution-page').then((m) => m.ConstitutionPage),
   },
   {
     path: 'create-constitution',
-    component: CreateConstitutionPage,
+    loadComponent: () =>
+      import('./components/pages/create-constitution-page/create-constitution-page').then(
+        (m) => m.CreateConstitutionPage,
+      ),
     title: 'Create a constitution',
   },
   {
     path: 'current-constitutions',
-    component: CurrentConstitutionsPage,
+    loadComponent: () =>
+      import('./components/pages/current-constitutions-page/current-constitutions-page').then(
+        (m) => m.CurrentConstitutionsPage,
+      ),
     title: 'Current constitutions',
   },
   {
     path: 'songs/:id',
-    component: SongPage,
+    loadComponent: () => import('./components/pages/song-page/song-page').then((m) => m.SongPage),
   },
   {
     path: 'users/:handle',
-    component: UserPage,
+    loadComponent: () => import('./components/pages/user-page/user-page').then((m) => m.UserPage),
   },
 ];
 

@@ -10,7 +10,8 @@
     "test": "ng test",
     "lint": "ng lint",
     "fix": "ng lint --fix",
-    "ci": "bun lint"
+    "ci": "bun lint",
+    "generate:languages": "bun scripts/generate-languages.ts"
   },
   "private": true,
   "type": "module",
@@ -37,7 +38,6 @@
     "@tailwindcss/postcss": "^4.3.3",
     "all-iso-language-codes": "^1.0.21",
     "codemirror": "^6.0.2",
-    "daisyui": "^5.7.50",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-prettier": "^5.5.4",
     "parse-url": "^11.1.0",
