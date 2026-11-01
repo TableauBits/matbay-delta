@@ -37,6 +37,6 @@
         "@types/express": "^5.0.6",
         "@types/jsonwebtoken": "^9.0.10",
         "better-sqlite3": "^12.11.1",
-        "drizzle-kit": "^0.31.10"
+        "drizzle-kit": "^0.31.11"
     }
 }
