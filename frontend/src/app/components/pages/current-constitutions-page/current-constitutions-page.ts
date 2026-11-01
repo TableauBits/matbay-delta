@@ -13,7 +13,6 @@ import { Users } from '../../../services/users';
   selector: 'app-current-constitutions-page',
   imports: [AsyncPipe, RedirectToUserProfile],
   templateUrl: './current-constitutions-page.html',
-  styleUrl: './current-constitutions-page.scss',
 })
 export class CurrentConstitutionsPage implements OnDestroy {
   // Service injections

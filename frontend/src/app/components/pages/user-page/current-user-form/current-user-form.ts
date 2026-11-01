@@ -9,7 +9,6 @@ import { Users } from '../../../../services/users';
   selector: 'app-current-user-form',
   imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './current-user-form.html',
-  styleUrl: './current-user-form.scss',
 })
 export class CurrentUserForm implements OnDestroy {
   // Service injections

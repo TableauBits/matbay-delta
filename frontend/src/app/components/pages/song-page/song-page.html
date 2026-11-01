@@ -1,10 +1,10 @@
 @if (error(); as error) {
-  <p>Error loading song : "{{ error.error }}".</p>
+  <p class="alert alert-error alert-soft" role="alert">Error loading song : "{{ error.error }}".</p>
 } @else if (song(); as song) {
   <h2>{{ song.title }}</h2>
   <p>Added on: {{ song.creationDate }}</p>
-  <h3>Artists:</h3>
-  <ul>
+  <h3>Artists</h3>
+  <ul class="space-y-3 rounded-box border border-base-300 bg-base-100 p-4">
     @for (songArtist of song.songArtist; track $index) {
       <li>
         <app-redirect-to-artist-page [artist]="artists.get(songArtist.artist) | async" /> (as
@@ -12,8 +12,8 @@
       </li>
     }
   </ul>
-  <h3>Languages:</h3>
-  <ul>
+  <h3>Languages</h3>
+  <ul class="space-y-3 rounded-box border border-base-300 bg-base-100 p-4">
     @for (language of song.songLanguage; track $index) {
       <li>{{ languages.getLanguageName(language) }}</li>
     }
@@ -21,8 +21,8 @@
       <li>No languages available.</li>
     }
   </ul>
-  <h3>Sources:</h3>
-  <ul>
+  <h3>Sources</h3>
+  <ul class="space-y-3 rounded-box border border-base-300 bg-base-100 p-4">
     @for (source of song.songSource; track $index) {
       <li>
         <a [href]="sources.generateURL(source)" target="_blank">{{ source.platform }}:{{ source.sourceID }}</a>
@@ -32,8 +32,8 @@
       <li>No sources available.</li>
     }
   </ul>
-  <h3>Participations:</h3>
-  <ul>
+  <h3>Participations</h3>
+  <ul class="space-y-3 rounded-box border border-base-300 bg-base-100 p-4">
     @for (participation of participations(); track $index) {
       <li>
         {{ participation.addDate }}
@@ -43,5 +43,5 @@
     }
   </ul>
 } @else {
-  <p>Loading song...</p>
+  <p class="text-base-content/60" role="status">Loading song...</p>
 }

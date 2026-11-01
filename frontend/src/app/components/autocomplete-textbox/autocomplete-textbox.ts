@@ -12,9 +12,11 @@ export interface AutocompleteResult<T> {
   selector: 'app-autocomplete-textbox',
   imports: [ReactiveFormsModule],
   templateUrl: './autocomplete-textbox.html',
-  styleUrl: './autocomplete-textbox.scss',
 })
 export class AutocompleteTextbox<T> implements OnDestroy {
+  private static nextId = 0;
+  readonly inputId = `autocomplete-${AutocompleteTextbox.nextId++}`;
+
   label = input('');
   placeholder = input('');
   searchFn = input<(query: string) => Promise<AutocompleteResult<T>[]>>(() => Promise.resolve([]));

@@ -1,7 +1,13 @@
 @if (song(); as song) {
-  <span (click)="redirectToSongPage(song.id)" (keydown.enter)="redirectToSongPage(song.id)" tabindex="0">
+  <a
+    class="inline-flex max-w-full cursor-pointer items-center gap-2 rounded-field text-primary hover:underline"
+    (click)="redirectToSongPage(song.id)"
+    (keydown.enter)="redirectToSongPage(song.id)"
+    role="link"
+    tabindex="0"
+  >
     {{ song.title }}
-  </span>
+  </a>
 } @else {
   Song is undefined.
 }

@@ -1,4 +1,6 @@
-.vscode
+.vscode/*
+!.vscode/settings.json
+!.vscode/tailwind.css-data.json
 
 # local db files
 *.db

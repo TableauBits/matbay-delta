@@ -10,7 +10,6 @@ import { HttpErrorResponse } from '@angular/common/http';
   selector: 'app-artist-page',
   imports: [],
   templateUrl: './artist-page.html',
-  styleUrl: './artist-page.scss',
 })
 export class ArtistPage implements OnDestroy {
   // Service injections

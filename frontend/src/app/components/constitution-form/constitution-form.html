@@ -1,18 +1,25 @@
-<div class="card">
-  <h2>Create a constitution</h2>
-  <form [formGroup]="form">
-    <label>
-      Display Name:
-      <input formControlName="name" placeholder="Constitution name" type="text" />
+<section class="card max-w-2xl border border-base-300 bg-base-100 p-5 sm:p-8">
+  <h1 class="mb-6">Create a constitution</h1>
+  <form [formGroup]="form" (ngSubmit)="onSubmit()" class="grid gap-5">
+    <label class="grid gap-2 text-sm font-medium">
+      Display name
+      <input class="input w-full border-base-300" formControlName="name" placeholder="Constitution name" type="text" />
     </label>
-    <label>
-      Description:
-      <input formControlName="description" placeholder="Description" type="text" />
+    <label class="grid gap-2 text-sm font-medium">
+      Description
+      <input class="input w-full border-base-300" formControlName="description" placeholder="Description" type="text" />
     </label>
-    <label>
-      Number of songs per user:
-      <input formControlName="nSongs" placeholder="Number of songs per user" type="number" />
+    <label class="grid gap-2 text-sm font-medium">
+      Number of songs per user
+      <input
+        class="input w-full border-base-300"
+        formControlName="nSongs"
+        placeholder="Number of songs per user"
+        type="number"
+      />
     </label>
+    <button class="btn btn-primary mt-2 w-full sm:w-fit" type="submit" [disabled]="!form.valid">
+      Create a constitution
+    </button>
   </form>
-  <button [disabled]="!form.valid" (click)="onSubmit()">Create a constitution</button>
-</div>
+</section>

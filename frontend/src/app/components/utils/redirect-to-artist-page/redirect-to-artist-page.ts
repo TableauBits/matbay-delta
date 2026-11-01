@@ -6,7 +6,6 @@ import { Router } from '@angular/router';
   selector: 'app-redirect-to-artist-page',
   imports: [],
   templateUrl: './redirect-to-artist-page.html',
-  styleUrl: './redirect-to-artist-page.scss',
 })
 export class RedirectToArtistPage {
   artist = input<Artist | null>();

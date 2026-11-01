@@ -1,7 +1,13 @@
 @if (artist(); as artist) {
-  <span (click)="redirectToPage(artist.id)" (keydown.enter)="redirectToPage(artist.id)" tabindex="0">
+  <a
+    class="inline-flex max-w-full cursor-pointer items-center gap-2 rounded-field text-primary hover:underline"
+    (click)="redirectToPage(artist.id)"
+    (keydown.enter)="redirectToPage(artist.id)"
+    role="link"
+    tabindex="0"
+  >
     {{ artist.name }}
-  </span>
+  </a>
 } @else {
   Artist is undefined.
 }

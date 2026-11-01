@@ -1,7 +1,8 @@
 @if (constitutionError(); as constitutionError) {
-  <p>Error loading constitution : "{{ constitutionError.error }}".</p>
+  <p class="alert alert-error alert-soft" role="alert">Error loading constitution : "{{ constitutionError.error }}".</p>
 } @else if (constitution(); as constitution) {
-  <h1>{{ constitution.name }} (id : {{ constitution.id }})</h1>
+  <h1>{{ constitution.name }}</h1>
+  <p class="text-xs text-base-content/60">ID: {{ constitution.id }}</p>
   <hr />
   <p>Description : {{ constitution.description }}</p>
   <p>Owner: <app-redirect-to-user-profile [user]="users.get(constitution.owner) | async" /></p>
@@ -26,25 +27,31 @@
       as observers
     ) {
       @if (observers.song && artists.get(observers.song.primaryArtist) | async; as artist) {
-        Song {{ $index + 1 }} : <app-redirect-to-song-page [song]="observers.song" /> (id: {{ observers.song?.id }})
-        from
-        @for (songArtist of getSongArtists(observers.song); track $index) {
-          <app-redirect-to-artist-page [artist]="artists.get(songArtist.artist) | async" /> (as
-          {{ songArtist.contribution }})
-        }
-        added by
-        <app-redirect-to-user-profile [user]="observers.user" />
-        <ul>
-          @for (source of observers.song?.songSource; track $index) {
-            <li>
-              Link:
-              <a [href]="sources.generateURL(source)" target="_blank">{{ source.platform }}:{{ source.sourceID }}</a>
-            </li>
+        <article class="space-y-3 rounded-box border border-base-300 bg-base-100 p-4">
+          Song {{ $index + 1 }} : <app-redirect-to-song-page [song]="observers.song" /> (id: {{ observers.song?.id }})
+          from
+          @for (songArtist of getSongArtists(observers.song); track $index) {
+            <app-redirect-to-artist-page [artist]="artists.get(songArtist.artist) | async" /> (as
+            {{ songArtist.contribution }})
           }
-        </ul>
-        @if (observers.user?.id === (currentUser()?.id ?? '')) {
-          <button (click)="removeSong(songConstitution.id)">Remove song</button>
-        }
+          added by
+          <app-redirect-to-user-profile [user]="observers.user" />
+          @if ((observers.song?.songSource?.length ?? 0) > 0) {
+            <ul class="space-y-3">
+              @for (source of observers.song?.songSource; track $index) {
+                <li>
+                  Link:
+                  <a [href]="sources.generateURL(source)" target="_blank"
+                    >{{ source.platform }}:{{ source.sourceID }}</a
+                  >
+                </li>
+              }
+            </ul>
+          }
+          @if (observers.user?.id === (currentUser()?.id ?? '')) {
+            <button class="btn btn-ghost text-error" (click)="removeSong(songConstitution.id)">Remove song</button>
+          }
+        </article>
       }
     }
   }
@@ -57,8 +64,10 @@
     <app-add-song-form [constitution]="constitution.id"></app-add-song-form>
   }
   <div>
-    <button (click)="constitutions.leave(constitution.id)">Leave constitution</button>
+    <button class="btn btn-outline text-error border-base-300" (click)="constitutions.leave(constitution.id)">
+      Leave constitution
+    </button>
   </div>
 } @else {
-  <p>Loading constitution...</p>
+  <p class="text-base-content/60" role="status">Loading constitution...</p>
 }

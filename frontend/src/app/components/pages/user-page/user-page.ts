@@ -11,7 +11,6 @@ import { Users } from '../../../services/users';
   selector: 'app-user-page',
   imports: [CurrentUserForm],
   templateUrl: './user-page.html',
-  styleUrl: './user-page.scss',
 })
 export class UserPage implements OnDestroy {
   // Service injections

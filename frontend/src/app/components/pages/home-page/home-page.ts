@@ -7,7 +7,6 @@ import { Users } from '../../../services/users';
   selector: 'app-home-page',
   imports: [],
   templateUrl: './home-page.html',
-  styleUrl: './home-page.scss',
 })
 export class HomePage implements OnDestroy {
   // Service injections
