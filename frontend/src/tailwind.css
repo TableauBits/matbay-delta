@@ -8,7 +8,7 @@
   --soft-periwinkle: #a589faff;
   --bright-lavender: #cb91f2ff;
   --shadow-grey: #121212;
-  --black: #0A0A0A;
+  --black: #090909;
  }
 
 /* One shared palette for DaisyUI components and Tailwind color utilities. */
@@ -20,7 +20,7 @@
 
   --color-base-100: var(--shadow-grey);
   --color-base-200: var(--black);
-  --color-base-300: color-mix(in srgb, var(--shadow-grey) 75%, var(--soft-periwinkle));
+  --color-base-300: color-mix(in srgb, var(--shadow-grey) 90%, white);
   --color-base-content: color-mix(in srgb, var(--bright-lavender) 20%, white);
   --color-primary: var(--soft-periwinkle);
   --color-primary-content: var(--black);
