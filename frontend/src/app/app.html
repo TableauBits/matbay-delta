@@ -9,14 +9,13 @@
 } @else {
   <main id="main-content" tabindex="-1" class="flex flex-1 items-center justify-center px-4 py-12">
     <section class="card w-full max-w-md border border-base-300 bg-base-100 p-6 sm:p-8">
-      <p class="mb-6 text-sm font-semibold tracking-widest text-primary">MATBAY Δ</p>
-      <h1 class="mb-3">Welcome to MatBay</h1>
+      <h1 class="mb-3">Welcome to <span class="text-primary">MATBay Δ</span></h1>
       <p class="mb-6 text-base-content/70">Please log in with your TableauBits account to access the app.</p>
       <button class="btn btn-primary w-full" (click)="deltaAuth.login()">Log in</button>
     </section>
   </main>
 }
 <footer class="border-t border-base-300 px-4 py-5 text-center text-xs text-base-content/60">
-  MatBay Δ · version: {{ version.fullString() }}
+  MATBay Δ by TableauBits · version {{ version.fullString() }}
 </footer>
 <app-snackbar />
