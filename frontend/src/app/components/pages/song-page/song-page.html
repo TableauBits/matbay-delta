@@ -22,10 +22,20 @@
     }
   </ul>
   <h3>Sources</h3>
-  <ul class="space-y-3 rounded-box border border-base-300 bg-base-100 p-4">
+  <ul class="list mt-2 rounded-box border border-base-300 bg-base-100">
     @for (source of song.songSource; track $index) {
-      <li>
-        <a [href]="sources.generateURL(source)" target="_blank">{{ source.platform }}:{{ source.sourceID }}</a>
+      <li class="list-row items-center">
+        <span>{{ $index + 1 }}</span>
+        <img
+          [src]="sources.getImageURL(source)"
+          class="h-20 w-36 rounded-box object-cover"
+          width="144"
+          height="80"
+          alt="Thumbnail for {{ source.platform }} source {{ source.sourceID }}"
+        />
+        <a class="link link-primary list-col-grow" [href]="sources.generateURL(source)" target="_blank">
+          {{ source.platform }}
+        </a>
       </li>
     }
     @if (song.songSource.length === 0) {
