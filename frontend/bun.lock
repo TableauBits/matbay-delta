@@ -21,6 +21,7 @@
         "@ngx-env/builder": "^22.0.0",
         "@tailwindcss/postcss": "^4.3.3",
         "codemirror": "^6.0.2",
+        "daisyui": "^5.7.50",
         "eslint-config-prettier": "^10.1.8",
         "eslint-plugin-prettier": "^5.5.4",
         "parse-url": "^11.1.0",
@@ -708,6 +709,8 @@
     "css-what": ["css-what@8.0.0", "http://registry.npmjs.org/css-what/-/css-what-8.0.0.tgz", {}, "sha512-DH0Bqq3DNp5tdOReuNyAA+Ev4Y2GS5FMbZpeTLP6C4CDi0h5nL0BmUPChXw3o/qbHLDWHl49sbNqQVY7bMSDdw=="],
 
     "custom-event": ["custom-event@1.0.1", "http://registry.npmjs.org/custom-event/-/custom-event-1.0.1.tgz", {}, "sha512-GAj5FOq0Hd+RsCGVJxZuKaIDXDf3h6GQoNEjFgbLLI/trgtavwUbSnZ5pVfg27DVCaWjIohryS0JFwIJyT2cMg=="],
+
+    "daisyui": ["daisyui@5.7.50", "", {}, "sha512-+/LRqnTCoc7s/bJEKKwtJSwzeXCVdAmRdNmZeZzgHCaQ9PJyl7j+2V2U32GQDMyD+VDkP9e/+JGoC72Y1hLk7w=="],
 
     "date-format": ["date-format@4.0.14", "http://registry.npmjs.org/date-format/-/date-format-4.0.14.tgz", {}, "sha512-39BOQLs9ZjKh0/patS9nrT8wc3ioX3/eA/zgbKNopnF2wCqJEoxywwwElATYvRsXdnOxA/OQeQoFZ3rFjVajhg=="],
 

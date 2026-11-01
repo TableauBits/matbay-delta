@@ -37,6 +37,7 @@
     "@ngx-env/builder": "^22.0.0",
     "@tailwindcss/postcss": "^4.3.3",
     "codemirror": "^6.0.2",
+    "daisyui": "^5.7.50",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-prettier": "^5.5.4",
     "parse-url": "^11.1.0",
