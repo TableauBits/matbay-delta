@@ -13,4 +13,13 @@ export class Sources {
         throw new Error(`Unsupported source platform: ${source.platform}`);
     }
   }
+
+  getImageURL(source: Source): string {
+    switch (source.platform) {
+      case SourcePlatform.YOUTUBE:
+        return `https://img.youtube.com/vi/${source.sourceID}/hqdefault.jpg`;
+      default:
+        throw new Error(`Unsupported source platform: ${source.platform}`);
+    }
+  }
 }
