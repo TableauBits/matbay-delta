@@ -3,7 +3,7 @@
 } @else if (song(); as song) {
   <h2>{{ song.title }}</h2>
   <p>Added on: {{ song.creationDate }}</p>
-  <h3>Artists:</h3>
+  <h3>Artists</h3>
   <ul class="space-y-3 rounded-box border border-base-300 bg-base-100 p-4">
     @for (songArtist of song.songArtist; track $index) {
       <li>
@@ -12,7 +12,7 @@
       </li>
     }
   </ul>
-  <h3>Languages:</h3>
+  <h3>Languages</h3>
   <ul class="space-y-3 rounded-box border border-base-300 bg-base-100 p-4">
     @for (language of song.songLanguage; track $index) {
       <li>{{ languages.getLanguageName(language) }}</li>
@@ -21,7 +21,7 @@
       <li>No languages available.</li>
     }
   </ul>
-  <h3>Sources:</h3>
+  <h3>Sources</h3>
   <ul class="space-y-3 rounded-box border border-base-300 bg-base-100 p-4">
     @for (source of song.songSource; track $index) {
       <li>
@@ -32,7 +32,7 @@
       <li>No sources available.</li>
     }
   </ul>
-  <h3>Participations:</h3>
+  <h3>Participations</h3>
   <ul class="space-y-3 rounded-box border border-base-300 bg-base-100 p-4">
     @for (participation of participations(); track $index) {
       <li>
