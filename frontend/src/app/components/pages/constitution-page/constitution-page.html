@@ -28,8 +28,7 @@
     ) {
       @if (observers.song && artists.get(observers.song.primaryArtist) | async; as artist) {
         <article class="space-y-3 rounded-box border border-base-300 bg-base-100 p-4">
-          Song {{ $index + 1 }} : <app-redirect-to-song-page [song]="observers.song" /> (id: {{ observers.song?.id }})
-          from
+          Song {{ $index + 1 }} : <app-redirect-to-song-page [song]="observers.song" /> from
           @for (songArtist of getSongArtists(observers.song); track $index) {
             <app-redirect-to-artist-page [artist]="artists.get(songArtist.artist) | async" /> (as
             {{ songArtist.contribution }})
