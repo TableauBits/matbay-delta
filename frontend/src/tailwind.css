@@ -4,6 +4,13 @@
   themes: false;
 }
 
+:root {
+  --soft-periwinkle: #a589faff;
+  --bright-lavender: #cb91f2ff;
+  --shadow-grey: #121212;
+  --black: #0A0A0A;
+ }
+
 /* One shared palette for DaisyUI components and Tailwind color utilities. */
 @plugin "daisyui/theme" {
   name: 'matbay-dark';
@@ -11,20 +18,20 @@
   prefersdark: true;
   color-scheme: dark;
 
-  --color-base-100: #18181d;
-  --color-base-200: #111115;
-  --color-base-300: #303038;
-  --color-base-content: #e9e9ef;
-  --color-primary: #a78bfa;
-  --color-primary-content: #1e1038;
-  --color-secondary: #c4b5fd;
-  --color-secondary-content: #1e1038;
-  --color-accent: #a78bfa;
-  --color-accent-content: #1e1038;
-  --color-neutral: #26262e;
-  --color-neutral-content: #e9e9ef;
-  --color-info: #93c5fd;
-  --color-info-content: #10253d;
+  --color-base-100: var(--shadow-grey);
+  --color-base-200: var(--black);
+  --color-base-300: color-mix(in srgb, var(--shadow-grey) 75%, var(--soft-periwinkle));
+  --color-base-content: color-mix(in srgb, var(--bright-lavender) 20%, white);
+  --color-primary: var(--soft-periwinkle);
+  --color-primary-content: var(--black);
+  --color-secondary: var(--bright-lavender);
+  --color-secondary-content: var(--black);
+  --color-accent: var(--bright-lavender);
+  --color-accent-content: var(--black);
+  --color-neutral: var(--shadow-grey);
+  --color-neutral-content: var(--color-base-content);
+  --color-info: var(--soft-periwinkle);
+  --color-info-content: var(--black);
   --color-success: #86efac;
   --color-success-content: #102d1d;
   --color-warning: #fcd34d;
