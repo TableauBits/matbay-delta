@@ -25,7 +25,8 @@ async function searchArtistsByName(query: string): Promise<Result<DB.Select.Arti
         await db
             .select()
             .from(artists)
-            .where(like(artists.name, `%${query}%`));
+            .where(like(artists.name, `%${query}%`))
+            .limit(5);
 
     return Result.safe(operation());
 }
