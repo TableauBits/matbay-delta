@@ -40,7 +40,7 @@ export class Songs {
 
   async search(query: string): Promise<AutocompleteResult<number>[]> {
     const results = await this.httpRequests.authenticatedGetRequest<{ id: number; title: string }[]>(
-      `song/autocomplete/${encodeURIComponent(query)}`,
+      `song/autocomplete?title=${encodeURIComponent(query)}`,
     );
     return results.map((r) => ({ id: r.id, name: r.title }));
   }

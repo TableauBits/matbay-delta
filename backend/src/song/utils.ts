@@ -104,7 +104,8 @@ async function searchSongsByTitle(query: string): Promise<Result<DB.Select.Song[
         await db
             .select()
             .from(songs)
-            .where(like(songs.title, `%${query}%`));
+            .where(like(songs.title, `%${query}%`))
+            .limit(5);
 
     return Result.safe(operation());
 }

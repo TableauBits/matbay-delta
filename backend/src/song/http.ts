@@ -1,12 +1,12 @@
 import { type Request, type Response, Router } from "express";
 import type { AddSongRequestBody } from "../../../common/song";
 import { ensureAuthMiddleware } from "../auth/http";
-import { getBody, getParam, HttpError, HttpStatus, sendResult } from "../utils";
+import { getBody, getParam, getQuery, HttpError, HttpStatus, sanitizeLikeQuery, sendResult } from "../utils";
 import { addSong, getSong, getSongConstitution, searchSongsByTitle } from "./utils";
 
 // GET ROUTES
 async function autocomplete(req: Request, res: Response): Promise<void> {
-    const query = getParam(req, "query");
+    const query = sanitizeLikeQuery(getQuery(req, "title"));
 
     const results = (await searchSongsByTitle(query)).mapErr(
         (err) => new HttpError(HttpStatus.InternalError, `failed to autocomplete songs in database: ${err}`),
@@ -45,7 +45,7 @@ async function add(req: Request, res: Response): Promise<void> {
 
 const songApiRouter = Router();
 
-songApiRouter.get("/autocomplete/:query", ensureAuthMiddleware, autocomplete);
+songApiRouter.get("/autocomplete", ensureAuthMiddleware, autocomplete);
 songApiRouter.get("/get/:id", ensureAuthMiddleware, get);
 songApiRouter.get("/participations/:id", ensureAuthMiddleware, participations);
 
