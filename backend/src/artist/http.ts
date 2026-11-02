@@ -15,7 +15,7 @@ async function get(req: Request, res: Response): Promise<void> {
 }
 
 async function autocomplete(req: Request, res: Response): Promise<void> {
-    const query = getQuery(req, "name");
+    const query = getQuery(req, "name").replaceAll("\\", "\\\\").replaceAll("%", "\\%").replaceAll("_", "\\_");
 
     const results = (await searchArtistsByName(query)).mapErr(
         (err) => new HttpError(HttpStatus.InternalError, `failed to autocomplete artist in database: ${err}`),
@@ -40,7 +40,7 @@ async function add(req: Request, res: Response): Promise<void> {
 const artistApiRouter = Router();
 
 artistApiRouter.get("/get/:id", ensureAuthMiddleware, get);
-artistApiRouter.get("/autocomplete/:query", ensureAuthMiddleware, autocomplete);
+artistApiRouter.get("/autocomplete", ensureAuthMiddleware, autocomplete);
 
 artistApiRouter.post("/add", ensureAuthMiddleware, add);
 
