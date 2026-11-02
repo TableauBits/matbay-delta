@@ -39,7 +39,7 @@ export class Artists {
 
   async search(query: string): Promise<AutocompleteResult<number>[]> {
     const results = await this.httpRequests.authenticatedGetRequest<{ id: number; name: string }[]>(
-      `artist/autocomplete/${encodeURIComponent(query)}`,
+      `artist/autocomplete?name=${encodeURIComponent(query)}`,
     );
     return results.map((r) => ({ id: r.id, name: r.name }));
   }

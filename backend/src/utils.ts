@@ -90,3 +90,9 @@ export function getReqUID(req: Request): string {
 export function getParam(req: Request, key: string): string {
     return unwrap(Option(req.params[key]).okOr(new HttpError(HttpStatus.BadRequest, `missing '${key}' from request`)));
 }
+
+export function getQuery(req: Request, key: string): string {
+    return unwrap(
+        Option(req.query[key]).okOr(new HttpError(HttpStatus.BadRequest, `missing '${key}' query param from request`)),
+    ) as string;
+}

@@ -40,7 +40,7 @@ export class DeltaAuth {
         error: (err) => {
           console.error(err);
           const message = err.error.toString();
-          if (message.includes('jwt expired')) {
+          if (message.toLowerCase().includes('expired')) {
             firstValueFrom(this.auth.getAccessTokenSilently({ cacheMode: 'off' }))
               .then(() => console.info('new token successfully fetched'))
               .catch((err) => console.error('failed to refresh token:', err));
