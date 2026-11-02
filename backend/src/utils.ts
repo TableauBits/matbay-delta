@@ -96,3 +96,7 @@ export function getQuery(req: Request, key: string): string {
         Option(req.query[key]).okOr(new HttpError(HttpStatus.BadRequest, `missing '${key}' query param from request`)),
     ) as string;
 }
+
+export function sanitizeLikeQuery(input: string): string {
+    return input.replaceAll("\\", "\\\\").replaceAll("%", "\\%").replaceAll("_", "\\_");
+}
