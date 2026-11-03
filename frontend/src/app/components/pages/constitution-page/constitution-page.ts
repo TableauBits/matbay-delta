@@ -39,7 +39,6 @@ function sortByAddDate(a: { addDate: string }, b: { addDate: string }): number {
   selector: 'app-constitution-page',
   imports: [AsyncPipe, AddSongForm, RedirectToUserProfile, RedirectToSongPage, RedirectToArtistPage],
   templateUrl: './constitution-page.html',
-  styleUrl: './constitution-page.scss',
 })
 export class ConstitutionPage implements OnDestroy {
   // Service injections

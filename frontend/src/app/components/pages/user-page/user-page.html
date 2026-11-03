@@ -1,8 +1,14 @@
 @if (userError(); as userError) {
-  <p>Error loading user : "{{ userError.error }}".</p>
+  <p class="alert alert-error alert-soft" role="alert">Error loading user : "{{ userError.error }}".</p>
 } @else if (user(); as user) {
   <h2>{{ user.displayName }} (@{{ user.handle }})</h2>
-  <img [src]="user.imageURL" width="250" height="250" alt="Profile picture of {{ user.displayName }}" />
+  <img
+    [src]="user.imageURL"
+    class="size-28 rounded-box border border-base-300 object-cover sm:size-36"
+    width="144"
+    height="144"
+    alt="Profile picture of {{ user.displayName }}"
+  />
   <p>Description: {{ user.description }}</p>
   <p>Joined on: {{ user.joinDate }}</p>
 
@@ -10,5 +16,5 @@
     <app-current-user-form></app-current-user-form>
   }
 } @else {
-  <p>Loading user...</p>
+  <p class="text-base-content/60" role="status">Loading user...</p>
 }

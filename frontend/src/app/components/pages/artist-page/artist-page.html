@@ -1,8 +1,8 @@
 @if (error(); as error) {
-  <p>Error loading artist : "{{ error.error }}".</p>
+  <p class="alert alert-error alert-soft" role="alert">Error loading artist : "{{ error.error }}".</p>
 } @else if (artist(); as artist) {
   <h2>{{ artist.name }}</h2>
   <p>Added on: {{ artist.creationDate }}</p>
 } @else {
-  <p>Loading artist...</p>
+  <p class="text-base-content/60" role="status">Loading artist...</p>
 }

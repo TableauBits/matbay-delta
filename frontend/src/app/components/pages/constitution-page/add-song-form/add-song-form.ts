@@ -29,7 +29,6 @@ interface FormSource {
   selector: 'app-add-song-form',
   imports: [FormsModule, ReactiveFormsModule, AutocompleteTextbox],
   templateUrl: './add-song-form.html',
-  styleUrl: './add-song-form.scss',
 })
 export class AddSongForm {
   private httpRequests = inject(HttpRequests);

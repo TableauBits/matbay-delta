@@ -1,25 +1,30 @@
-<div class="debug-container">
-  <h1><span class="colorful-text madimi-one">Δ-Debug</span></h1>
+<div class="grid min-w-0 gap-6">
+  <h1><span class="text-primary font-semibold">Δ-Debug</span></h1>
 
-  <div class="form-card glass-box">
-    <form [formGroup]="debugForm" (ngSubmit)="sendRequest()">
-      <div class="request-line">
-        <select formControlName="method" class="method-select">
+  <div class="card min-w-0 border border-base-300 bg-base-100 p-4 sm:p-6">
+    <form class="grid min-w-0 gap-5" [formGroup]="debugForm" (ngSubmit)="sendRequest()">
+      <div class="flex min-w-0 flex-wrap items-center gap-3">
+        <select formControlName="method" class="select w-28 shrink-0 border-base-300">
           @for (method of httpMethods; track method) {
             <option [value]="method">{{ method }}</option>
           }
         </select>
-        <span class="base-url">{{ baseUrl }}</span>
-        <span class="url-separator">/</span>
-        <input type="text" formControlName="url" placeholder="endpoint" class="url-input" />
-        <label class="auth-toggle">
-          <input type="checkbox" formControlName="includeAuth" />
+        <span class="max-w-full break-all font-mono text-xs text-base-content/60">{{ baseUrl }}</span>
+        <span class="text-base-content/40">/</span>
+        <input
+          type="text"
+          formControlName="url"
+          placeholder="endpoint"
+          class="input min-w-0 flex-1 basis-40 border-base-300"
+        />
+        <label class="flex items-center gap-2 text-sm">
+          <input class="checkbox checkbox-primary checkbox-sm" type="checkbox" formControlName="includeAuth" />
           Include auth token
         </label>
       </div>
 
-      <div class="headers-section">
-        <button type="button" class="toggle-headers" (click)="showHeaders = !showHeaders">
+      <div class="grid gap-3">
+        <button type="button" class="btn btn-ghost w-fit" (click)="showHeaders = !showHeaders">
           {{ showHeaders ? 'Hide' : 'Show' }} Headers
         </button>
         @if (showHeaders) {
@@ -31,82 +36,104 @@
         }
       </div>
 
-      <div class="body-label">
+      <div class="grid min-w-0 gap-2 text-sm">
         <span>Request Body (JSON)</span>
         <app-json-editor formControlName="body" placeholder='{ "key": "value" }' minHeight="10rem" />
       </div>
 
-      <div class="button-row">
-        <button type="submit" class="send-button" [disabled]="loading()">
+      <div class="flex flex-wrap gap-2">
+        <button type="submit" class="btn btn-primary" [disabled]="loading()">
           {{ loading() ? 'Sending...' : 'Send' }}
         </button>
-        <button type="button" class="clear-button" (click)="clearConsole()">Clear Console</button>
+        <button type="button" class="btn btn-ghost" (click)="clearConsole()">Clear Console</button>
       </div>
     </form>
   </div>
 
-  <div class="console-card glass-box">
-    <div class="console-header">
+  <div class="card min-w-0 gap-4 border border-base-300 bg-base-100 p-4 sm:p-6">
+    <div class="flex flex-wrap items-center justify-between gap-2">
       <h2>Console</h2>
-      <span class="entry-count">{{ entries().length }} entries</span>
+      <span class="badge badge-ghost">{{ entries().length }} entries</span>
     </div>
     <hr />
-    <div class="console-body" #consoleBody>
+    <div class="grid max-h-[36rem] min-w-0 gap-4 overflow-y-auto" #consoleBody>
       @if (entries().length === 0) {
-        <div class="empty-console">No requests yet. Send one to see the results here.</div>
+        <div class="py-8 text-center text-sm text-base-content/60">
+          No requests yet. Send one to see the results here.
+        </div>
       }
 
       @for (entry of entries(); track entry.timestamp) {
-        <div class="console-entry" [class.error]="entry.status === 'error'">
-          <div class="entry-header">
-            <span class="timestamp">{{ formatTime(entry.timestamp) }}</span>
-            <span class="method-badge">{{ entry.method }}</span>
-            <span class="url-text">{{ entry.url }}</span>
+        <div class="min-w-0 rounded-box border border-base-300 p-4" [class.border-error]="entry.status === 'error'">
+          <div class="mb-2 flex flex-wrap items-center gap-2 font-mono text-xs">
+            <span class="text-base-content/60">{{ formatTime(entry.timestamp) }}</span>
+            <span class="badge badge-primary badge-soft badge-sm">{{ entry.method }}</span>
+            <span class="min-w-0 break-all">{{ entry.url }}</span>
           </div>
-          <div class="entry-meta">
-            <span class="status-badge" [style.color]="getStatusColor(entry.statusCode)">
+          <div class="mb-3 flex flex-wrap gap-3 text-xs">
+            <span class="font-medium" [style.color]="getStatusColor(entry.statusCode)">
               {{ getStatusText(entry.statusCode) }}
             </span>
-            <span class="duration">{{ formatDuration(entry.duration) }}</span>
+            <span class="text-base-content/60">{{ formatDuration(entry.duration) }}</span>
           </div>
 
           @if (entry.error) {
-            <div class="error-message">{{ entry.error }}</div>
+            <div class="alert alert-error alert-soft break-words">{{ entry.error }}</div>
           }
 
           @if (entry.requestHeaders) {
-            <details>
-              <summary>Request Headers</summary>
-              <pre class="json-block">{{ prettyPrint(entry.requestHeaders | json) }}</pre>
-              <button type="button" class="copy-button" (click)="copyRequestHeaders(entry)">Copy</button>
+            <details class="rounded-field border border-base-300 p-3">
+              <summary class="cursor-pointer text-sm font-medium">Request Headers</summary>
+              <pre
+                class="my-3 max-h-72 overflow-auto rounded-field bg-base-200 p-3 font-mono text-xs whitespace-pre-wrap break-all"
+                >{{ prettyPrint(entry.requestHeaders | json) }}</pre
+              >
+              <button type="button" class="btn btn-ghost btn-sm" (click)="copyRequestHeaders(entry)">Copy</button>
             </details>
           }
 
           @if (entry.requestBody) {
-            <details>
-              <summary>Request Body</summary>
-              <pre class="json-block">{{ prettyPrint(entry.requestBody) }}</pre>
-              <button type="button" class="copy-button" (click)="copyToClipboard(prettyPrint(entry.requestBody))">
+            <details class="rounded-field border border-base-300 p-3">
+              <summary class="cursor-pointer text-sm font-medium">Request Body</summary>
+              <pre
+                class="my-3 max-h-72 overflow-auto rounded-field bg-base-200 p-3 font-mono text-xs whitespace-pre-wrap break-all"
+                >{{ prettyPrint(entry.requestBody) }}</pre
+              >
+              <button
+                type="button"
+                class="btn btn-ghost btn-sm"
+                (click)="copyToClipboard(prettyPrint(entry.requestBody))"
+              >
                 Copy
               </button>
             </details>
           }
 
           @if (entry.responseBody) {
-            <details open>
-              <summary>Response Body</summary>
-              <pre class="json-block">{{ prettyPrint(entry.responseBody) }}</pre>
-              <button type="button" class="copy-button" (click)="copyToClipboard(prettyPrint(entry.responseBody))">
+            <details class="rounded-field border border-base-300 p-3" open>
+              <summary class="cursor-pointer text-sm font-medium">Response Body</summary>
+              <pre
+                class="my-3 max-h-72 overflow-auto rounded-field bg-base-200 p-3 font-mono text-xs whitespace-pre-wrap break-all"
+                >{{ prettyPrint(entry.responseBody) }}</pre
+              >
+              <button
+                type="button"
+                class="btn btn-ghost btn-sm"
+                (click)="copyToClipboard(prettyPrint(entry.responseBody))"
+              >
                 Copy
               </button>
             </details>
           }
 
           @if (entry.responseHeaders) {
-            <details>
-              <summary>Response Headers</summary>
-              <pre class="json-block">{{ prettyPrint(entry.responseHeaders | json) }}</pre>
-              <button type="button" class="copy-button" (click)="copyResponseHeaders(entry)">Copy</button>
+            <details class="rounded-field border border-base-300 p-3">
+              <summary class="cursor-pointer text-sm font-medium">Response Headers</summary>
+              <pre
+                class="my-3 max-h-72 overflow-auto rounded-field bg-base-200 p-3 font-mono text-xs whitespace-pre-wrap break-all"
+                >{{ prettyPrint(entry.responseHeaders | json) }}</pre
+              >
+              <button type="button" class="btn btn-ghost btn-sm" (click)="copyResponseHeaders(entry)">Copy</button>
             </details>
           }
         </div>

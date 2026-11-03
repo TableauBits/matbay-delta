@@ -6,7 +6,6 @@ import { Song } from '../../../../../../common/song';
   selector: 'app-redirect-to-song-page',
   imports: [],
   templateUrl: './redirect-to-song-page.html',
-  styleUrl: './redirect-to-song-page.scss',
 })
 export class RedirectToSongPage {
   song = input<Song | null>();

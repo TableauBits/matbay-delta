@@ -1,5 +1,5 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
-import { Router, RouterLink } from '@angular/router';
+import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 
 import { CommonModule } from '@angular/common';
 import { DeltaAuth } from '../services/delta-auth';
@@ -10,9 +10,8 @@ import { Users } from '../services/users';
 
 @Component({
   selector: 'app-navigation-bar',
-  imports: [CommonModule, RouterLink, RedirectToUserProfile],
+  imports: [CommonModule, RouterLink, RouterLinkActive, RedirectToUserProfile],
   templateUrl: './navigation-bar.html',
-  styleUrl: './navigation-bar.scss',
 })
 export class NavigationBar implements OnInit {
   deltaAuth = inject(DeltaAuth);

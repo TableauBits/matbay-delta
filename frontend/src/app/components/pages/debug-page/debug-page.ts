@@ -28,7 +28,6 @@ const HTTP_METHODS = ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'HEAD', 'OPTIONS'
   selector: 'app-debug-page',
   imports: [CommonModule, ReactiveFormsModule, JsonEditor],
   templateUrl: './debug-page.html',
-  styleUrl: './debug-page.scss',
 })
 export class DebugPage implements AfterViewChecked {
   private http = inject(HttpClient);
@@ -233,11 +232,11 @@ export class DebugPage implements AfterViewChecked {
   }
 
   getStatusColor(status: number | null): string {
-    if (!status) return '#888';
-    if (status >= 200 && status < 300) return '#4caf50';
-    if (status >= 400 && status < 500) return '#fed057';
-    if (status >= 500) return '#ef547b';
-    return '#888';
+    if (!status) return 'var(--color-base-content)';
+    if (status >= 200 && status < 300) return 'var(--color-success)';
+    if (status >= 400 && status < 500) return 'var(--color-warning)';
+    if (status >= 500) return 'var(--color-error)';
+    return 'var(--color-base-content)';
   }
 
   getStatusText(status: number | null): string {

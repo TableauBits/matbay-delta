@@ -1,39 +1,41 @@
-<div class="autocomplete-container" [class.disabled]="disabled()">
+<div class="relative w-full" [class.opacity-50]="disabled()">
   @if (label()) {
-    <label class="autocomplete-label" for="autocomplete-input">{{ label() }}</label>
+    <label class="mb-2 block text-sm font-medium" [for]="inputId">{{ label() }}</label>
   }
-  <div class="autocomplete-input-wrapper">
+  <div class="relative">
     <input
-      id="autocomplete-input"
+      [id]="inputId"
       type="text"
       [formControl]="searchControl"
       [placeholder]="placeholder()"
-      class="autocomplete-input"
+      class="input w-full pr-10 border-base-300"
       (keydown)="onKeydown($event)"
       (blur)="onBlur()"
       (focus)="onFocus()"
       autocomplete="off"
     />
     @if (isLoading()) {
-      <div class="spinner"></div>
+      <div class="loading loading-spinner loading-sm absolute right-3 top-3 text-primary"></div>
     }
   </div>
   @if (isDropdownOpen() && !disabled() && searchControl.value.trim().length > 0) {
-    <ul class="autocomplete-dropdown">
+    <ul
+      class="absolute inset-x-0 top-full z-30 mt-1 max-h-64 overflow-y-auto rounded-box border border-base-300 bg-base-100 p-1"
+    >
       @for (item of getDisplayResults(); track $index; let i = $index) {
         <li
-          class="autocomplete-item"
-          [class.active]="i === activeIndex()"
+          class="flex cursor-pointer items-center justify-between gap-3 rounded-field px-3 py-3 text-sm hover:bg-base-300"
+          [class.bg-base-300]="i === activeIndex()"
           (mousedown)="selectItem(i)"
           [attr.data-index]="i"
         >
           @if (item.isVerbatim) {
-            <span class="item-text verbatim-text">
+            <span class="min-w-0 break-words italic text-base-content/70">
               {{ searchControl.value.trim() }}
             </span>
-            <span class="badge badge-new">new</span>
+            <span class="badge badge-primary">new</span>
           } @else if (item.result) {
-            <span class="item-text">
+            <span class="min-w-0 break-words">
               @for (segment of highlightMatch(item.result.name, searchControl.value.trim()); track $index) {
                 <span [style.text-decoration]="segment.isMatch ? 'underline' : 'none'">{{ segment.text }}</span>
               }

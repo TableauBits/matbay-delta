@@ -1,19 +1,31 @@
 <h1>Current constitutions</h1>
-@for (cstID of currentConstitutions(); track $index) {
-  @if (constitutions.get(cstID) | async; as constitution) {
-    <div>
-      <h2>{{ $index }} - {{ constitution.name }} (id : {{ constitution.id }})</h2>
-      <hr />
-      <p>Description : {{ constitution.description }}</p>
-      @if (users.get(constitution.owner) | async; as owner) {
-        <p>Owner: <app-redirect-to-user-profile [user]="owner" /></p>
-      }
-      <p>Created: {{ constitution.creationDate }}</p>
-      @if (isParticipant(constitution)) {
-        <button (click)="redirectToConstitutionPage(constitution.id)">See constitution</button>
-      } @else {
-        <button (click)="joinConstitution(constitution.id)">Join constitution</button>
-      }
-    </div>
+<div class="grid gap-4 md:grid-cols-2">
+  @for (cstID of currentConstitutions(); track $index) {
+    @if (constitutions.get(cstID) | async; as constitution) {
+      <article class="card gap-4 border border-base-300 bg-base-100 p-5 sm:p-6">
+        <h2>{{ constitution.name }}</h2>
+        <p class="text-base-content/70">{{ constitution.description }}</p>
+        <div class="space-y-2 text-sm text-base-content/70">
+          @if (users.get(constitution.owner) | async; as owner) {
+            <p class="flex flex-wrap items-center gap-2">Owner: <app-redirect-to-user-profile [user]="owner" /></p>
+          }
+          <p>Created: {{ constitution.creationDate }}</p>
+          <p class="break-all text-xs">ID: {{ constitution.id }}</p>
+        </div>
+        @if (isParticipant(constitution)) {
+          <button class="btn btn-primary mt-auto w-full sm:w-fit" (click)="redirectToConstitutionPage(constitution.id)">
+            See constitution
+          </button>
+        } @else {
+          <button class="btn btn-primary mt-auto w-full sm:w-fit" (click)="joinConstitution(constitution.id)">
+            Join constitution
+          </button>
+        }
+      </article>
+    }
+  } @empty {
+    <p class="rounded-box border border-dashed border-base-300 p-6 text-base-content/60 md:col-span-2">
+      No current constitutions.
+    </p>
   }
-}
+</div>

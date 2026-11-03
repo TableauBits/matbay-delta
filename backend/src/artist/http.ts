@@ -1,7 +1,7 @@
 import { type Request, type Response, Router } from "express";
 import type { AddArtistRequestBody } from "../../../common/artist";
 import { ensureAuthMiddleware } from "../auth/http";
-import { getBody, getParam, HttpError, HttpStatus, sendResult } from "../utils";
+import { getBody, getParam, getQuery, HttpError, HttpStatus, sanitizeLikeQuery, sendResult } from "../utils";
 import { createArtist, getArtist, searchArtistsByName } from "./utils";
 
 // GET ROUTES
@@ -15,7 +15,7 @@ async function get(req: Request, res: Response): Promise<void> {
 }
 
 async function autocomplete(req: Request, res: Response): Promise<void> {
-    const query = getParam(req, "query");
+    const query = sanitizeLikeQuery(getQuery(req, "name"));
 
     const results = (await searchArtistsByName(query)).mapErr(
         (err) => new HttpError(HttpStatus.InternalError, `failed to autocomplete artist in database: ${err}`),
@@ -40,7 +40,7 @@ async function add(req: Request, res: Response): Promise<void> {
 const artistApiRouter = Router();
 
 artistApiRouter.get("/get/:id", ensureAuthMiddleware, get);
-artistApiRouter.get("/autocomplete/:query", ensureAuthMiddleware, autocomplete);
+artistApiRouter.get("/autocomplete", ensureAuthMiddleware, autocomplete);
 
 artistApiRouter.post("/add", ensureAuthMiddleware, add);
 

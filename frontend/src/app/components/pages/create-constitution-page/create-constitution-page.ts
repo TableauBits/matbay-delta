@@ -5,6 +5,5 @@ import { ConstitutionForm } from '../../constitution-form/constitution-form';
   selector: 'app-create-constitution-page',
   imports: [ConstitutionForm],
   templateUrl: './create-constitution-page.html',
-  styleUrl: './create-constitution-page.scss',
 })
 export class CreateConstitutionPage {}

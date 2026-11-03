@@ -10,7 +10,6 @@ import { SnackbarComponent } from './components/snackbar/snackbar';
   selector: 'app-root',
   imports: [CommonModule, RouterOutlet, NavigationBar, SnackbarComponent],
   templateUrl: './app.html',
-  styleUrl: './app.scss',
 })
 export class App {
   // Service injections

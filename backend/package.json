@@ -27,7 +27,7 @@
         "jwks-rsa": "^4.1.0",
         "oxide.ts": "^1.1.0",
         "parse-url": "^11.1.0",
-        "socket.io": "^4.8.3",
+        "socket.io": "^4.8.4",
         "uuid": "^14.0.1"
     },
     "devDependencies": {
@@ -36,7 +36,7 @@
         "@types/dotenv": "^8.2.3",
         "@types/express": "^5.0.6",
         "@types/jsonwebtoken": "^9.0.10",
-        "better-sqlite3": "^12.11.1",
+        "better-sqlite3": "^13.0.3",
         "drizzle-kit": "^0.31.11"
     }
 }
