@@ -117,7 +117,7 @@ export class Constitutions implements OnDestroy {
   private onSongAdd(message: WSCstSongAddMessage): void {
     const constitution = this.constitutions.get(message.constitution);
     if (!constitution) return;
-    constitution.value?.songConstitution.push(message.songConstitution);
+    constitution.value?.songConstitution.push(message);
     constitution.next(constitution.value);
   }
 
@@ -127,7 +127,7 @@ export class Constitutions implements OnDestroy {
 
     if (constitution.value) {
       constitution.value.songConstitution = constitution.value.songConstitution.filter(
-        (participation) => message.songConstitution.song !== participation.song,
+        (participation) => message.song !== participation.song,
       );
       constitution.next(constitution.value);
     }
@@ -136,7 +136,7 @@ export class Constitutions implements OnDestroy {
   private onUserJoin(message: WSCstUserJoinMessage): void {
     const constitution = this.constitutions.get(message.constitution);
     if (!constitution) return;
-    constitution.value?.userConstitution.push(message.userConstitution);
+    constitution.value?.userConstitution.push(message);
     constitution.next(constitution.value);
   }
 

@@ -3,6 +3,7 @@ const SONGS_PER_USER_DEFAULT = 5;
 
 // Types
 interface UserConstitution {
+    constitution: number;
     user: string;
     joinDate: string;
 }

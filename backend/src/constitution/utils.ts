@@ -102,12 +102,7 @@ async function getConstitution(id: number): Promise<Result<Constitution, Error>>
         await db.query.constitutions.findMany({
             where: eq(constitutions.id, id),
             with: {
-                userConstitution: {
-                    columns: {
-                        user: true,
-                        joinDate: true,
-                    },
-                },
+                userConstitution: {},
                 songConstitution: {},
             },
         });

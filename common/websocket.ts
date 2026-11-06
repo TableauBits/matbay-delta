@@ -3,8 +3,8 @@ import type { UserConstitution, SongConstitution } from "./constitution";
 enum WebsocketEvents {
     CST_USER_JOIN = "cst-user-join",        // OUT
     CST_USER_LEAVE = "cst-user-leave",      // OUT
-    CST_SONG_ADD = "cst-song-add",          // IN
-    CST_SONG_REMOVE = "cst-song-remove",    // IN
+    CST_SONG_ADD = "cst-song-add",          // OUT
+    CST_SONG_REMOVE = "cst-song-remove",    // OUT
     CST_SUBSCRIBE = "cst-subscribe",        // IN
     CST_UNSUBSCRIBE = "cst-unsubscribe"     // IN
 }
@@ -26,27 +26,17 @@ interface WSCstUnsubscribeMessage extends WSInMessage {
 }
 
 // OUT MESSAGES (server ==> clients)
-/// Message when a user joins a constitution
-interface WSCstUserJoinMessage {
-    constitution: number;         // ID of the constitution
-    userConstitution: UserConstitution;
-}
+/// Message when a user joins a constitution: the new participation
+type WSCstUserJoinMessage = UserConstitution;
 
-/// Message when a user leaves a constitution with the id of the user and the constitution.
-interface WSCstUserLeaveMessage {
-    constitution: number;
-    user: string;
-}
+/// Message when a user leaves a constitution: the removed participation
+type WSCstUserLeaveMessage = UserConstitution;
 
-interface WSCstSongAddMessage {
-    constitution: number;
-    songConstitution: SongConstitution;
-}
+/// Message when a song is added to a constitution: the new participation
+type WSCstSongAddMessage = SongConstitution;
 
-interface WSCstSongRemoveMessage {
-    constitution: number;
-    songConstitution: SongConstitution;
-}
+/// Message when a song is removed from a constitution: the removed participation
+type WSCstSongRemoveMessage = SongConstitution;
 
 export {
     WebsocketEvents,
