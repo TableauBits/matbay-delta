@@ -7,7 +7,7 @@ const buildDate = new Date().toISOString();
 
 const content = `export const version = '${version}';
 export const buildDate = '${buildDate}';
-export const commitHash = '${commitHash}';`;
+export const commitHash = '${commitHash}';\n`;
 
 writeFileSync('./src/environments/version.production.ts', content);
 console.log('Build information has been saved: ', { version, commitHash, buildDate });
