@@ -132,10 +132,14 @@ export class ConstitutionPage implements OnDestroy {
     return songs;
   }
 
-  removeSong(participation: number): void {
+  removeSong(song: number): void {
+    const constitution = this.constitution();
+    if (!constitution) return;
+
     this.httpRequests
       .authenticatedPostRequest<RemoveSongConstitutionRequestBody>('constitution/removeSong', {
-        songParticipationId: participation,
+        constitution: constitution.id,
+        song,
       })
       .then(() => {
         this.snackbar.showSuccess('Chanson supprimée de la constitution');

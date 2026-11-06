@@ -1,13 +1,11 @@
 import { relations } from "drizzle-orm";
-import { integer, sqliteTable, text, unique } from "drizzle-orm/sqlite-core";
+import { integer, primaryKey, sqliteTable, text } from "drizzle-orm/sqlite-core";
 import { constitutions } from "./constitution";
 import { users } from "./user";
 
 const userConstitution = sqliteTable(
     "userConstitution",
     {
-        id: integer("id").primaryKey(),
-
         user: text()
             .notNull()
             .references(() => users.id),
@@ -18,7 +16,7 @@ const userConstitution = sqliteTable(
             .notNull()
             .$defaultFn(() => new Date().toISOString()),
     },
-    (t) => [unique().on(t.user, t.constitution)],
+    (t) => [primaryKey({ columns: [t.constitution, t.user] })],
 );
 
 /// A constitution participation links one user to one constitution

@@ -8,7 +8,6 @@ interface UserConstitution {
 }
 
 interface SongConstitution {
-    id: number;
     constitution: number;
     song: number;
     user: string;
@@ -47,7 +46,8 @@ interface AddSongConstitutionRequestBody {
 }
 
 interface RemoveSongConstitutionRequestBody {
-    songParticipationId: number
+    constitution: number;
+    song: number;
 }
 
 export {

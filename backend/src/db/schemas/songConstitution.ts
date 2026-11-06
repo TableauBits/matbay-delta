@@ -1,5 +1,5 @@
 import { relations } from "drizzle-orm/relations";
-import { integer, sqliteTable, text, unique } from "drizzle-orm/sqlite-core";
+import { integer, primaryKey, sqliteTable, text } from "drizzle-orm/sqlite-core";
 import { constitutions } from "./constitution";
 import { songs } from "./song";
 import { users } from "./user";
@@ -7,8 +7,6 @@ import { users } from "./user";
 const songConstitution = sqliteTable(
     "songConstitution",
     {
-        id: integer("id").primaryKey(),
-
         song: integer()
             .notNull()
             .references(() => songs.id),
@@ -22,7 +20,7 @@ const songConstitution = sqliteTable(
             .notNull()
             .$defaultFn(() => new Date().toISOString()),
     },
-    (t) => [unique().on(t.song, t.user, t.constitution)],
+    (t) => [primaryKey({ columns: [t.constitution, t.song] })],
 );
 
 /// A row in songConstitution table only references one song and one constitution

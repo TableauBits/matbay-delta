@@ -136,11 +136,11 @@ async function addSong(req: Request, res: Response): Promise<void> {
 
 async function removeSong(req: Request, res: Response): Promise<void> {
     const uid = getReqUID(req);
-    const id = getBody<RemoveSongConstitutionRequestBody>(req).songParticipationId;
+    const { constitution, song } = getBody<RemoveSongConstitutionRequestBody>(req);
 
     const songParticipationInfo = unwrap(
-        (await getSongConstitution(id)).mapErr(
-            (err) => new HttpError(HttpStatus.NotFound, `no song participation found with id '${id}': ${err}`),
+        (await getSongConstitution(constitution, song)).mapErr(
+            (err) => new HttpError(HttpStatus.NotFound, `no song participation found: ${err}`),
         ),
     );
 
@@ -152,8 +152,12 @@ async function removeSong(req: Request, res: Response): Promise<void> {
         return;
     }
 
-    const deletionResult = (await removeSongFromConstitution(id)).mapErr(
-        (err) => new HttpError(HttpStatus.InternalError, `failed to delete song participation '${id}': ${err}`),
+    const deletionResult = (await removeSongFromConstitution(constitution, song)).mapErr(
+        (err) =>
+            new HttpError(
+                HttpStatus.InternalError,
+                `failed to remove song '${song}' from constitution '${constitution}': ${err}`,
+            ),
     );
     sendResult(deletionResult, res);
 }

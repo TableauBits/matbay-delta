@@ -44,11 +44,15 @@ async function addUserToConstitution(uid: string, cstid: number, tx?: DB.Transac
         });
 }
 
-async function getSongConstitution(id: number): Promise<Result<DB.Select.SongConstitution, Error>> {
-    const operation = async () => await db.select().from(songConstitution).where(eq(songConstitution.id, id));
+async function getSongConstitution(cstid: number, songId: number): Promise<Result<DB.Select.SongConstitution, Error>> {
+    const operation = async () =>
+        await db
+            .select()
+            .from(songConstitution)
+            .where(and(eq(songConstitution.constitution, cstid), eq(songConstitution.song, songId)));
 
     return (await Result.safe(operation())).andThen((val) =>
-        Option(val.at(0)).okOr(new Error(`No songConstitution with id '${id}'`)),
+        Option(val.at(0)).okOr(new Error(`song '${songId}' is not in constitution '${cstid}'`)),
     );
 }
 
@@ -72,8 +76,12 @@ async function addSongToConstitution(constitution: number, song: number, user: s
         });
 }
 
-async function removeSongFromConstitution(id: number): Promise<Result<Unit, Error>> {
-    const operation = async () => await db.delete(songConstitution).where(eq(songConstitution.id, id)).returning();
+async function removeSongFromConstitution(cstid: number, songId: number): Promise<Result<Unit, Error>> {
+    const operation = async () =>
+        await db
+            .delete(songConstitution)
+            .where(and(eq(songConstitution.constitution, cstid), eq(songConstitution.song, songId)))
+            .returning();
 
     return (await Result.safe(operation()))
         .andThen((entries) =>

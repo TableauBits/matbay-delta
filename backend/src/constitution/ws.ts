@@ -44,12 +44,7 @@ function attachWSListeners(socket: Socket): void {
 function onSongAddCallback(addInfo: DB.Select.SongConstitution): void {
     const message: WSCstSongAddMessage = {
         constitution: addInfo.constitution,
-        songConstitution: {
-            id: addInfo.id,
-            song: addInfo.song,
-            user: addInfo.user,
-            addDate: addInfo.addDate,
-        },
+        songConstitution: addInfo,
     };
 
     io.to(`${WebsocketEvents.CST_SONG_ADD}:${addInfo.constitution}`).emit(WebsocketEvents.CST_SONG_ADD, message);
@@ -58,12 +53,7 @@ function onSongAddCallback(addInfo: DB.Select.SongConstitution): void {
 function onSongRemoveCallback(removeInfo: DB.Select.SongConstitution): void {
     const message: WSCstSongRemoveMessage = {
         constitution: removeInfo.constitution,
-        songConstitution: {
-            id: removeInfo.id,
-            song: removeInfo.song,
-            user: removeInfo.user,
-            addDate: removeInfo.addDate,
-        },
+        songConstitution: removeInfo,
     };
 
     io.to(`${WebsocketEvents.CST_SONG_REMOVE}:${removeInfo.constitution}`).emit(

@@ -127,7 +127,7 @@ export class Constitutions implements OnDestroy {
 
     if (constitution.value) {
       constitution.value.songConstitution = constitution.value.songConstitution.filter(
-        (participation) => message.songConstitution.id !== participation.id,
+        (participation) => message.songConstitution.song !== participation.song,
       );
       constitution.next(constitution.value);
     }
