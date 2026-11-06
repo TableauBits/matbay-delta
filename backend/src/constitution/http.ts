@@ -8,7 +8,16 @@ import type {
     RemoveSongConstitutionRequestBody,
 } from "../../../common/constitution";
 import { ensureAuthMiddleware } from "../auth/http";
-import { getBody, getParam, getReqUID, HttpError, HttpStatus, sendResult, unwrap } from "../utils";
+import {
+    getBody,
+    getParam,
+    getReqUID,
+    HttpError,
+    HttpStatus,
+    isPrimaryKeyViolation,
+    sendResult,
+    unwrap,
+} from "../utils";
 import {
     addSongToConstitution,
     addUserToConstitution,
@@ -19,7 +28,6 @@ import {
     getDBConstitution,
     getSongConstitution,
     isMember,
-    isSongInConstitution,
     removeSongFromConstitution,
     removeUserFromConstitution,
 } from "./utils";
@@ -99,36 +107,17 @@ async function addSong(req: Request, res: Response): Promise<void> {
         return;
     }
 
-    // Check if the song is already in the constitution
-    const songAlreadyInCst = unwrap(
-        (await isSongInConstitution(participation.constitution, participation.song)).mapErr(
-            (err) =>
-                new HttpError(
-                    HttpStatus.InternalError,
-                    `failed to check if song '${participation.song}' is already in constitution '${participation.constitution}': ${err.message}`,
-                ),
-        ),
-    );
-    if (songAlreadyInCst) {
-        sendResult(
-            Err(
-                new HttpError(
-                    HttpStatus.Conflict,
-                    `song '${participation.song}' is already in constitution '${participation.constitution}'`,
-                ),
-            ),
-            res,
-        );
-        return;
-    }
-
     // Add a song to the constitution
-    const result = (await addSongToConstitution(participation.constitution, participation.song, uid)).mapErr(
-        (err) =>
-            new HttpError(
-                HttpStatus.UnprocessableContent,
-                `failed to add song '${participation.song}' constitution '${participation.constitution}': ${err}`,
-            ),
+    const result = (await addSongToConstitution(participation.constitution, participation.song, uid)).mapErr((err) =>
+        isPrimaryKeyViolation(err)
+            ? new HttpError(
+                  HttpStatus.Conflict,
+                  `song '${participation.song}' is already in constitution '${participation.constitution}'`,
+              )
+            : new HttpError(
+                  HttpStatus.UnprocessableContent,
+                  `failed to add song '${participation.song}' constitution '${participation.constitution}': ${err}`,
+              ),
     );
 
     sendResult(result, res);
