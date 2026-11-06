@@ -28,8 +28,7 @@
     ) {
       @if (observers.song && artists.get(observers.song.primaryArtist) | async; as artist) {
         <article class="space-y-3 rounded-box border border-base-300 bg-base-100 p-4">
-          Song {{ $index + 1 }} : <app-redirect-to-song-page [song]="observers.song" /> (id: {{ observers.song?.id }})
-          from
+          Song {{ $index + 1 }} : <app-redirect-to-song-page [song]="observers.song" /> from
           @for (songArtist of getSongArtists(observers.song); track $index) {
             <app-redirect-to-artist-page [artist]="artists.get(songArtist.artist) | async" /> (as
             {{ songArtist.contribution }})
@@ -37,13 +36,23 @@
           added by
           <app-redirect-to-user-profile [user]="observers.user" />
           @if ((observers.song?.songSource?.length ?? 0) > 0) {
-            <ul class="space-y-3">
+            <ul class="list mt-2 rounded-box border border-base-300 bg-base-100">
               @for (source of observers.song?.songSource; track $index) {
-                <li>
-                  Link:
-                  <a [href]="sources.generateURL(source)" target="_blank"
-                    >{{ source.platform }}:{{ source.sourceID }}</a
+                <li class="p-0">
+                  <a
+                    class="list-row items-center"
+                    [href]="sources.generateURL(source)"
+                    target="_blank"
+                    rel="noopener noreferrer"
                   >
+                    <span>Source {{ $index + 1 }}</span>
+                    <img
+                      [src]="sources.getImageURL(source)"
+                      class="h-20 w-36 rounded-box object-cover"
+                      alt="Thumbnail for {{ source.platform }} source {{ source.sourceID }}"
+                    />
+                    <span class="list-col-grow">{{ source.platform }}</span>
+                  </a>
                 </li>
               }
             </ul>
