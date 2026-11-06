@@ -140,7 +140,11 @@ async function removeSong(req: Request, res: Response): Promise<void> {
 
     const songParticipationInfo = unwrap(
         (await getSongConstitution(constitution, song)).mapErr(
-            (err) => new HttpError(HttpStatus.NotFound, `no song participation found: ${err}`),
+            (err) =>
+                new HttpError(
+                    HttpStatus.NotFound,
+                    `no song participation found for song ${song} in constitution ${constitution}: ${err}`,
+                ),
         ),
     );
 
