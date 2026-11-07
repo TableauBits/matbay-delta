@@ -36,9 +36,7 @@
       <span class="text-primary">MATBay Δ</span>
     </a>
     <div class="ml-auto flex items-center gap-2 lg:order-last">
-      <button class="btn btn-ghost gap-2" (click)="redirectToProfile()">
-        Profile <app-redirect-to-user-profile [user]="user()" [showName]="false" />
-      </button>
+      <app-redirect-to-user-profile [user]="user()" [showProfilePreview]="false" />
       <button class="btn btn-ghost" (click)="deltaAuth.logout()">Log out</button>
     </div>
     <div class="flex w-full flex-wrap gap-1 border-t border-base-300 pt-2 lg:ml-4 lg:w-auto lg:border-0 lg:pt-0">
