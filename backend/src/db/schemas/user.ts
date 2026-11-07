@@ -10,6 +10,7 @@ const users = sqliteTable(
         handle: text().notNull(),
         displayName: text().notNull(),
         imageURL: text().notNull(),
+        bannerURL: text(),
         joinDate: text()
             .notNull()
             .$defaultFn(() => new Date().toISOString()),
