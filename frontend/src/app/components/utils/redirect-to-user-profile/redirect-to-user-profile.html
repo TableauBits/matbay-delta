@@ -31,7 +31,7 @@
           <img [src]="user.bannerURL" class="absolute inset-0 size-full scale-110 object-cover blur-xl" alt="" />
           <span class="absolute inset-0 bg-base-100/80"></span>
         }
-        <span class="relative block h-20 bg-linear-to-br from-primary/35 via-secondary/15 to-base-300">
+        <span class="relative block aspect-5/2 bg-linear-to-br from-primary/35 via-secondary/15 to-base-300">
           @if (user.bannerURL) {
             <img [src]="user.bannerURL" class="absolute inset-0 size-full object-cover" alt="" />
           }
@@ -39,11 +39,13 @@
         <span class="relative block px-4 pb-4">
           <img
             [src]="user.imageURL"
-            class="relative -mt-7 size-14 rounded-full border-2 border-base-100 bg-base-100 object-cover"
+            class="relative -mt-10 size-14 rounded-full border-2 border-base-100 bg-base-100 object-cover"
             alt=""
           />
-          <span class="mt-1 block truncate font-bold">{{ user.displayName }}</span>
-          <span class="block truncate text-sm text-base-content/60">&#64;{{ user.handle }}</span>
+          <span class="mt-1 flex flex-wrap items-baseline gap-x-2">
+            <span class="min-w-0 break-words font-bold">{{ user.displayName }}</span>
+            <span class="min-w-0 break-all text-sm text-base-content/60">&#64;{{ user.handle }}</span>
+          </span>
           @if (user.description) {
             <span class="mt-2 line-clamp-3 block whitespace-pre-line break-words text-sm">{{ user.description }}</span>
           }

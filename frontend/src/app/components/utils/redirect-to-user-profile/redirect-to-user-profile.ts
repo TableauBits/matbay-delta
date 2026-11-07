@@ -42,7 +42,7 @@ export class RedirectToUserProfile {
     const rect = target.getBoundingClientRect();
     const width = Math.min(288, window.innerWidth - 16);
     this.previewLeft.set(Math.max(8, Math.min(rect.left, window.innerWidth - width - 8)));
-    const above = window.innerHeight - rect.bottom < 260 && rect.top > window.innerHeight - rect.bottom;
+    const above = window.innerHeight - rect.bottom < 340 && rect.top > window.innerHeight - rect.bottom;
     this.previewAbove.set(above);
     this.previewTop.set(above ? rect.top - 8 : rect.bottom + 8);
     this.previewVisible.set(true);
