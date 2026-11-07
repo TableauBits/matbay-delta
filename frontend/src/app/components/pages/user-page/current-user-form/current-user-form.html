@@ -1,4 +1,4 @@
-<section class="card max-w-2xl border border-base-300 bg-base-100 p-5 sm:p-8">
+<section class="card border border-base-300 bg-base-100 p-5 sm:p-8">
   <h2 class="mb-6">Update profile</h2>
   <form [formGroup]="form" (ngSubmit)="onSubmit()" class="grid gap-5">
     <label class="grid gap-2 text-sm font-medium">
@@ -17,6 +17,19 @@
     <label class="grid gap-2 text-sm font-medium">
       Image URL
       <input class="input w-full border-base-300" formControlName="imageURL" placeholder="Image URL" type="text" />
+    </label>
+    <label class="grid gap-2 text-sm font-medium">
+      Banner image URL
+      <input
+        class="input w-full border-base-300"
+        formControlName="bannerURL"
+        placeholder="https://example.com/banner.jpg"
+        type="text"
+        aria-describedby="banner-hint"
+      />
+      <span id="banner-hint" class="text-xs font-normal text-base-content/60">
+        A wide image works best (3:1 ratio, e.g. 1500 × 500). Leave blank for the default background.
+      </span>
     </label>
     <button class="btn btn-primary mt-2 w-full sm:w-fit" type="submit">Save profile</button>
   </form>
