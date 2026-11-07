@@ -40,10 +40,8 @@
             class="relative -mt-12.5 size-17.5 rounded-full border-2 border-base-100 bg-base-100 object-cover"
             alt=""
           />
-          <span class="mt-1 flex flex-wrap items-baseline gap-x-2">
-            <span class="min-w-0 break-words font-bold">{{ user.displayName }}</span>
-            <span class="min-w-0 break-all text-sm text-base-content/60">&#64;{{ user.handle }}</span>
-          </span>
+          <span class="mt-1 block truncate font-bold">{{ user.displayName }}</span>
+          <span class="block truncate text-sm text-base-content/60">&#64;{{ user.handle }}</span>
           @if (user.description) {
             <span class="mt-2 line-clamp-3 block whitespace-pre-line break-words text-sm">{{ user.description }}</span>
           }

@@ -22,10 +22,8 @@
           />
         </div>
 
-        <div class="flex flex-wrap items-baseline gap-x-2">
-          <h1 id="profile-name" class="min-w-0 break-words text-2xl font-bold sm:text-3xl">{{ user.displayName }}</h1>
-          <p class="min-w-0 break-all text-sm text-base-content/60 sm:text-base">@{{ user.handle }}</p>
-        </div>
+        <h1 id="profile-name" class="min-w-0 break-words text-2xl font-bold sm:text-3xl">{{ user.displayName }}</h1>
+        <p class="min-w-0 break-all text-sm text-base-content/60 sm:text-base">@{{ user.handle }}</p>
 
         @if (user.description) {
           <p class="mt-4 whitespace-pre-line">{{ user.description }}</p>
