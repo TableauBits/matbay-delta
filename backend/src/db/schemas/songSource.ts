@@ -1,11 +1,10 @@
 import { relations } from "drizzle-orm";
-import { integer, sqliteTable, text, unique } from "drizzle-orm/sqlite-core";
+import { integer, primaryKey, sqliteTable, text } from "drizzle-orm/sqlite-core";
 import { songs } from "./song";
 
 const songSource = sqliteTable(
     "songSource",
     {
-        id: integer("id").primaryKey(),
         creationDate: text()
             .notNull()
             .$defaultFn(() => new Date().toISOString()),
@@ -17,7 +16,7 @@ const songSource = sqliteTable(
         platform: text({ enum: ["YOUTUBE"] }).notNull(),
         // TODO : add a user ?
     },
-    (t) => [unique().on(t.song, t.sourceID, t.platform)],
+    (t) => [primaryKey({ columns: [t.song, t.platform, t.sourceID] })],
 );
 
 // A row of the songSource table only references one song

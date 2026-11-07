@@ -1,5 +1,5 @@
 import { relations } from "drizzle-orm";
-import { integer, sqliteTable, unique } from "drizzle-orm/sqlite-core";
+import { integer, primaryKey, sqliteTable } from "drizzle-orm/sqlite-core";
 import { albums } from "./album";
 import { artists } from "./artist";
 
@@ -7,8 +7,6 @@ import { artists } from "./artist";
 const artistAlbum = sqliteTable(
     "artistAlbum",
     {
-        id: integer("id").primaryKey(),
-
         artist: integer()
             .notNull()
             .references(() => artists.id),
@@ -16,7 +14,7 @@ const artistAlbum = sqliteTable(
             .notNull()
             .references(() => albums.id),
     },
-    (t) => [unique().on(t.artist, t.album)],
+    (t) => [primaryKey({ columns: [t.artist, t.album] })],
 );
 
 // An entry in the artistAlbum table only references one artist and one album

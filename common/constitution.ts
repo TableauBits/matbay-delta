@@ -3,12 +3,12 @@ const SONGS_PER_USER_DEFAULT = 5;
 
 // Types
 interface UserConstitution {
+    constitution: number;
     user: string;
     joinDate: string;
 }
 
 interface SongConstitution {
-    id: number;
     constitution: number;
     song: number;
     user: string;
@@ -47,7 +47,8 @@ interface AddSongConstitutionRequestBody {
 }
 
 interface RemoveSongConstitutionRequestBody {
-    songParticipationId: number
+    constitution: number;
+    song: number;
 }
 
 export {

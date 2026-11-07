@@ -44,11 +44,15 @@ async function addUserToConstitution(uid: string, cstid: number, tx?: DB.Transac
         });
 }
 
-async function getSongConstitution(id: number): Promise<Result<DB.Select.SongConstitution, Error>> {
-    const operation = async () => await db.select().from(songConstitution).where(eq(songConstitution.id, id));
+async function getSongConstitution(cstid: number, songId: number): Promise<Result<DB.Select.SongConstitution, Error>> {
+    const operation = async () =>
+        await db
+            .select()
+            .from(songConstitution)
+            .where(and(eq(songConstitution.constitution, cstid), eq(songConstitution.song, songId)));
 
     return (await Result.safe(operation())).andThen((val) =>
-        Option(val.at(0)).okOr(new Error(`No songConstitution with id '${id}'`)),
+        Option(val.at(0)).okOr(new Error(`song '${songId}' is not in constitution '${cstid}'`)),
     );
 }
 
@@ -72,8 +76,12 @@ async function addSongToConstitution(constitution: number, song: number, user: s
         });
 }
 
-async function removeSongFromConstitution(id: number): Promise<Result<Unit, Error>> {
-    const operation = async () => await db.delete(songConstitution).where(eq(songConstitution.id, id)).returning();
+async function removeSongFromConstitution(cstid: number, songId: number): Promise<Result<Unit, Error>> {
+    const operation = async () =>
+        await db
+            .delete(songConstitution)
+            .where(and(eq(songConstitution.constitution, cstid), eq(songConstitution.song, songId)))
+            .returning();
 
     return (await Result.safe(operation()))
         .andThen((entries) =>
@@ -94,12 +102,7 @@ async function getConstitution(id: number): Promise<Result<Constitution, Error>>
         await db.query.constitutions.findMany({
             where: eq(constitutions.id, id),
             with: {
-                userConstitution: {
-                    columns: {
-                        user: true,
-                        joinDate: true,
-                    },
-                },
+                userConstitution: {},
                 songConstitution: {},
             },
         });
@@ -134,16 +137,6 @@ async function countSongsOfUser(cstid: number, uid: string): Promise<Result<numb
     return (await Result.safe(operation()))
         .andThen((counts) => Option(counts.at(0)).okOr(new Error(`failed to count songs of user '${uid}'`)))
         .map((c) => c.count);
-}
-
-async function isSongInConstitution(cstid: number, songId: number): Promise<Result<boolean, Error>> {
-    const operation = async () =>
-        await db
-            .select()
-            .from(songConstitution)
-            .where(and(eq(songConstitution.song, songId), eq(songConstitution.constitution, cstid)));
-
-    return (await Result.safe(operation())).map((results) => results.length !== 0);
 }
 
 async function isMember(uid: string, cstid: number): Promise<Result<boolean, Error>> {
@@ -196,7 +189,6 @@ export {
     getDBConstitution,
     getSongConstitution,
     isMember,
-    isSongInConstitution,
     removeSongFromConstitution,
     removeUserFromConstitution,
 };

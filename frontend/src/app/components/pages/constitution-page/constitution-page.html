@@ -58,7 +58,7 @@
             </ul>
           }
           @if (observers.user?.id === (currentUser()?.id ?? '')) {
-            <button class="btn btn-ghost text-error" (click)="removeSong(songConstitution.id)">Remove song</button>
+            <button class="btn btn-ghost text-error" (click)="removeSong(songConstitution.song)">Remove song</button>
           }
         </article>
       }

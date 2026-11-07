@@ -97,6 +97,11 @@ export function getQuery(req: Request, key: string): string {
     ) as string;
 }
 
+/// Whether an error comes from SQLite rejecting a row because its primary key already exists
+export function isPrimaryKeyViolation(err: Error): boolean {
+    return "code" in err && err.code === "SQLITE_CONSTRAINT_PRIMARYKEY";
+}
+
 export function sanitizeLikeQuery(input: string): string {
     return input.replaceAll("\\", "\\\\").replaceAll("%", "\\%").replaceAll("_", "\\_");
 }
