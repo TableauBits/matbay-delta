@@ -9,8 +9,6 @@ import { User } from '../../../../../../common/user';
 })
 export class RedirectToUserProfile {
   user = input<User | null>();
-  imgWidth = input<number>();
-  imgHeight = input<number>();
   showName = input<boolean>(true);
   showProfilePreview = input<boolean>(true);
 

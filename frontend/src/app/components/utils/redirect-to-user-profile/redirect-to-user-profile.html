@@ -15,8 +15,6 @@
     <img
       class="size-8 shrink-0 rounded-full border border-base-300 object-cover"
       [src]="user.imageURL"
-      [attr.width]="imgWidth() ?? null"
-      [attr.height]="imgHeight() ?? null"
       [alt]="'Profile picture of ' + user.displayName"
     />
     @if (previewVisible()) {
@@ -39,7 +37,7 @@
         <span class="relative block px-4 pb-4">
           <img
             [src]="user.imageURL"
-            class="relative -mt-10 size-14 rounded-full border-2 border-base-100 bg-base-100 object-cover"
+            class="relative -mt-12.5 size-17.5 rounded-full border-2 border-base-100 bg-base-100 object-cover"
             alt=""
           />
           <span class="mt-1 flex flex-wrap items-baseline gap-x-2">
