@@ -27,15 +27,19 @@
         [style.top.px]="previewTop()"
         [style.transform]="previewAbove() ? 'translateY(-100%)' : null"
       >
+        @if (user.bannerURL) {
+          <img [src]="user.bannerURL" class="absolute inset-0 size-full scale-110 object-cover blur-xl" alt="" />
+          <span class="absolute inset-0 bg-base-100/80"></span>
+        }
         <span class="relative block h-20 bg-linear-to-br from-primary/35 via-secondary/15 to-base-300">
           @if (user.bannerURL) {
             <img [src]="user.bannerURL" class="absolute inset-0 size-full object-cover" alt="" />
           }
         </span>
-        <span class="block px-4 pb-4">
+        <span class="relative block px-4 pb-4">
           <img
             [src]="user.imageURL"
-            class="relative -mt-7 size-14 rounded-full border-4 border-base-100 bg-base-100 object-cover"
+            class="relative -mt-7 size-14 rounded-full border-2 border-base-100 bg-base-100 object-cover"
             alt=""
           />
           <span class="mt-1 block truncate font-bold">{{ user.displayName }}</span>
