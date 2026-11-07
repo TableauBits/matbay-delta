@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnDestroy, inject, signal, viewChild } from '@angular/core';
+import { Component, OnDestroy, inject, signal } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { CurrentUserForm } from './current-user-form/current-user-form';
 import { DatePipe } from '@angular/common';
@@ -18,7 +18,6 @@ export class UserPage implements OnDestroy {
   private activatedRoute = inject(ActivatedRoute);
   private titleService = inject(Title);
   private users = inject(Users);
-  private profileForm = viewChild(CurrentUserForm, { read: ElementRef<HTMLElement> });
 
   private subscriptions: Subscription = new Subscription();
 
@@ -26,12 +25,6 @@ export class UserPage implements OnDestroy {
   user = signal<User | undefined>(undefined);
   userError = signal<HttpErrorResponse | undefined>(undefined);
   isCurrentUser = signal(false);
-
-  editProfile(): void {
-    const form = this.profileForm()?.nativeElement;
-    form?.scrollIntoView({ block: 'start' });
-    form?.querySelector('input')?.focus({ preventScroll: true });
-  }
 
   ngOnDestroy(): void {
     this.subscriptions.unsubscribe();
