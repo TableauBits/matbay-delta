@@ -1,10 +1,10 @@
 import { eq } from "drizzle-orm";
 import { Option, Result } from "oxide.ts";
 import { v4 as uuidv4 } from "uuid";
+import type { User } from "../../../common/user";
 import { db } from "../db/http";
 import { users } from "../db/schemas";
 import type { DB } from "../db-namespace";
-import type { User } from "../../../common/user";
 
 async function createUser(userInfo: DB.Insert.User): Promise<void> {
     userInfo.id = uuidv4();
