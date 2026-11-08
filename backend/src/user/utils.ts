@@ -1,6 +1,7 @@
 import { eq } from "drizzle-orm";
 import { Option, Result } from "oxide.ts";
 import { v4 as uuidv4 } from "uuid";
+import type { User } from "../../../common/user";
 import { db } from "../db/http";
 import { users } from "../db/schemas";
 import type { DB } from "../db-namespace";
@@ -13,7 +14,7 @@ async function createUser(userInfo: DB.Insert.User): Promise<void> {
 
 // TODO : add a generic function to just search a row from an id ? Like :
 // TODO : ...(table, column, value)
-async function getUser(uid: string): Promise<Result<DB.Select.User, Error>> {
+async function getUser(uid: string): Promise<Result<User, Error>> {
     const operation = async () => await db.select().from(users).where(eq(users.id, uid));
 
     const queryResult = await Result.safe(operation());
@@ -22,7 +23,7 @@ async function getUser(uid: string): Promise<Result<DB.Select.User, Error>> {
     return Option(queryResult.unwrap().at(0)).okOr(new Error(`No user with uid: ${uid}`));
 }
 
-async function getUserFromAuth(authID: string): Promise<Result<DB.Select.User, Error>> {
+async function getUserFromAuth(authID: string): Promise<Result<User, Error>> {
     const operation = async () => await db.select().from(users).where(eq(users.authID, authID));
 
     const queryResult = await Result.safe(operation());

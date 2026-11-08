@@ -4,6 +4,7 @@ interface User {
   handle: string,
   displayName: string,
   imageURL: string,
+  bannerURL: string | null,
   joinDate: string,
   description: string,
 }
@@ -16,6 +17,7 @@ interface UserUpdateRequestBody {
   displayName: string,
   imageURL: string,
   description: string,
+  bannerURL: string | null,
 }
 
 export type { User, UserIdResponse, UserUpdateRequestBody };

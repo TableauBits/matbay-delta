@@ -1,6 +1,7 @@
 import { Component, OnDestroy, inject, signal } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { CurrentUserForm } from './current-user-form/current-user-form';
+import { DatePipe } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Subscription } from 'rxjs';
 import { Title } from '@angular/platform-browser';
@@ -9,7 +10,7 @@ import { Users } from '../../../services/users';
 
 @Component({
   selector: 'app-user-page',
-  imports: [CurrentUserForm],
+  imports: [CurrentUserForm, DatePipe],
   templateUrl: './user-page.html',
 })
 export class UserPage implements OnDestroy {

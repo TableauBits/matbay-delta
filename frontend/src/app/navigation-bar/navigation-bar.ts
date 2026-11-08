@@ -1,5 +1,5 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
-import { Router, RouterLink, RouterLinkActive } from '@angular/router';
+import { RouterLink, RouterLinkActive } from '@angular/router';
 
 import { CommonModule } from '@angular/common';
 import { DeltaAuth } from '../services/delta-auth';
@@ -16,7 +16,6 @@ import { Users } from '../services/users';
 export class NavigationBar implements OnInit {
   deltaAuth = inject(DeltaAuth);
   users = inject(Users);
-  private readonly router = inject(Router);
   user = signal<User | undefined>(undefined);
 
   // Mirrors the route gating in app.routes.ts: the debug page only exists in dev.
@@ -33,9 +32,5 @@ export class NavigationBar implements OnInit {
         },
       });
     });
-  }
-
-  redirectToProfile(): void {
-    this.router.navigate(['/users', this.user()?.handle]);
   }
 }
