@@ -32,6 +32,7 @@ export class CurrentUserForm implements OnDestroy {
       displayName: new FormControl(''),
       description: new FormControl(''),
       imageURL: new FormControl(''),
+      bannerURL: new FormControl(''),
     });
 
     // Populate the form with the current user data when available
@@ -43,7 +44,8 @@ export class CurrentUserForm implements OnDestroy {
         this.form.setValue({
           displayName: user.displayName,
           description: user.description,
-          imageURL: user.imageURL,
+          imageURL: user.imageURL, // TODO: validate urls somewhere
+          bannerURL: user.bannerURL === '' ? null : user.bannerURL,
         });
       });
 

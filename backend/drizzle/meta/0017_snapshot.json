@@ -1,7 +1,7 @@
 {
   "version": "6",
   "dialect": "sqlite",
-  "id": "c9c28731-21f6-4dd5-b606-ed6b79968a5c",
+  "id": "c992c321-3b6f-4613-a890-0558e09659a2",
   "prevId": "ad5fd69b-dc94-435b-b63d-6dd82f473cb8",
   "tables": {
     "albums": {
@@ -383,13 +383,6 @@
     "songConstitution": {
       "name": "songConstitution",
       "columns": {
-        "id": {
-          "name": "id",
-          "type": "integer",
-          "primaryKey": true,
-          "notNull": true,
-          "autoincrement": false
-        },
         "song": {
           "name": "song",
           "type": "integer",
@@ -419,16 +412,7 @@
           "autoincrement": false
         }
       },
-      "indexes": {
-        "songConstitution_constitution_song_unique": {
-          "name": "songConstitution_constitution_song_unique",
-          "columns": [
-            "constitution",
-            "song"
-          ],
-          "isUnique": true
-        }
-      },
+      "indexes": {},
       "foreignKeys": {
         "songConstitution_song_songs_id_fk": {
           "name": "songConstitution_song_songs_id_fk",
@@ -470,7 +454,15 @@
           "onUpdate": "no action"
         }
       },
-      "compositePrimaryKeys": {},
+      "compositePrimaryKeys": {
+        "songConstitution_constitution_song_pk": {
+          "columns": [
+            "constitution",
+            "song"
+          ],
+          "name": "songConstitution_constitution_song_pk"
+        }
+      },
       "uniqueConstraints": {},
       "checkConstraints": {}
     },
@@ -624,6 +616,13 @@
           "type": "text",
           "primaryKey": false,
           "notNull": true,
+          "autoincrement": false
+        },
+        "bannerURL": {
+          "name": "bannerURL",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
           "autoincrement": false
         },
         "joinDate": {
