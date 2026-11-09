@@ -91,10 +91,25 @@
       </label>
       <div class="tab-content border-base-300 bg-base-100 p-6">
         @if (stats(); as stats) {
-          <p>Constitutions: {{ stats.constitutions }}</p>
-          <p>Songs: {{ stats.songs }}</p>
+          <section aria-labelledby="user-stats-heading">
+            <div class="mb-5">
+              <h2 id="user-stats-heading" class="text-xl font-semibold">Your activity on MATBay Δ</h2>
+            </div>
+
+            <div class="grid gap-4 sm:grid-cols-2">
+              <article class="rounded-box border border-base-300 bg-base-200/50 p-5">
+                <p class="text-sm font-medium text-base-content/60">Constitutions participated in</p>
+                <p class="mt-1 text-4xl font-semibold tracking-tight tabular-nums">{{ stats.constitutions }}</p>
+              </article>
+
+              <article class="rounded-box border border-base-300 bg-base-200/50 p-5">
+                <p class="text-sm font-medium text-base-content/60">Songs added</p>
+                <p class="mt-1 text-4xl font-semibold tracking-tight tabular-nums">{{ stats.songs }}</p>
+              </article>
+            </div>
+          </section>
         } @else {
-          <p>Loading stats...</p>
+          <p class="text-base-content/60" role="status" aria-live="polite">Loading your stats...</p>
         }
       </div>
       @if (isCurrentUser()) {
