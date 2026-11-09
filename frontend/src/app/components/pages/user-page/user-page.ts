@@ -6,7 +6,9 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Subscription } from 'rxjs';
 import { Title } from '@angular/platform-browser';
 import { User } from '../../../../../../common/user';
+import { UserStats } from '../../../../../../common/stat';
 import { Users } from '../../../services/users';
+import { HttpRequests } from '../../../services/requests/http-requests';
 
 @Component({
   selector: 'app-user-page',
@@ -16,6 +18,7 @@ import { Users } from '../../../services/users';
 export class UserPage implements OnDestroy {
   // Service injections
   private activatedRoute = inject(ActivatedRoute);
+  private httpRequests = inject(HttpRequests);
   private titleService = inject(Title);
   private users = inject(Users);
 
@@ -25,6 +28,7 @@ export class UserPage implements OnDestroy {
   user = signal<User | undefined>(undefined);
   userError = signal<HttpErrorResponse | undefined>(undefined);
   isCurrentUser = signal(false);
+  stats = signal<UserStats | undefined>(undefined);
 
   ngOnDestroy(): void {
     this.subscriptions.unsubscribe();
@@ -39,6 +43,9 @@ export class UserPage implements OnDestroy {
           next: (data) => {
             this.user.set(data);
             this.titleService.setTitle(data.displayName);
+            this.httpRequests.authenticatedGetRequest<UserStats>(`stat/get/${data.id}`).then((stats) => {
+              this.stats.set(stats);
+            });
           },
           error: (err) => {
             this.userError.set(err);

@@ -5,4 +5,9 @@ interface GlobalStats {
   constitutions: number;
 }
 
-export { type GlobalStats };
+interface UserStats {
+  songs: number;
+  constitutions: number;
+}
+
+export { type GlobalStats, type UserStats };

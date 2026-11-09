@@ -89,7 +89,14 @@
         </svg>
         Stats
       </label>
-      <div class="tab-content border-base-300 bg-base-100 p-6">TODO</div>
+      <div class="tab-content border-base-300 bg-base-100 p-6">
+        @if (stats(); as stats) {
+          <p>Constitutions: {{ stats.constitutions }}</p>
+          <p>Songs: {{ stats.songs }}</p>
+        } @else {
+          <p>Loading stats...</p>
+        }
+      </div>
       @if (isCurrentUser()) {
         <label class="tab gap-2">
           <input type="radio" name="user_page_tabs" />

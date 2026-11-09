@@ -1,10 +1,17 @@
 import { type Request, type Response, Router } from "express";
 import { ensureAuthMiddleware } from "../auth/http";
-import { getGlobalStats } from "./utils";
-import { HttpError, HttpStatus, sendResult } from "../utils";
+import { getGlobalStats, getUserStats } from "./utils";
+import { getParam, HttpError, HttpStatus, sendResult } from "../utils";
 
 // GET ROUTES
-async function get(req: Request, res: Response): Promise<void> {}
+async function get(req: Request, res: Response): Promise<void> {
+  const uid = getParam(req, "uid");
+  const stats = (await getUserStats(uid)).mapErr(
+    (err) => new HttpError(HttpStatus.InternalError, `failed to get user stats for user ${uid} from database: ${err}`),
+  );
+
+  sendResult(stats, res);
+}
 
 async function global(_: Request, res: Response): Promise<void> {
   const stats = (await getGlobalStats()).mapErr(
