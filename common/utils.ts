@@ -3,4 +3,4 @@
  */
 type Unit = Record<string, never>;
 
-export { Unit }
+export type { Unit };
