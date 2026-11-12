@@ -5,20 +5,21 @@ import { getParam, HttpError, HttpStatus, sendResult } from "../utils";
 
 // GET ROUTES
 async function get(req: Request, res: Response): Promise<void> {
-  const uid = getParam(req, "uid");
-  const stats = (await getUserStats(uid)).mapErr(
-    (err) => new HttpError(HttpStatus.InternalError, `failed to get user stats for user ${uid} from database: ${err}`),
-  );
+    const uid = getParam(req, "uid");
+    const stats = (await getUserStats(uid)).mapErr(
+        (err) =>
+            new HttpError(HttpStatus.InternalError, `failed to get user stats for user ${uid} from database: ${err}`),
+    );
 
-  sendResult(stats, res);
+    sendResult(stats, res);
 }
 
 async function global(_: Request, res: Response): Promise<void> {
-  const stats = (await getGlobalStats()).mapErr(
-    (err) => new HttpError(HttpStatus.InternalError, `failed to get global stats from database: ${err}`),
-  )
+    const stats = (await getGlobalStats()).mapErr(
+        (err) => new HttpError(HttpStatus.InternalError, `failed to get global stats from database: ${err}`),
+    );
 
-  sendResult(stats, res);
+    sendResult(stats, res);
 }
 
 const statApiRouter = Router();

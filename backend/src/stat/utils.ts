@@ -11,15 +11,16 @@ async function getUserStats(uid: string): Promise<Result<UserStats, Error>> {
             db.select({ count: count() }).from(songConstitution).where(eq(songConstitution.user, uid)),
         ]),
     );
-    // Count all the songs added by the user, even duplicates. 
+    // Count all the songs added by the user, even duplicates.
 
     return results.andThen(([userConstitutionRows, songConstitutionRows]) =>
-        Option(userConstitutionRows.at(0)).andThen((userConstitutionRow) =>
-            Option(songConstitutionRows.at(0)).map((songConstitutionRow) => ({
-                constitutions: userConstitutionRow.count,
-                songs: songConstitutionRow.count,
-            })),
-        )
+        Option(userConstitutionRows.at(0))
+            .andThen((userConstitutionRow) =>
+                Option(songConstitutionRows.at(0)).map((songConstitutionRow) => ({
+                    constitutions: userConstitutionRow.count,
+                    songs: songConstitutionRow.count,
+                })),
+            )
             .okOr(new Error(`failed to retrieve user stats for user ${uid} from database`)),
     );
 }
@@ -35,18 +36,19 @@ async function getGlobalStats(): Promise<Result<GlobalStats, Error>> {
     );
 
     return results.andThen(([userRows, songRows, artistRows, constitutionRows]) =>
-        Option(userRows.at(0)).andThen((userRow) =>
-            Option(songRows.at(0)).andThen((songRow) =>
-                Option(artistRows.at(0)).andThen((artistRow) =>
-                    Option(constitutionRows.at(0)).map((constitutionRow) => ({
-                        users: userRow.count,
-                        songs: songRow.count,
-                        artists: artistRow.count,
-                        constitutions: constitutionRow.count,
-                    })),
+        Option(userRows.at(0))
+            .andThen((userRow) =>
+                Option(songRows.at(0)).andThen((songRow) =>
+                    Option(artistRows.at(0)).andThen((artistRow) =>
+                        Option(constitutionRows.at(0)).map((constitutionRow) => ({
+                            users: userRow.count,
+                            songs: songRow.count,
+                            artists: artistRow.count,
+                            constitutions: constitutionRow.count,
+                        })),
+                    ),
                 ),
-            ),
-        )
+            )
             .okOr(new Error("failed to retrieve global stats from database")),
     );
 }
