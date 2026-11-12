@@ -1,7 +1,7 @@
 import { type Request, type Response, Router } from "express";
 import { ensureAuthMiddleware } from "../auth/http";
-import { getGlobalStats, getUserStats } from "./utils";
 import { getParam, HttpError, HttpStatus, sendResult } from "../utils";
+import { getGlobalStats, getUserStats } from "./utils";
 
 // GET ROUTES
 async function get(req: Request, res: Response): Promise<void> {

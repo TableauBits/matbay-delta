@@ -2,7 +2,7 @@ import { count, eq } from "drizzle-orm";
 import { Option, Result } from "oxide.ts";
 import type { GlobalStats, UserStats } from "../../../common/stat";
 import { db } from "../db/http";
-import { songs, users, artists, constitutions, userConstitution, songConstitution } from "../db/schemas";
+import { artists, constitutions, songConstitution, songs, userConstitution, users } from "../db/schemas";
 
 async function getUserStats(uid: string): Promise<Result<UserStats, Error>> {
     const results = await Result.safe(

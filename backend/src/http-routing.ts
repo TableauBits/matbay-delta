@@ -4,9 +4,9 @@ import { authApiRouter, authDevRouter } from "./auth/http";
 import { constitutionApiRouter } from "./constitution/http";
 import { dbApiRouter, dbDevRouter } from "./db/http";
 import { songApiRouter } from "./song/http";
+import { statApiRouter } from "./stat/http";
 import { userApiRouter } from "./user/http";
 import { errorHandler } from "./utils";
-import { statApiRouter } from "./stat/http";
 
 const apiRouter = Router();
 const devRouter = Router();
