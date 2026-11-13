@@ -51,9 +51,91 @@
       </div>
     </section>
 
-    @if (isCurrentUser()) {
-      <app-current-user-form />
-    }
+    <div class="tabs tabs-lift">
+      <label class="tab gap-2">
+        <input type="radio" name="user_page_tabs" checked="checked" />
+        <svg
+          class="size-4"
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.5"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+        >
+          <path
+            d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8l1.1 1.1L12 21l7.8-7.5 1.1-1.1a5.5 5.5 0 0 0-.1-7.8Z"
+          />
+        </svg>
+        Favorites
+      </label>
+      <div class="tab-content border-base-300 bg-base-100 p-6">TODO</div>
+      <label class="tab gap-2">
+        <input type="radio" name="user_page_tabs" />
+        <svg
+          class="size-4"
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.5"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+        >
+          <path d="M3 3v18h18M18 17V9M13 17V5M8 17v-3" />
+        </svg>
+        Stats
+      </label>
+      <div class="tab-content border-base-300 bg-base-100 p-6">
+        @if (stats(); as stats) {
+          <section aria-labelledby="user-stats-heading">
+            <div class="mb-5">
+              <h2 id="user-stats-heading" class="text-xl font-semibold">Activity on MATBay Δ</h2>
+            </div>
+
+            <div class="grid gap-4 sm:grid-cols-2">
+              <article class="rounded-box border border-base-300 bg-base-200/50 p-5">
+                <p class="text-sm font-medium text-base-content/60">Constitutions participated in</p>
+                <p class="mt-1 text-4xl font-semibold tracking-tight tabular-nums">{{ stats.constitutions }}</p>
+              </article>
+
+              <article class="rounded-box border border-base-300 bg-base-200/50 p-5">
+                <p class="text-sm font-medium text-base-content/60">Songs added in constitutions</p>
+                <p class="mt-1 text-4xl font-semibold tracking-tight tabular-nums">{{ stats.songs }}</p>
+              </article>
+            </div>
+          </section>
+        } @else {
+          <p class="text-base-content/60" role="status" aria-live="polite">Loading your stats...</p>
+        }
+      </div>
+      @if (isCurrentUser()) {
+        <label class="tab gap-2">
+          <input type="radio" name="user_page_tabs" />
+          <svg
+            class="size-4"
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            aria-hidden="true"
+          >
+            <path d="m16 4 4 4M4 20l4-.8L19.2 8a2.8 2.8 0 0 0-4-4L4 15.2 4 20Z" />
+            <path d="M13.5 5.5 18.5 10.5" />
+          </svg>
+          Edit profile
+        </label>
+        <div class="tab-content border-base-300 bg-base-100 p-6">
+          <app-current-user-form />
+        </div>
+      }
+    </div>
   </div>
 } @else {
   <p class="text-base-content/60" role="status">Loading user...</p>

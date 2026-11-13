@@ -1,0 +1,23 @@
+@if (stats(); as stats) {
+  <div class="stats grid w-full grid-cols-4 shadow">
+    <div class="stat">
+      <div class="stat-title">Total Songs</div>
+      <div class="stat-value">{{ stats.songs }}</div>
+    </div>
+
+    <div class="stat">
+      <div class="stat-title">Total Artists</div>
+      <div class="stat-value">{{ stats.artists }}</div>
+    </div>
+
+    <div class="stat">
+      <div class="stat-title">Total Constitutions</div>
+      <div class="stat-value">{{ stats.constitutions }}</div>
+    </div>
+
+    <div class="stat">
+      <div class="stat-title">Total Users</div>
+      <div class="stat-value">{{ stats.users }}</div>
+    </div>
+  </div>
+}

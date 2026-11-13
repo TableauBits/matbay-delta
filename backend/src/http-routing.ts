@@ -4,6 +4,7 @@ import { authApiRouter, authDevRouter } from "./auth/http";
 import { constitutionApiRouter } from "./constitution/http";
 import { dbApiRouter, dbDevRouter } from "./db/http";
 import { songApiRouter } from "./song/http";
+import { statApiRouter } from "./stat/http";
 import { userApiRouter } from "./user/http";
 import { errorHandler } from "./utils";
 
@@ -12,10 +13,11 @@ const devRouter = Router();
 
 apiRouter.use("/auth", authApiRouter);
 apiRouter.use("/artist", artistApiRouter);
-apiRouter.use("/db", dbApiRouter);
-apiRouter.use("/user", userApiRouter);
 apiRouter.use("/constitution", constitutionApiRouter);
+apiRouter.use("/db", dbApiRouter);
 apiRouter.use("/song", songApiRouter);
+apiRouter.use("/stat", statApiRouter);
+apiRouter.use("/user", userApiRouter);
 
 devRouter.use("/auth", authDevRouter);
 devRouter.use("/db", dbDevRouter);
