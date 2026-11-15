@@ -2,10 +2,11 @@ import { Component, OnDestroy, inject, signal } from '@angular/core';
 import { Observable, Subscription } from 'rxjs';
 import { User } from '../../../../../../common/user';
 import { Users } from '../../../services/users';
+import { GlobalStat } from './global-stat/global-stat';
 
 @Component({
   selector: 'app-home-page',
-  imports: [],
+  imports: [GlobalStat],
   templateUrl: './home-page.html',
 })
 export class HomePage implements OnDestroy {
