@@ -10,7 +10,6 @@
             <p class="flex flex-wrap items-center gap-2">Owner: <app-redirect-to-user-profile [user]="owner" /></p>
           }
           <p>Created: {{ constitution.creationDate }}</p>
-          <p class="break-all text-xs">ID: {{ constitution.id }}</p>
         </div>
         @if (isParticipant(constitution)) {
           <button class="btn btn-primary mt-auto w-full sm:w-fit" (click)="redirectToConstitutionPage(constitution.id)">
