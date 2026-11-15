@@ -18,6 +18,7 @@ class DBLogger implements Logger {
 }
 
 const sqlite = new Database(dbURL);
+sqlite.run('PRAGMA journal_mode = WAL;')
 const db = drizzle({
     client: sqlite,
     schema: schema,
