@@ -9,6 +9,7 @@ import type { DB } from "../db-namespace";
 import { getBody, getParam, getReqUID, HttpError, HttpStatus, sendResult } from "../utils";
 import { getUidFromHandle, getUser } from "./utils";
 
+// GET ROUTES
 async function get(req: Request, res: Response): Promise<void> {
     const uid = getParam(req, "uid");
 
@@ -31,6 +32,12 @@ async function uidFromHandle(req: Request, res: Response): Promise<void> {
     sendResult(uid, res);
 }
 
+// POST ROUTES
+async function addSongFavorite(req: Request, res: Response): Promise<void> {
+    // const uid = getReqUID(req);
+    // const songId = getBody<{ songId: number }>(req).songId;
+}
+
 async function update(req: Request, res: Response): Promise<void> {
     const userInfo = getBody<UserUpdateRequestBody>(req);
     const uid = getReqUID(req);
@@ -48,6 +55,7 @@ const userApiRouter = Router();
 
 userApiRouter.get("/get/:uid", ensureAuthMiddleware, get);
 userApiRouter.get("/uid-from-handle/:handle", ensureAuthMiddleware, uidFromHandle);
+userApiRouter.post("/add-song-favorite", ensureAuthMiddleware, addSongFavorite);
 userApiRouter.post("/update", ensureAuthMiddleware, update);
 
 export { userApiRouter };

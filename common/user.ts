@@ -13,6 +13,7 @@ interface UserIdResponse {
     id: string
 }
 
+// Requests
 interface UserUpdateRequestBody {
   displayName: string,
   imageURL: string,
@@ -20,4 +21,8 @@ interface UserUpdateRequestBody {
   bannerURL: string | null,
 }
 
-export type { User, UserIdResponse, UserUpdateRequestBody };
+interface UserAddSongFavoriteRequestBody {
+  songId: number,
+}
+
+export type { User, UserIdResponse, UserUpdateRequestBody, UserAddSongFavoriteRequestBody };
