@@ -9,6 +9,13 @@ interface User {
   description: string,
 }
 
+interface UserSongShowcase {
+  id: number,
+  user: string,
+  song: number,
+  addDate: string,
+}
+
 interface UserIdResponse {
     id: string
 }
@@ -25,4 +32,4 @@ interface UserAddSongShowcaseRequestBody {
   songs: number[],
 }
 
-export type { User, UserIdResponse, UserUpdateRequestBody, UserAddSongShowcaseRequestBody };
+export type { User, UserSongShowcase, UserIdResponse, UserUpdateRequestBody, UserAddSongShowcaseRequestBody };

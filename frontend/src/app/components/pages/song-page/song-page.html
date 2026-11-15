@@ -1,7 +1,19 @@
 @if (error(); as error) {
   <p class="alert alert-error alert-soft" role="alert">Error loading song : "{{ error.error }}".</p>
 } @else if (song(); as song) {
-  <h2>{{ song.title }}</h2>
+  <div class="flex items-center justify-between gap-4">
+    <h2>{{ song.title }}</h2>
+    @if (isShowcased()) {
+      <button class="btn btn-sm" disabled>Showcased</button>
+    } @else {
+      <button class="btn btn-sm btn-primary" [disabled]="showcaseLoading()" (click)="addToShowcase()">
+        @if (showcaseLoading()) {
+          <span class="loading loading-spinner loading-xs"></span>
+        }
+        Showcase
+      </button>
+    }
+  </div>
   <p>Added on: {{ song.creationDate }}</p>
   <h3>Artists</h3>
   <ul class="space-y-3 rounded-box border border-base-300 bg-base-100 p-4">

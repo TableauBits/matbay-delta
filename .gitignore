@@ -4,3 +4,5 @@
 
 # local db files
 *.db
+/backend/local.db-shm
+/backend/local.db-wal
