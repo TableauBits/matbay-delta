@@ -133,9 +133,10 @@ export class Users {
     try {
       showcase.next(await this.httpRequests.authenticatedGetRequest<UserSongShowcase[]>(`user/get-showcase/${uid}`));
     } catch (error) {
+      // Never error or evict the cached subject: subscribers would be cut off for good and
+      // miss every later refresh. Keep the last known value; the next refresh will recover.
       console.error(`failed to get showcase of user ${uid}`, error);
-      showcase.error(error);
-      this.showcases.delete(uid);
+      this.snackbar.showError('Échec du chargement de la vitrine');
     }
   }
 }
