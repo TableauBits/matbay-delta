@@ -2,6 +2,7 @@
   <p class="alert alert-error alert-soft" role="alert">Error loading song : "{{ error.error }}".</p>
 } @else if (song(); as song) {
   <h2>{{ song.title }}</h2>
+  <app-showcase-button [songId]="song.id" />
   <p>Added on: {{ song.creationDate }}</p>
   <h3>Artists</h3>
   <ul class="space-y-3 rounded-box border border-base-300 bg-base-100 p-4">

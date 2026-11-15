@@ -1,6 +1,12 @@
 import { Injectable, inject } from '@angular/core';
 import { Observable, ReplaySubject } from 'rxjs';
-import { User, UserIdResponse, UserUpdateRequestBody } from '../../../../common/user';
+import {
+  User,
+  UserIdResponse,
+  UserUpdateRequestBody,
+  UserSongShowcase,
+  UserAddSongShowcaseRequestBody,
+} from '../../../../common/user';
 import { DeltaAuth } from './delta-auth';
 import { HttpRequests } from './requests/http-requests';
 import { SnackbarService } from './snackbar';
@@ -50,6 +56,20 @@ export class Users {
     }
 
     return this.get(uid);
+  }
+
+  getShowcase(uid: string): Promise<UserSongShowcase[]> {
+    return this.httpRequests.authenticatedGetRequest<UserSongShowcase[]>(`user/get-showcase/${uid}`);
+  }
+
+  addSongShowcase(song: number): Promise<unknown> {
+    return this.httpRequests.authenticatedPostRequest<UserAddSongShowcaseRequestBody>('user/song-showcase', {
+      songs: [song],
+    });
+  }
+
+  deleteSongShowcase(id: number): Promise<unknown> {
+    return this.httpRequests.authenticatedDeleteRequest(`user/song-showcase/${id}`);
   }
 
   async getCurrentUser(): Promise<Observable<User>> {

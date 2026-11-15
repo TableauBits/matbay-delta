@@ -23,6 +23,14 @@ export class HttpRequests {
     );
   }
 
+  async authenticatedDeleteRequest<Out = unknown>(endpoint: string): Promise<Out> {
+    const token = await this.deltaAuth.getIdToken();
+
+    return await lastValueFrom(
+      this.http.delete<Out>(`${this.url}/api/${endpoint}`, { headers: { 'delta-auth': token.__raw } }),
+    );
+  }
+
   async authenticatedPostRequest<In, Out = unknown>(endpoint: string, body: In): Promise<Out> {
     const token = await this.deltaAuth.getIdToken();
 

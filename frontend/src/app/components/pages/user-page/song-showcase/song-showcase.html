@@ -1,0 +1,59 @@
+@if (loading()) {
+  <p class="text-base-content/60" role="status">Loading showcase...</p>
+} @else {
+  @if (error()) {
+    <div class="alert alert-error alert-soft mb-4" role="alert">
+      <span>{{ error() }}</span>
+      <button type="button" class="btn btn-sm btn-ghost" (click)="retry()">Reload showcase</button>
+    </div>
+  }
+  @if (items().length) {
+    <ul class="list bg-base-100 rounded-box shadow-md">
+      <li class="p-4 pb-2 text-xs opacity-60 tracking-wide">Showcased songs</li>
+      @for (item of items(); track item.id) {
+        <li class="list-row items-center">
+          <a [routerLink]="['/songs', item.song.id]" tabindex="-1" aria-hidden="true">
+            @if (item.song.songSource[0]; as source) {
+              <img [src]="sources.getImageURL(source)" class="size-10 rounded-box object-cover" alt="" />
+            } @else {
+              <span class="flex size-10 items-center justify-center rounded-box bg-base-200" aria-hidden="true">♪</span>
+            }
+          </a>
+          <div class="min-w-0 list-col-grow">
+            <a [routerLink]="['/songs', item.song.id]" class="link link-hover break-words">{{ item.song.title }}</a>
+            <div class="text-xs uppercase font-semibold opacity-60">{{ item.artistName }}</div>
+          </div>
+          @if (editable()) {
+            <button
+              type="button"
+              class="btn btn-square btn-ghost"
+              [disabled]="removing().has(item.id)"
+              [attr.aria-label]="'Remove ' + item.song.title + ' from showcase'"
+              title="Remove from showcase"
+              (click)="remove(item.id)"
+            >
+              <svg
+                class="size-5"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <path d="M3 6h18M9 6V4h6v2M5 6l1 14h12l1-14M10 10v6M14 10v6" />
+              </svg>
+            </button>
+          }
+        </li>
+      }
+    </ul>
+  } @else if (!error()) {
+    <p class="text-base-content/60">No songs showcased yet.</p>
+    @if (editable()) {
+      <p class="mt-2 text-sm text-base-content/60">Visit a song page and press Showcase to add it here.</p>
+    }
+  }
+}

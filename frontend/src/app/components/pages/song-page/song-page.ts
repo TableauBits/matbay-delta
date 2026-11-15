@@ -14,11 +14,12 @@ import { HttpRequests } from '../../../services/requests/http-requests';
 import { SongConstitution } from '../../../../../../common/constitution';
 import { RedirectToUserProfile } from '../../utils/redirect-to-user-profile/redirect-to-user-profile';
 import { Users } from '../../../services/users';
+import { ShowcaseButton } from './showcase-button/showcase-button';
 import { Constitutions } from '../../../services/constitutions';
 
 @Component({
   selector: 'app-song-page',
-  imports: [AsyncPipe, RedirectToArtistPage, RedirectToUserProfile],
+  imports: [AsyncPipe, RedirectToArtistPage, RedirectToUserProfile, ShowcaseButton],
   templateUrl: './song-page.html',
 })
 export class SongPage implements OnDestroy {

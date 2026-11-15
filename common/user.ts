@@ -13,6 +13,13 @@ interface UserIdResponse {
     id: string
 }
 
+interface UserSongShowcase {
+  id: number;
+  user: string;
+  song: number;
+  addDate: string;
+}
+
 // Requests
 interface UserUpdateRequestBody {
   displayName: string,
@@ -25,4 +32,4 @@ interface UserAddSongShowcaseRequestBody {
   songs: number[],
 }
 
-export type { User, UserIdResponse, UserUpdateRequestBody, UserAddSongShowcaseRequestBody };
+export type { User, UserIdResponse, UserUpdateRequestBody, UserAddSongShowcaseRequestBody, UserSongShowcase };

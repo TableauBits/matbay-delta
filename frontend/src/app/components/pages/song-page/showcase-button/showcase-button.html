@@ -1,0 +1,24 @@
+<div class="my-4">
+  <button type="button" class="btn btn-primary" [disabled]="loading() || adding() || showcased()" (click)="add()">
+    @if (loading()) {
+      <span class="loading loading-spinner loading-xs" aria-hidden="true"></span>
+      Loading showcase...
+    } @else if (adding()) {
+      <span class="loading loading-spinner loading-xs" aria-hidden="true"></span>
+      Adding to showcase...
+    } @else if (showcased()) {
+      Showcased
+    } @else {
+      Showcase
+    }
+  </button>
+  @if (showcased()) {
+    <p class="mt-2 text-sm text-base-content/60" role="status">This song is on your profile showcase.</p>
+  }
+  @if (error()) {
+    <div class="mt-2 text-sm text-error" role="alert">
+      {{ error() }}
+      <button type="button" class="btn btn-xs btn-ghost" (click)="retry()">Refresh status</button>
+    </div>
+  }
+</div>
