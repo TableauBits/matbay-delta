@@ -33,7 +33,11 @@ async function uidFromHandle(req: Request, res: Response): Promise<void> {
 }
 
 async function getShowcase(req: Request, res: Response): Promise<void> {
+    const uid = getParam(req, "uid");
 
+    const operation = async () => db.select().from(userSongShowcase).where(eq(userSongShowcase.user, uid));
+    const result = (await Result.safe(operation())).mapErr((err) => new HttpError(HttpStatus.InternalError, `failed to get user showcase ${err}`));
+    sendResult(result, res);
 }
 
 // POST ROUTES
