@@ -10,4 +10,4 @@ export * from "./songLanguage";
 export * from "./songSource";
 export * from "./user";
 export * from "./userConstitution";
-export * from "./userSongFavorite";
+export * from "./userSongShowcase";

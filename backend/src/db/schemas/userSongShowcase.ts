@@ -1,10 +1,10 @@
-import { integer, sqliteTable, text, unique } from "drizzle-orm/sqlite-core";
-import { users } from "./user";
-import { songs } from "./song";
 import { relations } from "drizzle-orm";
+import { integer, sqliteTable, text, unique } from "drizzle-orm/sqlite-core";
+import { songs } from "./song";
+import { users } from "./user";
 
-const userSongFavorite = sqliteTable(
-    "userSongFavorite",
+const userSongShowcase = sqliteTable(
+    "userSongShowcase",
     {
         id: integer("id").primaryKey(),
         user: text()
@@ -18,11 +18,11 @@ const userSongFavorite = sqliteTable(
             .$defaultFn(() => new Date().toISOString()),
     },
     (t) => [unique().on(t.user, t.song)],
-)
+);
 
-const userSongFavoriteRelation = relations(userSongFavorite, ({ one }) => ({
-    user: one(users, { fields: [userSongFavorite.user], references: [users.id] }),
-    song: one(songs, { fields: [userSongFavorite.song], references: [songs.id] }),
+const userSongShowcaseRelation = relations(userSongShowcase, ({ one }) => ({
+    user: one(users, { fields: [userSongShowcase.user], references: [users.id] }),
+    song: one(songs, { fields: [userSongShowcase.song], references: [songs.id] }),
 }));
 
-export { userSongFavorite, userSongFavoriteRelation }
+export { userSongShowcase, userSongShowcaseRelation };

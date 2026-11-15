@@ -21,8 +21,8 @@ interface UserUpdateRequestBody {
   bannerURL: string | null,
 }
 
-interface UserAddSongFavoriteRequestBody {
-  songId: number,
+interface UserAddSongShowcaseRequestBody {
+  songs: number[],
 }
 
-export type { User, UserIdResponse, UserUpdateRequestBody, UserAddSongFavoriteRequestBody };
+export type { User, UserIdResponse, UserUpdateRequestBody, UserAddSongShowcaseRequestBody };
