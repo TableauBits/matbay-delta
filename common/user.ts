@@ -9,10 +9,18 @@ interface User {
   description: string,
 }
 
+interface UserSongShowcase {
+  id: number,
+  user: string,
+  song: number,
+  addDate: string,
+}
+
 interface UserIdResponse {
     id: string
 }
 
+// Requests
 interface UserUpdateRequestBody {
   displayName: string,
   imageURL: string,
@@ -20,4 +28,8 @@ interface UserUpdateRequestBody {
   bannerURL: string | null,
 }
 
-export type { User, UserIdResponse, UserUpdateRequestBody };
+interface UserAddSongShowcaseRequestBody {
+  songs: number[],
+}
+
+export type { User, UserSongShowcase, UserIdResponse, UserUpdateRequestBody, UserAddSongShowcaseRequestBody };

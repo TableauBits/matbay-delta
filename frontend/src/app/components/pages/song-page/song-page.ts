@@ -1,4 +1,4 @@
-import { Component, OnDestroy, inject, signal } from '@angular/core';
+import { Component, OnDestroy, computed, inject, signal } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Artists } from '../../../services/artists';
 import { AsyncPipe } from '@angular/common';
@@ -15,6 +15,8 @@ import { SongConstitution } from '../../../../../../common/constitution';
 import { RedirectToUserProfile } from '../../utils/redirect-to-user-profile/redirect-to-user-profile';
 import { Users } from '../../../services/users';
 import { Constitutions } from '../../../services/constitutions';
+import { DeltaAuth } from '../../../services/delta-auth';
+import { UserSongShowcase } from '../../../../../../common/user';
 
 @Component({
   selector: 'app-song-page',
@@ -27,6 +29,7 @@ export class SongPage implements OnDestroy {
   private titleService = inject(Title);
   private songs = inject(Songs);
   private httpRequests = inject(HttpRequests);
+  private deltaAuth = inject(DeltaAuth);
 
   artists = inject(Artists);
   constitutions = inject(Constitutions);
@@ -40,11 +43,33 @@ export class SongPage implements OnDestroy {
   participations = signal<SongConstitution[]>([]);
   error = signal<HttpErrorResponse | undefined>(undefined);
 
+  // Showcase of the current user, used to know if the song is already showcased
+  private currentUserShowcase = signal<UserSongShowcase[] | undefined>(undefined);
+  isShowcased = computed(() => this.currentUserShowcase()?.some((s) => s.song === this.song()?.id) ?? false);
+  showcaseLoading = signal(false);
+
   ngOnDestroy(): void {
     this.subscriptions.unsubscribe();
   }
 
+  async addToShowcase(): Promise<void> {
+    const song = this.song();
+    if (!song) return;
+
+    this.showcaseLoading.set(true);
+    await this.users.addSongToShowcase(song.id);
+    this.showcaseLoading.set(false);
+  }
+
   constructor() {
+    this.deltaAuth.getUid().then((uid) => {
+      const subscription = this.users.getShowcase(uid).subscribe({
+        next: (showcase) => this.currentUserShowcase.set(showcase),
+        error: (err) => console.error('failed to get current user showcase', err),
+      });
+      this.subscriptions.add(subscription);
+    });
+
     // Get the song from the route
     this.activatedRoute.params.subscribe((params) => {
       const id = parseInt(params['id'], 10);

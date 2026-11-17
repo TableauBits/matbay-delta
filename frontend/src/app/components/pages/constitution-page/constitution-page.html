@@ -2,7 +2,6 @@
   <p class="alert alert-error alert-soft" role="alert">Error loading constitution : "{{ constitutionError.error }}".</p>
 } @else if (constitution(); as constitution) {
   <h1>{{ constitution.name }}</h1>
-  <p class="text-xs text-base-content/60">ID: {{ constitution.id }}</p>
   <hr />
   <p>Description : {{ constitution.description }}</p>
   <p>Owner: <app-redirect-to-user-profile [user]="users.get(constitution.owner) | async" /></p>

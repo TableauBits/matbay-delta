@@ -6,6 +6,7 @@ import { songArtist } from "./songArtist";
 import { songConstitution } from "./songConstitution";
 import { songLanguage } from "./songLanguage";
 import { songSource } from "./songSource";
+import { userSongShowcase } from "./userSongShowcase";
 
 const songs = sqliteTable(
     "songs",
@@ -30,6 +31,7 @@ const songsRelations = relations(songs, ({ many }) => ({
     songConstitution: many(songConstitution), // One song can be added to many constitutions
     songSource: many(songSource), // One song can have multiple sources
     songLanguage: many(songLanguage),
+    songUserFavorite: many(userSongShowcase), // One song can be favorited by many users
 }));
 
 export { songs, songsRelations };
