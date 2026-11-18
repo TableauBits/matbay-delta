@@ -1,7 +1,7 @@
 import { eq, like } from "drizzle-orm";
 import { Option, Result } from "oxide.ts";
 import { db } from "../db/http";
-import { artists } from "../db/schemas";
+import { artists, songArtist } from "../db/schemas";
 import type { DB } from "../db-namespace";
 
 async function createArtist(artist: DB.Insert.Artist): Promise<Result<DB.Select.Artist, Error>> {
@@ -20,6 +20,12 @@ async function getArtist(id: number): Promise<Result<DB.Select.Artist, Error>> {
     return queryResult.andThen((val) => Option(val.at(0)).okOr(new Error(`No artist with id: ${id}`)));
 }
 
+async function getSongsByArtist(id: number): Promise<Result<DB.Select.SongArtist[], Error>> {
+    const operation = async () => await db.select().from(songArtist).where(eq(songArtist.artist, id));
+
+    return Result.safe(operation());
+}
+
 async function searchArtistsByName(query: string): Promise<Result<DB.Select.Artist[], Error>> {
     const operation = async () =>
         await db
@@ -31,4 +37,4 @@ async function searchArtistsByName(query: string): Promise<Result<DB.Select.Arti
     return Result.safe(operation());
 }
 
-export { createArtist, getArtist, searchArtistsByName };
+export { createArtist, getArtist, getSongsByArtist, searchArtistsByName };

@@ -3,6 +3,7 @@ import { Observable, ReplaySubject } from 'rxjs';
 import { Artist } from '../../../../common/artist';
 import { AutocompleteResult } from '../components/autocomplete-textbox/autocomplete-textbox';
 import { HttpRequests } from './requests/http-requests';
+import { SongArtist } from '../../../../common/song';
 
 @Injectable({
   providedIn: 'root',
@@ -35,6 +36,10 @@ export class Artists {
       });
 
     return newArtist.asObservable();
+  }
+
+  async getSongsByArtist(id: number): Promise<SongArtist[]> {
+    return await this.httpRequests.authenticatedGetRequest<SongArtist[]>(`artist/songs/${id}`);
   }
 
   async search(query: string): Promise<AutocompleteResult<number>[]> {

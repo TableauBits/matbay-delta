@@ -3,6 +3,22 @@
 } @else if (artist(); as artist) {
   <h2>{{ artist.name }}</h2>
   <p>Added on: {{ artist.creationDate }}</p>
+
+  @if (songArtists(); as songArtists) {
+    <h3>Songs</h3>
+    <ul>
+      @for (songArtist of songArtists; track $index) {
+        @if (songs.get(songArtist.song) | async; as song) {
+          <li>
+            <app-redirect-to-song-page [song]="song" />
+            (as {{ songArtist.contribution }})
+          </li>
+        } @else {
+          <li>Loading song...</li>
+        }
+      }
+    </ul>
+  }
 } @else {
   <p class="text-base-content/60" role="status">Loading artist...</p>
 }
