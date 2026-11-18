@@ -77,12 +77,7 @@ async function getSong(id: number): Promise<Result<Song, Error>> {
                         contribution: true,
                     },
                 },
-                songSource: {
-                    columns: {
-                        sourceID: true,
-                        platform: true,
-                    },
-                },
+                songSource: {},
                 songLanguage: {
                     columns: {
                         language: true,
@@ -115,13 +110,13 @@ function getSourceInfo(source: parseUrl.ParsedUrl, host: SourceHost): Result<Sou
         case SourceHost.YOUTUBE:
             return Option(source.query["v"])
                 .map((sourceID) => {
-                    return { sourceID, platform: SourcePlatform.YOUTUBE };
+                    return { sourceID, platform: SourcePlatform.YOUTUBE, creationDate: new Date().toISOString() };
                 })
                 .okOr(new Error("invalid URL for host"));
         case SourceHost.YOUTU_BE:
             return Option(source.pathname.split("/").at(-1))
                 .map((sourceID) => {
-                    return { sourceID, platform: SourcePlatform.YOUTUBE };
+                    return { sourceID, platform: SourcePlatform.YOUTUBE, creationDate: new Date().toISOString() };
                 })
                 .okOr(new Error("invalid URL for host"));
         default:

@@ -16,6 +16,7 @@ const KNOWN_HOSTS = new Map<string, SourceHost>()
 interface Source {
   sourceID: string;
   platform: SourcePlatformType;
+  creationDate: string; // ISO 8601 date string
 }
 
 export {
