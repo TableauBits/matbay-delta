@@ -1,6 +1,6 @@
 @if (user(); as user) {
   <a
-    class="inline-flex max-w-full cursor-pointer items-center gap-2 rounded-field text-primary hover:underline"
+    class="inline-flex max-w-full cursor-pointer items-center gap-2 rounded-field align-middle text-primary hover:underline"
     [routerLink]="['/users', user.handle]"
     [attr.aria-label]="showName() ? null : user.displayName + ' profile'"
     (mouseenter)="schedulePreview($event)"
@@ -9,14 +9,14 @@
     (blur)="hidePreview()"
     (keydown.escape)="hidePreview()"
   >
-    @if (showName()) {
-      {{ user.displayName }}
-    }
     <img
       class="size-8 shrink-0 rounded-full border border-base-300 object-cover"
       [src]="user.imageURL"
       [alt]="'Profile picture of ' + user.displayName"
     />
+    @if (showName()) {
+      {{ user.displayName }}
+    }
     @if (previewVisible()) {
       <span
         aria-hidden="true"
