@@ -12,6 +12,12 @@ interface Song {
   songLanguage: string[];
 }
 
+interface SongArtist {
+  song: number;
+  artist: number;
+  contribution: ArtistContributionType;
+}
+
 // Requests
 interface AddSongRequestBody {
   song: {
@@ -25,5 +31,6 @@ interface AddSongRequestBody {
 
 export {
   type AddSongRequestBody,
-  type Song
+  type Song,
+  type SongArtist
 };
