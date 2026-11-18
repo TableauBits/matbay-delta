@@ -21,17 +21,9 @@ async function getArtist(id: number): Promise<Result<DB.Select.Artist, Error>> {
 }
 
 async function getSongsByArtist(id: number): Promise<Result<DB.Select.SongArtist[], Error>> {
-    const operation = async () =>
-        await db
-            .select()
-            .from(songArtist)
-            .where(eq(songArtist.artist, id))
+    const operation = async () => await db.select().from(songArtist).where(eq(songArtist.artist, id));
 
     return Result.safe(operation());
-
-    // return (await Result.safe(operation())).andThen((results) =>
-    //     Option(results.map((result) => result.song)).okOr(new Error(`No songs found for artist with id: ${id}`)),
-    // );
 }
 
 async function searchArtistsByName(query: string): Promise<Result<DB.Select.Artist[], Error>> {
