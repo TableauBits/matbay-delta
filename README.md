@@ -1,5 +1,5 @@
-# MATBay Δ
-This is the repository of MATBay Δ, a fullstack application to allow users to share and rate songs with other users.
+# Matbay Δ
+This is the repository of Matbay Δ, a fullstack application to allow users to share and rate songs with other users.
 
 ## Current status
 Developement just started and is still in the prototyping phase.
