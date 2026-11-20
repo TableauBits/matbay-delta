@@ -3,10 +3,11 @@ import { Observable, Subscription } from 'rxjs';
 import { User } from '../../../../../../common/user';
 import { Users } from '../../../services/users';
 import { GlobalStat } from './global-stat/global-stat';
+import { RedirectToUserProfile } from '../../utils/redirect-to-user-profile/redirect-to-user-profile';
 
 @Component({
   selector: 'app-home-page',
-  imports: [GlobalStat],
+  imports: [GlobalStat, RedirectToUserProfile],
   templateUrl: './home-page.html',
 })
 export class HomePage implements OnDestroy {

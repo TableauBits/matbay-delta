@@ -34,24 +34,72 @@
     }
   </ul>
   <h3>Sources</h3>
-  <ul class="list mt-2 rounded-box border border-base-300 bg-base-100">
-    @for (source of song.songSource; track $index) {
-      <li class="p-0">
-        <a class="list-row items-center" [href]="sources.generateURL(source)" target="_blank" rel="noopener noreferrer">
-          <span>{{ $index + 1 }}</span>
-          <img
-            [src]="sources.getImageURL(source)"
-            class="h-20 w-36 rounded-box object-cover"
-            alt="Thumbnail for {{ source.platform }} source {{ source.sourceID }}"
-          />
-          <span class="list-col-grow">{{ source.platform }}</span>
-        </a>
-      </li>
-    }
-    @if (song.songSource.length === 0) {
-      <li>No sources available.</li>
-    }
-  </ul>
+  <div class="mt-2 overflow-x-auto">
+    <table class="table rounded-box border border-base-300 bg-base-100">
+      <thead>
+        <tr>
+          <th></th>
+          <th>Source</th>
+          <th>Platform</th>
+          <th>Date</th>
+          <th>Link</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (source of song.songSource; track $index) {
+          <tr>
+            <th scope="row">{{ $index + 1 }}</th>
+            <td>
+              <a
+                class="flex items-center gap-4"
+                [href]="sources.generateURL(source)"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <img
+                  [src]="sources.getImageURL(source)"
+                  class="h-20 w-36 rounded-box object-cover"
+                  alt="Thumbnail for {{ source.platform }} source {{ source.sourceID }}"
+                />
+              </a>
+            </td>
+            <td>{{ source.platform }}</td>
+            <td>{{ source.creationDate }}</td>
+            <td>
+              <a
+                class="btn btn-square btn-ghost text-primary"
+                [href]="sources.generateURL(source)"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Open {{ song.title }} source on {{ source.platform }}"
+              >
+                <svg
+                  class="size-[1.2em]"
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true"
+                >
+                  <path
+                    d="M10 13a5 5 0 0 0 7.07 0l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71M14 11a5 5 0 0 0-7.07 0l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"
+                  />
+                </svg>
+              </a>
+            </td>
+          </tr>
+        }
+        @if (song.songSource.length === 0) {
+          <tr>
+            <td colspan="2">No sources available.</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
   <h3>Participations</h3>
   <ul class="space-y-3 rounded-box border border-base-300 bg-base-100 p-4">
     @for (participation of participations(); track $index) {
