@@ -218,6 +218,7 @@ export class AddSongForm {
             song: {
               title: selectedSong.name,
               primaryArtist: primaryArtistId,
+              releaseYear: null,
             },
             otherContributions,
             sources,

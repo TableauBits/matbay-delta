@@ -141,6 +141,13 @@
       "when": 1794710715233,
       "tag": "0019_aromatic_romulus",
       "breakpoints": true
+    },
+    {
+      "idx": 20,
+      "version": "6",
+      "when": 1795281234182,
+      "tag": "0020_cold_the_renegades",
+      "breakpoints": true
     }
   ]
 }
