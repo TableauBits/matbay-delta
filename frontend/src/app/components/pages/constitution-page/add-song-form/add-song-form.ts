@@ -126,14 +126,12 @@ export class AddSongForm {
       this.formLocked.set(false);
       this.pendingArtists.set([]);
       this.nextArtistRole.set(ArtistContribution.MAIN);
-      releaseYearControl?.enable();
       releaseYearControl?.setValue(null);
       return;
     }
 
     // An existing song already knows its artists: fill them in and lock the artist autocomplete
     this.formLocked.set(true);
-    releaseYearControl?.disable();
     await this.fillFormFromSong(result.id);
   }
 
@@ -265,7 +263,6 @@ export class AddSongForm {
     this.errorMessage.set(null);
     this.formLocked.set(false);
     this.songForm.reset();
-    this.songForm.get('releaseYear')?.enable();
     this.sources.clear();
     this.songAutocomplete.reset();
     this.artistAutocomplete.reset();
