@@ -10,6 +10,19 @@
         [searchFn]="searchSongs.bind(this)"
         (resultSelected)="onSongSelected($event)"
       ></app-autocomplete-textbox>
+      <label class="grid gap-2 text-sm font-medium" for="release-year">
+        Release year
+        <input
+          class="input w-full border-base-300"
+          id="release-year"
+          type="number"
+          min="1000"
+          max="9999"
+          step="1"
+          formControlName="releaseYear"
+          placeholder="Release year"
+        />
+      </label>
     </div>
 
     <div class="grid gap-3">
