@@ -9,7 +9,6 @@
   <h3>Participants</h3>
   @for (userConstitution of getUsers(); track $index) {
     <p>
-      Participant {{ $index + 1 }} :
       @if (users.get(userConstitution.user) | async; as user) {
         <app-redirect-to-user-profile [user]="user" />
         ({{ getUserSongCount(constitution, user.id) }} / {{ constitution.nSongs }} songs)
