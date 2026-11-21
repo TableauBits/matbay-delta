@@ -15,6 +15,9 @@
     }
   </div>
   <p>Added on: {{ song.creationDate }}</p>
+  @if (song.releaseYear) {
+    <p>Release Year: {{ song.releaseYear }}</p>
+  }
   <h3>Artists</h3>
   <ul class="space-y-3 rounded-box border border-base-300 bg-base-100 p-4">
     @for (songArtist of song.songArtist; track $index) {

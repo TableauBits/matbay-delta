@@ -94,6 +94,9 @@
                       {{ (artists.get(song.primaryArtist) | async)?.name }}
                     </div>
                   </div>
+                  @if (song.releaseYear) {
+                    <span class="badge badge-ghost badge-sm" aria-label="Release year">{{ song.releaseYear }}</span>
+                  }
                   @if (song.songSource[0]; as source) {
                     <a
                       class="btn btn-square btn-ghost text-primary"
