@@ -5,7 +5,7 @@ import { AsyncPipe, DatePipe } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Subscription } from 'rxjs';
 import { Title } from '@angular/platform-browser';
-import { User, UserSongShowcase } from '../../../../../../common/user';
+import { User, UserShowcase } from '../../../../../../common/user';
 import { UserStats } from '../../../../../../common/stat';
 import { Users } from '../../../services/users';
 import { HttpRequests } from '../../../services/requests/http-requests';
@@ -14,10 +14,11 @@ import { Artists } from '../../../services/artists';
 import { Sources } from '../../../services/sources';
 import { Song } from '../../../../../../common/song';
 import { RedirectToSongPage } from '../../utils/redirect-to-song-page/redirect-to-song-page';
+import { RedirectToArtistPage } from '../../utils/redirect-to-artist-page/redirect-to-artist-page';
 
 @Component({
   selector: 'app-user-page',
-  imports: [AsyncPipe, CurrentUserForm, DatePipe, RedirectToSongPage],
+  imports: [AsyncPipe, CurrentUserForm, DatePipe, RedirectToArtistPage, RedirectToSongPage],
   templateUrl: './user-page.html',
 })
 export class UserPage implements OnDestroy {
@@ -39,7 +40,7 @@ export class UserPage implements OnDestroy {
   userError = signal<HttpErrorResponse | undefined>(undefined);
   isCurrentUser = signal(false);
   stats = signal<UserStats | undefined>(undefined);
-  showcase = signal<UserSongShowcase[] | undefined>(undefined);
+  showcase = signal<UserShowcase | undefined>(undefined);
   removingShowcase = signal<number | undefined>(undefined);
 
   ngOnDestroy(): void {
@@ -55,6 +56,12 @@ export class UserPage implements OnDestroy {
   async removeFromShowcase(showcaseId: number): Promise<void> {
     this.removingShowcase.set(showcaseId);
     await this.users.removeSongFromShowcase(showcaseId);
+    this.removingShowcase.set(undefined);
+  }
+
+  async removeArtistFromShowcase(showcaseId: number): Promise<void> {
+    this.removingShowcase.set(showcaseId);
+    await this.users.removeArtistFromShowcase(showcaseId);
     this.removingShowcase.set(undefined);
   }
 

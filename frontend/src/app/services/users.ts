@@ -2,9 +2,10 @@ import { Injectable, inject } from '@angular/core';
 import { Observable, ReplaySubject } from 'rxjs';
 import {
   User,
+  UserAddArtistShowcaseRequestBody,
   UserAddSongShowcaseRequestBody,
   UserIdResponse,
-  UserSongShowcase,
+  UserShowcase,
   UserUpdateRequestBody,
 } from '../../../../common/user';
 import { DeltaAuth } from './delta-auth';
@@ -23,8 +24,8 @@ export class Users {
   // Cache of user data to avoid redundant requests
   private users = new Map<string, ReplaySubject<User>>();
 
-  // Cache of song showcases, by uid
-  private showcases = new Map<string, ReplaySubject<UserSongShowcase[]>>();
+  // Cache of showcases, by uid
+  private showcases = new Map<string, ReplaySubject<UserShowcase>>();
 
   // Indices
   /// handle => uid
@@ -82,10 +83,10 @@ export class Users {
       });
   }
 
-  getShowcase(uid: string): Observable<UserSongShowcase[]> {
+  getShowcase(uid: string): Observable<UserShowcase> {
     let showcase = this.showcases.get(uid);
     if (!showcase) {
-      showcase = new ReplaySubject<UserSongShowcase[]>(1);
+      showcase = new ReplaySubject<UserShowcase>(1);
       this.showcases.set(uid, showcase);
       this.refreshShowcase(uid);
     }
@@ -123,15 +124,45 @@ export class Users {
     await this.refreshShowcase(uid);
   }
 
+  async addArtistToShowcase(artistId: number): Promise<void> {
+    const uid = await this.deltaAuth.getUid();
+
+    try {
+      await this.httpRequests.authenticatedPostRequest<UserAddArtistShowcaseRequestBody>(`user/artist-showcase`, {
+        artists: [artistId],
+      });
+      this.snackbar.showSuccess('Artiste ajouté à la vitrine');
+    } catch (error) {
+      console.error(`failed to add artist ${artistId} to showcase`, error);
+      this.snackbar.showError("Échec de l'ajout de l'artiste à la vitrine");
+    }
+
+    await this.refreshShowcase(uid);
+  }
+
+  async removeArtistFromShowcase(showcaseId: number): Promise<void> {
+    const uid = await this.deltaAuth.getUid();
+
+    try {
+      await this.httpRequests.authenticatedDeleteRequest(`user/artist-showcase/${showcaseId}`);
+      this.snackbar.showSuccess('Artiste retiré de la vitrine');
+    } catch (error) {
+      console.error(`failed to remove showcase ${showcaseId}`, error);
+      this.snackbar.showError('Échec du retrait de la vitrine');
+    }
+
+    await this.refreshShowcase(uid);
+  }
+
   private async refreshShowcase(uid: string): Promise<void> {
     let showcase = this.showcases.get(uid);
     if (!showcase) {
-      showcase = new ReplaySubject<UserSongShowcase[]>(1);
+      showcase = new ReplaySubject<UserShowcase>(1);
       this.showcases.set(uid, showcase);
     }
 
     try {
-      showcase.next(await this.httpRequests.authenticatedGetRequest<UserSongShowcase[]>(`user/get-showcase/${uid}`));
+      showcase.next(await this.httpRequests.authenticatedGetRequest<UserShowcase>(`user/get-showcase/${uid}`));
     } catch (error) {
       // Never error or evict the cached subject: subscribers would be cut off for good and
       // miss every later refresh. Keep the last known value; the next refresh will recover.
