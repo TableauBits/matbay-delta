@@ -19,4 +19,20 @@ describe('AddSongForm', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  it('should accept a valid release year', () => {
+    const releaseYear = component.songForm.get('releaseYear');
+
+    releaseYear?.setValue(2026);
+
+    expect(releaseYear?.valid).toBeTrue();
+  });
+
+  it('should reject an invalid release year', () => {
+    const releaseYear = component.songForm.get('releaseYear');
+
+    releaseYear?.setValue(26);
+
+    expect(releaseYear?.invalid).toBeTrue();
+  });
 });

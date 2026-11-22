@@ -53,7 +53,9 @@ export class AddSongForm {
   pendingLanguages = signal<string[]>([]);
 
   constructor() {
+    const currentYear = new Date().getFullYear();
     this.songForm = this.formBuilder.group({
+      releaseYear: [null, [Validators.min(1000), Validators.max(currentYear), Validators.pattern(/^\d{4}$/)]],
       sources: this.formBuilder.array([]),
     });
   }
@@ -117,12 +119,14 @@ export class AddSongForm {
 
   async onSongSelected(result: AutocompleteResult<number> | null): Promise<void> {
     this.selectedSong.set(result);
+    const releaseYearControl = this.songForm.get('releaseYear');
 
     // A new song (or none selected): the user must provide the artists themselves
     if (!result || result.id === null) {
       this.formLocked.set(false);
       this.pendingArtists.set([]);
       this.nextArtistRole.set(ArtistContribution.MAIN);
+      releaseYearControl?.setValue(null);
       return;
     }
 
@@ -156,6 +160,7 @@ export class AddSongForm {
     );
 
     this.pendingLanguages.set(song.songLanguage);
+    this.songForm.get('releaseYear')?.setValue(song.releaseYear);
   }
 
   createSourceFormGroup(): FormGroup {
@@ -178,7 +183,7 @@ export class AddSongForm {
   }
 
   get canSubmit(): boolean {
-    return this.selectedSong() !== null && this.pendingArtists().length > 0;
+    return this.selectedSong() !== null && this.pendingArtists().length > 0 && this.songForm.valid;
   }
 
   async submitForm(): Promise<void> {
@@ -212,12 +217,15 @@ export class AddSongForm {
           .map((id, i) => [id, pendingArtists[i + 1].role]);
 
         const sources = (this.songForm.value.sources as FormSource[] | undefined)?.map((s) => s.url) ?? [];
+        const releaseYearValue = this.songForm.getRawValue().releaseYear;
+        const releaseYear = releaseYearValue === null || releaseYearValue === '' ? null : Number(releaseYearValue);
 
         songID = (
           await this.httpRequests.authenticatedPostRequest<AddSongRequestBody, Song>('song/add', {
             song: {
               title: selectedSong.name,
               primaryArtist: primaryArtistId,
+              releaseYear,
             },
             otherContributions,
             sources,

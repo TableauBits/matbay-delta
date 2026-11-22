@@ -10,6 +10,7 @@ interface Song {
   songArtist: { artist: number, contribution: ArtistContributionType }[];
   songSource: Source[];
   songLanguage: string[];
+  releaseYear: number | null;
 }
 
 interface SongArtist {
@@ -23,6 +24,7 @@ interface AddSongRequestBody {
   song: {
     title: string;
     primaryArtist: number;
+    releaseYear: number | null;
   }
   otherContributions: [number, ArtistContribution][];
   sources: string[];
