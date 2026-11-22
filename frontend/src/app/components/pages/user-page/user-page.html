@@ -92,7 +92,7 @@
                   <div class="min-w-0">
                     <app-redirect-to-song-page [song]="song" />
                     <div class="text-xs font-semibold uppercase opacity-60">
-                      {{ (artists.get(song.primaryArtist) | async)?.name }}
+                      <app-redirect-to-artist-page [artist]="artists.get(song.primaryArtist) | async" />
                     </div>
                   </div>
                   @if (song.songSource[0]; as source) {
