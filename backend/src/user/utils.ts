@@ -1,9 +1,9 @@
 import { eq } from "drizzle-orm";
 import { Option, Result } from "oxide.ts";
 import { v4 as uuidv4 } from "uuid";
-import type { User } from "../../../common/user";
+import type { User, UserShowcase } from "../../../common/user";
 import { db } from "../db/http";
-import { users } from "../db/schemas";
+import { userArtistShowcase, userSongShowcase, users } from "../db/schemas";
 import type { DB } from "../db-namespace";
 
 async function createUser(userInfo: DB.Insert.User): Promise<void> {
@@ -43,4 +43,20 @@ async function getUidFromHandle(handle: string): Promise<Result<string, Error>> 
         .map((user) => user.id);
 }
 
-export { createUser, getUidFromHandle, getUser, getUserFromAuth };
+async function getUserShowcase(uid: string): Promise<Result<UserShowcase, Error>> {
+    const operation = async () => {
+        // Get song showcase for the user
+        const songShowcase = await db.select().from(userSongShowcase).where(eq(userSongShowcase.user, uid));
+
+        // Get artist showcase for the user
+        const artistShowcase = await db.select().from(userArtistShowcase).where(eq(userArtistShowcase.user, uid));
+
+        return {
+            songShowcase,
+            artistShowcase,
+        };
+    };
+    return Result.safe(operation());
+}
+
+export { createUser, getUidFromHandle, getUser, getUserFromAuth, getUserShowcase };

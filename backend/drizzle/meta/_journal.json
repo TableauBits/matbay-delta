@@ -141,6 +141,13 @@
       "when": 1794710715233,
       "tag": "0019_aromatic_romulus",
       "breakpoints": true
+    },
+    {
+      "idx": 20,
+      "version": "6",
+      "when": 1795318718775,
+      "tag": "0020_bizarre_shiver_man",
+      "breakpoints": true
     }
   ]
 }

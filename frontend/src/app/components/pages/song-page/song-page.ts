@@ -64,7 +64,7 @@ export class SongPage implements OnDestroy {
   constructor() {
     this.deltaAuth.getUid().then((uid) => {
       const subscription = this.users.getShowcase(uid).subscribe({
-        next: (showcase) => this.currentUserShowcase.set(showcase),
+        next: (showcase) => this.currentUserShowcase.set(showcase.songShowcase),
         error: (err) => console.error('failed to get current user showcase', err),
       });
       this.subscriptions.add(subscription);

@@ -31,7 +31,7 @@ const songsRelations = relations(songs, ({ many }) => ({
     songConstitution: many(songConstitution), // One song can be added to many constitutions
     songSource: many(songSource), // One song can have multiple sources
     songLanguage: many(songLanguage),
-    songUserFavorite: many(userSongShowcase), // One song can be favorited by many users
+    userSongShowcase: many(userSongShowcase), // One song can be favorited by many users
 }));
 
 export { songs, songsRelations };

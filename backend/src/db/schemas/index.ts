@@ -9,5 +9,6 @@ export * from "./songConstitution";
 export * from "./songLanguage";
 export * from "./songSource";
 export * from "./user";
+export * from "./userArtistShowcase";
 export * from "./userConstitution";
 export * from "./userSongShowcase";

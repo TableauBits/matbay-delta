@@ -1,3 +1,4 @@
+// Types
 interface User {
   id: string,
   authID: string,
@@ -7,6 +8,13 @@ interface User {
   bannerURL: string | null,
   joinDate: string,
   description: string,
+}
+
+interface UserArtistShowcase {
+  id: number,
+  user: string,
+  artist: number,
+  addDate: string,
 }
 
 interface UserSongShowcase {
@@ -20,7 +28,12 @@ interface UserIdResponse {
     id: string
 }
 
-// Requests
+interface UserShowcase {
+    songShowcase: UserSongShowcase[],
+    artistShowcase: UserArtistShowcase[],
+}
+
+// Request bodies
 interface UserUpdateRequestBody {
   displayName: string,
   imageURL: string,
@@ -28,8 +41,21 @@ interface UserUpdateRequestBody {
   bannerURL: string | null,
 }
 
+interface UserAddArtistShowcaseRequestBody {
+  artists: number[],
+}
+
 interface UserAddSongShowcaseRequestBody {
   songs: number[],
 }
 
-export type { User, UserSongShowcase, UserIdResponse, UserUpdateRequestBody, UserAddSongShowcaseRequestBody };
+export type { 
+  User, 
+  UserAddArtistShowcaseRequestBody,
+  UserAddSongShowcaseRequestBody,
+  UserArtistShowcase,
+  UserShowcase,
+  UserIdResponse,
+  UserSongShowcase,
+  UserUpdateRequestBody,
+};

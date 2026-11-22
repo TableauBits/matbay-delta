@@ -73,8 +73,9 @@
       </label>
       <div class="tab-content border-base-300 bg-base-100 p-6">
         @if (showcase(); as showcase) {
+          <h2 class="text-xl font-semibold">Songs</h2>
           <ul class="list rounded-box bg-base-100" aria-label="Showcased songs">
-            @for (entry of showcase; track entry.id) {
+            @for (entry of showcase.songShowcase; track entry.id) {
               @if (songs.get(entry.song) | async; as song) {
                 <li class="list-row items-center">
                   <div>
@@ -91,7 +92,7 @@
                   <div class="min-w-0">
                     <app-redirect-to-song-page [song]="song" />
                     <div class="text-xs font-semibold uppercase opacity-60">
-                      {{ (artists.get(song.primaryArtist) | async)?.name }}
+                      <app-redirect-to-artist-page [artist]="artists.get(song.primaryArtist) | async" />
                     </div>
                   </div>
                   @if (song.songSource[0]; as source) {
@@ -153,6 +154,47 @@
               }
             } @empty {
               <li class="p-4 text-base-content/60">No showcased songs yet.</li>
+            }
+          </ul>
+          <h2 class="text-xl font-semibold">Artists</h2>
+          <ul class="mt-2 list rounded-box bg-base-100" aria-label="Showcased artists">
+            @for (entry of showcase.artistShowcase; track entry.id) {
+              @if (artists.get(entry.artist) | async; as artist) {
+                <li class="list-row items-center">
+                  <div class="min-w-0">
+                    <app-redirect-to-artist-page [artist]="artist" />
+                  </div>
+                  @if (isCurrentUser()) {
+                    <button
+                      class="btn btn-square btn-ghost text-error"
+                      [disabled]="removingShowcase() === entry.id"
+                      (click)="removeArtistFromShowcase(entry.id)"
+                      aria-label="Remove {{ artist.name }} from showcase"
+                      title="Remove from showcase"
+                    >
+                      @if (removingShowcase() === entry.id) {
+                        <span class="loading loading-spinner loading-xs"></span>
+                      } @else {
+                        <svg
+                          class="size-[1.2em]"
+                          xmlns="http://www.w3.org/2000/svg"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          aria-hidden="true"
+                        >
+                          <path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6M10 11v6M14 11v6" />
+                        </svg>
+                      }
+                    </button>
+                  }
+                </li>
+              }
+            } @empty {
+              <li class="p-4 text-base-content/60">No showcased artists yet.</li>
             }
           </ul>
         } @else {
