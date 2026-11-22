@@ -73,7 +73,7 @@
       </label>
       <div class="tab-content border-base-300 bg-base-100 p-6">
         @if (showcase(); as showcase) {
-          <h2 class="mt-6 text-lg font-semibold">Songs</h2>
+          <h2 class="text-xl font-semibold">Songs</h2>
           <ul class="list rounded-box bg-base-100" aria-label="Showcased songs">
             @for (entry of showcase.songShowcase; track entry.id) {
               @if (songs.get(entry.song) | async; as song) {
@@ -156,7 +156,7 @@
               <li class="p-4 text-base-content/60">No showcased songs yet.</li>
             }
           </ul>
-          <h2 class="mt-6 text-lg font-semibold">Artists</h2>
+          <h2 class="text-xl font-semibold">Artists</h2>
           <ul class="mt-2 list rounded-box bg-base-100" aria-label="Showcased artists">
             @for (entry of showcase.artistShowcase; track entry.id) {
               @if (artists.get(entry.artist) | async; as artist) {
