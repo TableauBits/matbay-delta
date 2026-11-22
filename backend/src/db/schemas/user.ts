@@ -1,8 +1,8 @@
 import { relations } from "drizzle-orm";
 import { sqliteTable, text, uniqueIndex } from "drizzle-orm/sqlite-core";
+import { userArtistShowcase } from "./userArtistShowcase";
 import { userConstitution } from "./userConstitution";
 import { userSongShowcase } from "./userSongShowcase";
-import { userArtistShowcase } from "./userArtistShowcase";
 
 const users = sqliteTable(
     "users",

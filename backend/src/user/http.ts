@@ -1,7 +1,12 @@
 import { and, eq } from "drizzle-orm";
 import { type Request, type Response, Router } from "express";
 import { Err, Ok, Option, Result } from "oxide.ts";
-import type { UserAddArtistShowcaseRequestBody, UserAddSongShowcaseRequestBody, UserIdResponse, UserUpdateRequestBody } from "../../../common/user";
+import type {
+    UserAddArtistShowcaseRequestBody,
+    UserAddSongShowcaseRequestBody,
+    UserIdResponse,
+    UserUpdateRequestBody,
+} from "../../../common/user";
 import { ensureAuthMiddleware } from "../auth/http";
 import { db } from "../db/http";
 import { userArtistShowcase, userSongShowcase, users } from "../db/schemas";
